@@ -83,6 +83,8 @@ ui <- dashboardPage(
     actionButton(
       inputId = "Outro",
       label = "Github / Manual",
+      style = 'margin: auto; width: 90%',
+      onclick ="window.open('https://github.com/statgarten', '_blank')",
       icon = icon("github")
     )
   ),
@@ -168,6 +170,7 @@ server <- function(input, output, session) {
     output$LoadTest <- renderText("Load Button Clicked")
     shinyjs::delay(2000, output$LoadTest <- renderText(""))
   })
+  
 }
 
 # Run the application
