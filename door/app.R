@@ -1,7 +1,9 @@
 library(shiny)
 library(DT)
 library(shinyjs)
-library(shinydashboard)
+# library(shinydashboard)
+library(shinydashboardPlus)
+library(dplyr)
 
 ui <- dashboardPage(
   # HEAD
@@ -19,16 +21,43 @@ ui <- dashboardPage(
         id = "SideBox",
         box(
           title = "Filter",
-          footer = "footer TEXT",
-          solidHeader = TRUE,
-          background = "teal",
           collapsible = TRUE,
           collapsed = TRUE,
           width = 12,
-          checkboxInput(
-            inputId = "checkBox",
-            label = "checkBoxLabel",
-            value = FALSE
+          status = 'navy',
+          solidHeader = TRUE,
+          gradient = TRUE,
+          # boxToolSize = 'xs',
+          background = 'gray',
+          actionButton(
+            inputId = 'loadFilterColumn',
+            label = 'Load Variables',
+            icon = icon('check')
+          ),
+          shinyjs::disabled(
+            selectInput(
+              inputId = 'filterColumn',
+              label = 'filterSelectLabel',
+              choices = NULL,
+              selected = NULL,
+              multiple = FALSE
+            ),
+            selectInput(
+              inputId = 'filterOperator',
+              label = 'filterOpeartorLabel',
+              choices = c(">", ">=", "<", "<=", "==", "!="),
+              selected = NULL,
+              multiple = FALSE
+            ),
+            textInput(
+              inputId = 'filterVariable', 
+              label = 'filterVariableLabel'
+            ),
+            actionButton(
+              inputId = 'filterButton',
+              label = 'filter',
+              icon = icon('angle-down')
+            )
           )
         ),
         box(
@@ -135,6 +164,8 @@ server <- function(input, output, session) {
     c('<img width = "100" src="', src, '">')
   })
 
+  inputData <- NULL
+  
   observeEvent(input$fileInputID, {
     file <- input$fileInputID
     ext <- tools::file_ext(file$datapath)
@@ -154,7 +185,7 @@ server <- function(input, output, session) {
 
     shinyjs::show(id = "SideBox")
 
-    inputData <- read.csv(file$datapath)
+    inputData <<- read.csv(file$datapath) 
 
     output$DT <- renderDT(
       rbind(head(inputData, 5), tail(inputData, 5))
@@ -169,6 +200,37 @@ server <- function(input, output, session) {
   observeEvent(input$LoadButton, {
     output$LoadTest <- renderText("Load Button Clicked")
     shinyjs::delay(2000, output$LoadTest <- renderText(""))
+  })
+  
+  observeEvent(input$loadFilterColumn, {
+    shinyjs::enable(id = 'filterColumn')
+    shinyjs::enable(id = 'filterOperator')
+    shinyjs::enable(id = 'filterVariable')
+    shinyjs::enable(id = 'filterButton')
+    
+    updateSelectizeInput(
+      session, 
+      inputId = 'filterColumn', 
+      label = 'filterSelectLabel', 
+      choices = colnames(inputData), 
+      server = TRUE
+    )
+  })
+  
+  observeEvent(input$filterButton, {
+    
+    eval(parse(
+      text = 
+      paste0("inputData <<- inputData %>% ",
+             'filter(', input$filterColumn, operator, input$filterVariable, ')')
+    ))
+    
+    output$DT <- renderDT(
+      rbind(head(inputData, 5), tail(inputData, 5))
+    )
+    
+    
+    
   })
   
 }
