@@ -11,12 +11,12 @@ ui <- dashboardPage(
   dashboardSidebar(
     # disable = TRUE
     # LOGO
-    htmlOutput("Logo"),
+    htmlOutput("Logo", style = 'text-align: center; margin-bottom:3em;'),
 
     # FILTER BOX
     shinyjs::hidden(
       div(
-        id = "FilterBox",
+        id = "SideBox",
         box(
           title = "Filter",
           footer = "footer TEXT",
@@ -24,14 +24,59 @@ ui <- dashboardPage(
           background = "teal",
           collapsible = TRUE,
           collapsed = TRUE,
+          width = 12,
           checkboxInput(
             inputId = "checkBox",
             label = "checkBoxLabel",
             value = FALSE
           )
+        ),
+        box(
+          title = "Mutate",
+          footer = "footer TEXT",
+          solidHeader = TRUE,
+          background = "teal",
+          collapsible = TRUE,
+          collapsed = TRUE,
+          width = 12
+        ),
+        box(
+          title = "Clean",
+          footer = "footer TEXT",
+          solidHeader = TRUE,
+          background = "teal",
+          collapsible = TRUE,
+          collapsed = TRUE,
+          width = 12
+        ),
+        box(
+          title = "Split",
+          footer = "footer TEXT",
+          solidHeader = TRUE,
+          background = "teal",
+          collapsible = TRUE,
+          collapsed = TRUE,
+          width = 12
+        ),
+        box(
+          title = "Reshape",
+          footer = "footer TEXT",
+          solidHeader = TRUE,
+          background = "teal",
+          collapsible = TRUE,
+          collapsed = TRUE,
+          width = 12
+        ),
+        box(
+          title = "Export",
+          footer = "footer TEXT",
+          solidHeader = TRUE,
+          background = "teal",
+          collapsible = TRUE,
+          collapsed = TRUE,
+          width = 12
         )
       )
-      
     ),
 
     # OUTRO
@@ -105,12 +150,12 @@ server <- function(input, output, session) {
     shinyjs::show(id = "LoadButton", anim = TRUE, animType = "slide")
     shinyjs::show(id = "LoadTest", anim = TRUE, animType = "fade")
 
-    shinyjs::show(id = "FilterBox")
+    shinyjs::show(id = "SideBox")
 
     inputData <- read.csv(file$datapath)
 
     output$DT <- renderDT(
-      rbind(head(inputData), tail(inputData))
+      rbind(head(inputData, 5), tail(inputData, 5))
     )
   })
 
