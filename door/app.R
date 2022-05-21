@@ -1,0 +1,129 @@
+library(shiny)
+library(DT)
+library(shinyjs)
+library(shinydashboard)
+
+ui <- dashboardPage(
+  # HEAD
+  dashboardHeader(disable = TRUE),
+
+  # SIDE MODULE
+  dashboardSidebar(
+    # disable = TRUE
+    # LOGO
+    htmlOutput("Logo"),
+
+    # FILTER BOX
+    shinyjs::hidden(
+      div(
+        id = "FilterBox",
+        box(
+          title = "Filter",
+          footer = "footer TEXT",
+          solidHeader = TRUE,
+          background = "teal",
+          collapsible = TRUE,
+          collapsed = TRUE,
+          checkboxInput(
+            inputId = "checkBox",
+            label = "checkBoxLabel",
+            value = FALSE
+          )
+        )
+      )
+      
+    ),
+
+    # OUTRO
+    actionButton(
+      inputId = "Outro",
+      label = "Github / Manual",
+      icon = icon("github")
+    )
+  ),
+  dashboardBody(
+    useShinyjs(),
+    fluidPage(
+      p(
+        id = "desc",
+        "Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer eleifend libero eleifend egestas faucibus. Ut venenatis vitae lorem id pulvinar. Phasellus accumsan lectus eu magna hendrerit, ac elementum ex vestibulum. Sed eget facilisis est, quis volutpat mi. Vestibulum metus odio, sollicitudin non venenatis at, dignissim eleifend turpis. Aenean porta porta augue sed pulvinar. Praesent at metus leo. Maecenas consequat luctus odio, sagittis dapibus lectus ultricies vitae. In euismod gravida enim, in tristique felis finibus non. Morbi ac velit sed arcu dignissim ornare. Ut justo velit, lobortis nec purus sed, volutpat commodo nisi. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas lacinia metus eu nisl aliquet convallis."
+      ),
+      fileInput(
+        inputId = "fileInputID",
+        label = "FileInput Label",
+        accept = c(".csv"),
+        buttonLabel = "Button Label",
+        placeholder = "Place Holder"
+      ),
+      DTOutput(
+        outputId = "DT"
+      ),
+
+      # EXPORT MODULE
+      shinyjs::hidden(
+        actionButton(
+          inputId = "ExportButton",
+          label = "ExportButtonLabel",
+          icon = icon("download")
+        ),
+        textOutput("ExportTest")
+      ),
+
+      # LOAD TO OTHER MODULE
+      shinyjs::hidden(
+        actionButton(
+          inputId = "LoadButton",
+          label = "LoadButtonLabel",
+          icon = icon("share")
+        ),
+        textOutput("LoadTest")
+      )
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  src <- "https://github.com/rstudio/shiny/blob/main/man/figures/logo.png?raw=true"
+  output$Logo <- renderText({
+    c('<img width = "100" src="', src, '">')
+  })
+
+  observeEvent(input$fileInputID, {
+    file <- input$fileInputID
+    ext <- tools::file_ext(file$datapath)
+
+    req(file)
+
+    validate(need(ext == "csv", "Please upload a csv File"))
+
+    shinyjs::hide(id = "desc", anim = TRUE, animType = "slide")
+    shinyjs::hide(id = "fileInputID", anim = TRUE, animType = "fade")
+
+    shinyjs::show(id = "ExportButton", anim = TRUE, animType = "slide")
+    shinyjs::show(id = "ExportTest", anim = TRUE, animType = "fade")
+
+    shinyjs::show(id = "LoadButton", anim = TRUE, animType = "slide")
+    shinyjs::show(id = "LoadTest", anim = TRUE, animType = "fade")
+
+    shinyjs::show(id = "FilterBox")
+
+    inputData <- read.csv(file$datapath)
+
+    output$DT <- renderDT(
+      rbind(head(inputData), tail(inputData))
+    )
+  })
+
+  observeEvent(input$ExportButton, {
+    output$ExportTest <- renderText("Export Button Clicked")
+    shinyjs::delay(2000, output$ExportTest <- renderText(""))
+  })
+
+  observeEvent(input$LoadButton, {
+    output$LoadTest <- renderText("Load Button Clicked")
+    shinyjs::delay(2000, output$LoadTest <- renderText(""))
+  })
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)
