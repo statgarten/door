@@ -1,8 +1,8 @@
 library(shiny)
+library(shinydashboard)
+library(shinydashboardPlus)
 library(DT)
 library(shinyjs)
-# library(shinydashboard)
-library(shinydashboardPlus)
 library(dplyr)
 
 ui <- dashboardPage(
@@ -19,7 +19,7 @@ ui <- dashboardPage(
     shinyjs::hidden(
       div(
         id = "SideBox",
-        box(
+        shinydashboardPlus::box(
           title = "Filter",
           collapsible = TRUE,
           collapsed = TRUE,
@@ -60,14 +60,53 @@ ui <- dashboardPage(
             )
           )
         ),
-        box(
+        shinydashboardPlus::box(
           title = "Mutate",
           footer = "footer TEXT",
           solidHeader = TRUE,
           background = "teal",
           collapsible = TRUE,
           collapsed = TRUE,
-          width = 12
+          width = 12,
+          
+          # load column
+          actionButton(
+            inputId = 'loadMutateColumn',
+            label = 'Load Variables',
+            icon = icon('check')
+          ),
+          
+          # which column
+          selectInput(
+            inputId = 'mutateColumn',
+            label = 'mutateSelectLabel',
+            choices = NULL,
+            selected = NULL,
+            multiple = FALSE
+          ),
+          
+          # option
+          selectInput(
+            inputId = 'mutateOperator',
+            label = 'mutateOpeartorLabel',
+            choices = c("Round", "Log", "Sart", "Min-Max", "Normal", "Remove"),
+            selected = NULL,
+            multiple = FALSE
+          ),
+          
+          #
+          textInput(
+            inputId = 'mutateVariable', 
+            label = 'mutateVariableLabel',
+          ),
+          
+          # apply button
+          actionButton(
+            inputId = 'mutateButton',
+            label = 'mutate',
+            icon = icon('angle-down')
+          )
+          
         ),
         box(
           title = "Clean",
@@ -217,6 +256,18 @@ server <- function(input, output, session) {
     )
   })
   
+  observeEvent(input$loadMutateColumn, {
+    
+    updateSelectizeInput(
+      session, 
+      inputId = 'mutateColumn', 
+      label = 'mutateSelectLabel', 
+      choices = colnames(inputData), 
+      server = TRUE
+    )
+  })
+  
+  
   observeEvent(input$filterButton, {
     
     eval(parse(
@@ -229,7 +280,39 @@ server <- function(input, output, session) {
       rbind(head(inputData, 5), tail(inputData, 5))
     )
     
+    updateSelectizeInput(
+      session, 
+      inputId = 'filterColumn', 
+      label = 'filterSelectLabel', 
+      choices = colnames(inputData), 
+      server = TRUE
+    )
     
+    updateSelectizeInput(
+      session, 
+      inputId = 'mutateColumn', 
+      label = 'mutateSelectLabel', 
+      choices = colnames(inputData), 
+      server = TRUE
+    )
+    
+  })
+  
+  observeEvent(input$mutateButton, {
+    if(input$mutateOperator == 'Round'){
+      eval(parse(
+        text = 
+          paste0(
+            "inputData <<- inputData %>% ",
+            'mutate(', 
+            input$mutateColumn, ' = round(', input$mutateColumn, ', ',  input$mutateVariable, '))'
+          )
+      ))
+    }
+    
+    output$DT <- renderDT(
+      rbind(head(inputData, 5), tail(inputData, 5))
+    )
     
   })
   
