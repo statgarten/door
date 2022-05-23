@@ -137,14 +137,61 @@ ui <- dashboardPage(
             icon = icon("angle-down")
           )
         ),
-        box(
+        shinydashboardPlus::box(
           title = "Clean",
-          footer = "footer TEXT",
-          solidHeader = TRUE,
-          background = "teal",
+          
           collapsible = TRUE,
           collapsed = TRUE,
-          width = 12
+          width = 12,
+          status = "navy",
+          solidHeader = TRUE,
+          gradient = TRUE,
+          # boxToolSize = 'xs',
+          background = "gray",
+          
+          ## LOAD COLUMNS 
+          actionButton(
+            inputId = "loadCleanColumn",
+            label = "Load Variables",
+            icon = icon("check")
+          ),
+          
+          
+          ## <SELECT> column names
+          selectInput(
+            inputId = "cleanColumn",
+            label = "cleanSelectLabel",
+            choices = NULL,
+            selected = NULL,
+            multiple = FALSE
+          ),
+          
+          ## Operation Option: Remove / Replace
+          selectInput(
+            inputId = "cleanOperator",
+            label = "cleanOpeartorLabel",
+            choices = c("Remove", "Replace"),
+            selected = NULL,
+            multiple = FALSE
+          ),
+          
+          ## Remove / Replace Keyword: null, [userInput] 
+          textInput(
+            inputId = "cleanVariable",
+            label = "cleanVariableLabel",
+          ),
+          
+          textInput(
+            inputId = "cleanKeyword",
+            label = "cleanKeywordLabel",
+          ),
+          
+          ## <Button> Clean
+          actionButton(
+            inputId = "cleanButton",
+            label = "clean",
+            icon = icon("angle-down")
+          )
         ),
         box(
           title = "Split",
@@ -335,6 +382,7 @@ server <- function(input, output, session) {
     )
   })
 
+  
   observeEvent(input$loadSubsetColumn, {
     updateSelectizeInput(
       session,
@@ -354,6 +402,66 @@ server <- function(input, output, session) {
         )
     ))
 
+    output$DT <- renderDT(
+      rbind(head(inputData, 5), tail(inputData, 5))
+    )
+  })
+  
+  observeEvent(input$loadCleanColumn, {
+    updateSelectizeInput(
+      session,
+      inputId = "cleanColumn",
+      label = "cleanSelectLabel",
+      choices = colnames(inputData),
+      server = TRUE
+    )
+  })
+  
+  observeEvent(input$cleanButton, {
+    
+    if(input$cleanOperator == 'Remove'){
+      # data $ column -> filter(which is not .)
+      
+      if(input$cleanVariable == 'NA'){
+        eval(parse(
+          text =
+            paste0(
+              "inputData <<- inputData %>% ",
+              "filter(!is.na(", input$cleanColumn, "))"
+            )
+        ))  
+      }
+      else{
+        eval(parse(
+          text =
+            paste0(
+              "inputData <<- inputData %>% ",
+              "filter(!grepl(", input$cleanVariable,', ', input$cleanColumn, "))"
+            )
+        ))
+      }
+      
+    }
+    # <cleanColumn>
+    # <cleanOperator>
+    # <cleanVariable>
+    # <cleanKeyword>
+    
+    if(input$cleanOperator == 'Replace'){
+      
+      keyword <- ifelse(is.null(input$cleanKeyword), '', input$cleanKeyword)
+      
+      eval(parse(
+        text =
+          paste0(
+            "inputData <<- inputData %>% ",
+            "mutate(", input$cleanColumn,' = ', 
+              'ifelse(', input$cleanColumn, ' == ', input$cleanVariable, ',', keyword, ',', input$cleanColumn, "))"
+          )
+      ))
+    }
+    
+    
     output$DT <- renderDT(
       rbind(head(inputData, 5), tail(inputData, 5))
     )
