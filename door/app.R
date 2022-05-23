@@ -13,7 +13,7 @@ ui <- dashboardPage(
   dashboardSidebar(
     # disable = TRUE
     # LOGO
-    htmlOutput("Logo", style = 'text-align: center; margin-bottom:3em;'),
+    htmlOutput("Logo", style = "text-align: center; margin-bottom:3em;"),
 
     # FILTER BOX
     shinyjs::hidden(
@@ -24,123 +24,118 @@ ui <- dashboardPage(
           collapsible = TRUE,
           collapsed = TRUE,
           width = 12,
-          status = 'navy',
+          status = "navy",
           solidHeader = TRUE,
           gradient = TRUE,
           # boxToolSize = 'xs',
-          background = 'gray',
+          background = "gray",
           actionButton(
-            inputId = 'loadFilterColumn',
-            label = 'Load Variables',
-            icon = icon('check')
+            inputId = "loadFilterColumn",
+            label = "Load Variables",
+            icon = icon("check")
           ),
           shinyjs::disabled(
             selectInput(
-              inputId = 'filterColumn',
-              label = 'filterSelectLabel',
+              inputId = "filterColumn",
+              label = "filterSelectLabel",
               choices = NULL,
               selected = NULL,
               multiple = FALSE
             ),
             selectInput(
-              inputId = 'filterOperator',
-              label = 'filterOpeartorLabel',
+              inputId = "filterOperator",
+              label = "filterOpeartorLabel",
               choices = c(">", ">=", "<", "<=", "==", "!="),
               selected = NULL,
               multiple = FALSE
             ),
             textInput(
-              inputId = 'filterVariable', 
-              label = 'filterVariableLabel'
+              inputId = "filterVariable",
+              label = "filterVariableLabel"
             ),
             actionButton(
-              inputId = 'filterButton',
-              label = 'filter',
-              icon = icon('angle-down')
+              inputId = "filterButton",
+              label = "filter",
+              icon = icon("angle-down")
             )
           )
         ),
         shinydashboardPlus::box(
-          title = 'Subset',
+          title = "Subset",
           collapsible = TRUE,
           collapsed = TRUE,
           width = 12,
-          status = 'navy',
+          status = "navy",
           solidHeader = TRUE,
           gradient = TRUE,
           # boxToolSize = 'xs',
-          background = 'gray',
+          background = "gray",
           actionButton(
-            inputId = 'loadSubsetColumn',
-            label = 'Load Variables',
-            icon = icon('check')
-          ), 
+            inputId = "loadSubsetColumn",
+            label = "Load Variables",
+            icon = icon("check")
+          ),
           selectInput(
-            inputId = 'subsetColumn',
-            label = 'subsetSelectLabel',
+            inputId = "subsetColumn",
+            label = "subsetSelectLabel",
             choices = NULL,
             selected = NULL,
             multiple = FALSE
           ),
           actionButton(
-            inputId = 'subsetButton',
-            label = 'subset',
-            icon = icon('angle-down')
-          ) 
-          
-          
-          
+            inputId = "subsetButton",
+            label = "subset",
+            icon = icon("angle-down")
+          )
         ),
-        
         shinydashboardPlus::box(
           title = "Mutate",
           collapsible = TRUE,
           collapsed = TRUE,
           width = 12,
-          status = 'navy',
+          status = "navy",
           solidHeader = TRUE,
           gradient = TRUE,
           # boxToolSize = 'xs',
-          background = 'gray',
-          
+          background = "gray",
+
           # load column
           actionButton(
-            inputId = 'loadMutateColumn',
-            label = 'Load Variables',
-            icon = icon('check')
+            inputId = "loadMutateColumn",
+            label = "Load Variables",
+            icon = icon("check")
           ),
-          
+
           # which column
           selectInput(
-            inputId = 'mutateColumn',
-            label = 'mutateSelectLabel',
+            inputId = "mutateColumn",
+            label = "mutateSelectLabel",
             choices = NULL,
             selected = NULL,
             multiple = FALSE
           ),
-          
+
           # option
           selectInput(
-            inputId = 'mutateOperator',
-            label = 'mutateOpeartorLabel',
+            inputId = "mutateOperator",
+            label = "mutateOpeartorLabel",
             choices = c("Round", "Log", "Sart", "Min-Max", "Normal", "Remove"),
             selected = NULL,
             multiple = FALSE
           ),
-          
+
           #
           textInput(
-            inputId = 'mutateVariable', 
-            label = 'mutateVariableLabel',
+            inputId = "mutateVariable",
+            label = "mutateVariableLabel",
           ),
-          
+
           # apply button
           actionButton(
-            inputId = 'mutateButton',
-            label = 'mutate',
-            icon = icon('angle-down')
+            inputId = "mutateButton",
+            label = "mutate",
+            icon = icon("angle-down")
           )
-          
         ),
         box(
           title = "Clean",
@@ -185,8 +180,8 @@ ui <- dashboardPage(
     actionButton(
       inputId = "Outro",
       label = "Github / Manual",
-      style = 'margin: auto; width: 90%',
-      onclick ="window.open('https://github.com/statgarten', '_blank')",
+      style = "margin: auto; width: 90%",
+      onclick = "window.open('https://github.com/statgarten', '_blank')",
       icon = icon("github")
     )
   ),
@@ -238,7 +233,7 @@ server <- function(input, output, session) {
   })
 
   inputData <- NULL
-  
+
   observeEvent(input$fileInputID, {
     file <- input$fileInputID
     ext <- tools::file_ext(file$datapath)
@@ -258,7 +253,7 @@ server <- function(input, output, session) {
 
     shinyjs::show(id = "SideBox")
 
-    inputData <<- read.csv(file$datapath) 
+    inputData <<- read.csv(file$datapath)
 
     output$DT <- renderDT(
       rbind(head(inputData, 5), tail(inputData, 5))
@@ -274,99 +269,95 @@ server <- function(input, output, session) {
     output$LoadTest <- renderText("Load Button Clicked")
     shinyjs::delay(2000, output$LoadTest <- renderText(""))
   })
-  
+
   observeEvent(input$loadFilterColumn, {
-    shinyjs::enable(id = 'filterColumn')
-    shinyjs::enable(id = 'filterOperator')
-    shinyjs::enable(id = 'filterVariable')
-    shinyjs::enable(id = 'filterButton')
-    
+    shinyjs::enable(id = "filterColumn")
+    shinyjs::enable(id = "filterOperator")
+    shinyjs::enable(id = "filterVariable")
+    shinyjs::enable(id = "filterButton")
+
     updateSelectizeInput(
-      session, 
-      inputId = 'filterColumn', 
-      label = 'filterSelectLabel', 
-      choices = colnames(inputData), 
+      session,
+      inputId = "filterColumn",
+      label = "filterSelectLabel",
+      choices = colnames(inputData),
       server = TRUE
     )
   })
-  
+
   observeEvent(input$loadMutateColumn, {
-    
     updateSelectizeInput(
-      session, 
-      inputId = 'mutateColumn', 
-      label = 'mutateSelectLabel', 
-      choices = colnames(inputData), 
+      session,
+      inputId = "mutateColumn",
+      label = "mutateSelectLabel",
+      choices = colnames(inputData),
       server = TRUE
     )
   })
-  
-  
+
+
   observeEvent(input$filterButton, {
-    
     eval(parse(
-      text = 
-      paste0("inputData <<- inputData %>% ",
-             'filter(', input$filterColumn, operator, input$filterVariable, ')')
+      text =
+        paste0(
+          "inputData <<- inputData %>% ",
+          "filter(", input$filterColumn, operator, input$filterVariable, ")"
+        )
     ))
-    
+
     output$DT <- renderDT(
       rbind(head(inputData, 5), tail(inputData, 5))
     )
-    
+
     updateSelectizeInput(
-      session, 
-      inputId = 'filterColumn', 
-      label = 'filterSelectLabel', 
-      choices = colnames(inputData), 
+      session,
+      inputId = "filterColumn",
+      label = "filterSelectLabel",
+      choices = colnames(inputData),
       server = TRUE
     )
-    
   })
-  
+
   observeEvent(input$mutateButton, {
-    if(input$mutateOperator == 'Round'){
+    if (input$mutateOperator == "Round") {
       eval(parse(
-        text = 
+        text =
           paste0(
             "inputData <<- inputData %>% ",
-            'mutate(', 
-            input$mutateColumn, ' = round(', input$mutateColumn, ', ',  input$mutateVariable, '))'
+            "mutate(",
+            input$mutateColumn, " = round(", input$mutateColumn, ", ", input$mutateVariable, "))"
           )
       ))
     }
-    
+
     output$DT <- renderDT(
       rbind(head(inputData, 5), tail(inputData, 5))
     )
-    
   })
-  
+
   observeEvent(input$loadSubsetColumn, {
     updateSelectizeInput(
-      session, 
-      inputId = 'subsetColumn', 
-      label = 'subsetSelectLabel', 
-      choices = colnames(inputData), 
+      session,
+      inputId = "subsetColumn",
+      label = "subsetSelectLabel",
+      choices = colnames(inputData),
       server = TRUE
     )
   })
-  
-  observeEvent(input$subsetButton,{
+
+  observeEvent(input$subsetButton, {
     eval(parse(
-      text = 
+      text =
         paste0(
           "inputData <<- inputData %>% ",
-          'select(-', input$subsetColumn, ')'
+          "select(-", input$subsetColumn, ")"
         )
     ))
-    
+
     output$DT <- renderDT(
       rbind(head(inputData, 5), tail(inputData, 5))
     )
-    
   })
-  
 }
 
 # Run the application
