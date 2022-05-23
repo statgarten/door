@@ -4,27 +4,28 @@ library(shinydashboardPlus)
 library(DT)
 library(shinyjs)
 library(dplyr)
+library(tidyr)
 
-getDT <- function(inputData){
+getDT <- function(inputData) {
   datatable(
     rbind(head(inputData, 5), tail(inputData, 5)),
     rownames = FALSE,
     editable = FALSE,
     extensions = "Buttons",
-    selection = 'none',
+    selection = "none",
     options = list(
       ordering = FALSE,
-      dom = 'trB',
+      dom = "trB",
       buttons = c(
-        'copy',
-        'csv',
-        'excel',
-        'pdf'
+        "copy",
+        "csv",
+        "excel",
+        "pdf"
       ),
       columnDefs = list(
         list(
-          className = 'dt-head-center',
-          targets = '_all'
+          className = "dt-head-center",
+          targets = "_all"
         )
       ), # center-align
       initComplete = htmlwidgets::JS(
@@ -33,16 +34,17 @@ getDT <- function(inputData){
         # containers() X
         # body() X
         "$(this.api().table().header()).css({'background-color': '#2c3c75', 'color': '#fff'});",
-        "}") # header color
+        "}"
+      ) # header color
     )
   ) %>%
     DT::formatStyle(
       columns = names(inputData),
-      target = 'row',
-    #  backgroundColor = '#212121',
-    #  color = '#fff',
-      `border-top` = '0px',
-      `text-align` = 'right'
+      target = "row",
+      #  backgroundColor = '#212121',
+      #  color = '#fff',
+      `border-top` = "0px",
+      `text-align` = "right"
     )
 }
 
@@ -180,7 +182,6 @@ ui <- dashboardPage(
         ),
         shinydashboardPlus::box(
           title = "Clean",
-          
           collapsible = TRUE,
           collapsed = TRUE,
           width = 12,
@@ -189,15 +190,15 @@ ui <- dashboardPage(
           gradient = TRUE,
           # boxToolSize = 'xs',
           background = "gray",
-          
-          ## LOAD COLUMNS 
+
+          ## LOAD COLUMNS
           actionButton(
             inputId = "loadCleanColumn",
             label = "Load Variables",
             icon = icon("check")
           ),
-          
-          
+
+
           ## <SELECT> column names
           selectInput(
             inputId = "cleanColumn",
@@ -206,7 +207,7 @@ ui <- dashboardPage(
             selected = NULL,
             multiple = FALSE
           ),
-          
+
           ## Operation Option: Remove / Replace
           selectInput(
             inputId = "cleanOperator",
@@ -215,18 +216,17 @@ ui <- dashboardPage(
             selected = NULL,
             multiple = FALSE
           ),
-          
-          ## Remove / Replace Keyword: null, [userInput] 
+
+          ## Remove / Replace Keyword: null, [userInput]
           textInput(
             inputId = "cleanVariable",
             label = "cleanVariableLabel",
           ),
-          
           textInput(
             inputId = "cleanKeyword",
             label = "cleanKeywordLabel",
           ),
-          
+
           ## <Button> Clean
           actionButton(
             inputId = "cleanButton",
@@ -236,12 +236,48 @@ ui <- dashboardPage(
         ),
         box(
           title = "Split",
-          footer = "footer TEXT",
-          solidHeader = TRUE,
-          background = "teal",
           collapsible = TRUE,
           collapsed = TRUE,
-          width = 12
+          width = 12,
+          status = "navy",
+          solidHeader = TRUE,
+          gradient = TRUE,
+          # boxToolSize = 'xs',
+          background = "gray",
+          actionButton(
+            inputId = "loadSplitColumn",
+            label = "Load Variables",
+            icon = icon("check")
+          ),
+          selectInput(
+            inputId = "splitColumn",
+            label = "splitSelectLabel",
+            choices = NULL,
+            selected = NULL,
+            multiple = FALSE
+          ),
+
+          # keyword
+          textInput(
+            inputId = "splitkeyword",
+            label = "splitKeywordLabel"
+          ),
+
+          # colnameA
+          textInput(
+            inputId = "splitA",
+            label = "colA"
+          ),
+          # colnameB
+          textInput(
+            inputId = "splitB",
+            label = "colB"
+          ),
+          actionButton(
+            inputId = "splitButton",
+            label = "split",
+            icon = icon("angle-down")
+          )
         ),
         box(
           title = "Reshape",
@@ -422,7 +458,7 @@ server <- function(input, output, session) {
     )
   })
 
-  
+
   observeEvent(input$loadSubsetColumn, {
     updateSelectizeInput(
       session,
@@ -445,9 +481,8 @@ server <- function(input, output, session) {
     output$DT <- renderDT(
       getDT(inputData)
     )
-    
   })
-  
+
   observeEvent(input$loadCleanColumn, {
     updateSelectizeInput(
       session,
@@ -457,51 +492,77 @@ server <- function(input, output, session) {
       server = TRUE
     )
   })
-  
+
   observeEvent(input$cleanButton, {
-    
-    if(input$cleanOperator == 'Remove'){
+    if (input$cleanOperator == "Remove") {
       # data $ column -> filter(which is not .)
-      
-      if(input$cleanVariable == 'NA'){
+
+      if (input$cleanVariable == "NA") {
         eval(parse(
           text =
             paste0(
               "inputData <<- inputData %>% ",
               "filter(!is.na(", input$cleanColumn, "))"
             )
-        ))  
-      }
-      else{
+        ))
+      } else {
         eval(parse(
           text =
             paste0(
               "inputData <<- inputData %>% ",
-              "filter(!grepl(", input$cleanVariable,', ', input$cleanColumn, "))"
+              "filter(!grepl(", input$cleanVariable, ", ", input$cleanColumn, "))"
             )
         ))
       }
-      
     }
     # <cleanColumn>
     # <cleanOperator>
     # <cleanVariable>
     # <cleanKeyword>
-    
-    if(input$cleanOperator == 'Replace'){
-      
-      keyword <- ifelse(is.null(input$cleanKeyword), '', input$cleanKeyword)
-      
+
+    if (input$cleanOperator == "Replace") {
+      keyword <- ifelse(is.null(input$cleanKeyword), "", input$cleanKeyword)
+
       eval(parse(
         text =
           paste0(
             "inputData <<- inputData %>% ",
-            "mutate(", input$cleanColumn,' = ', 
-              'ifelse(', input$cleanColumn, ' == ', input$cleanVariable, ',', keyword, ',', input$cleanColumn, "))"
+            "mutate(", input$cleanColumn, " = ",
+            "ifelse(", input$cleanColumn, " == ", input$cleanVariable, ",", keyword, ",", input$cleanColumn, "))"
           )
       ))
     }
-    
+
+    output$DT <- renderDT(
+      getDT(inputData)
+    )
+  })
+
+  observeEvent(input$loadSplitColumn, {
+    updateSelectizeInput(
+      session,
+      inputId = "splitColumn",
+      label = "splitSelectLabel",
+      choices = colnames(inputData),
+      server = TRUE
+    )
+  })
+
+  observeEvent(input$splitButton, {
+    # <splitColumn>
+    # <splitkeyword>
+    # <splitA>
+    # <splitB>
+
+
+    eval(parse(
+      text =
+        paste0(
+          "inputData <<- inputData %>% ",
+          "tidyr::separate(", input$splitColumn, ", sep = '", input$splitkeyword, "', into = c('", input$splitA, "','", input$splitB, "'), fill = 'right')"
+        )
+    ))
+
     output$DT <- renderDT(
       getDT(inputData)
     )
