@@ -5,6 +5,47 @@ library(DT)
 library(shinyjs)
 library(dplyr)
 
+getDT <- function(inputData){
+  datatable(
+    rbind(head(inputData, 5), tail(inputData, 5)),
+    rownames = FALSE,
+    editable = FALSE,
+    extensions = "Buttons",
+    selection = 'none',
+    options = list(
+      ordering = FALSE,
+      dom = 'trB',
+      buttons = c(
+        'copy',
+        'csv',
+        'excel',
+        'pdf'
+      ),
+      columnDefs = list(
+        list(
+          className = 'dt-head-center',
+          targets = '_all'
+        )
+      ), # center-align
+      initComplete = htmlwidgets::JS(
+        "function(settings, json) {",
+        # nodes() X
+        # containers() X
+        # body() X
+        "$(this.api().table().header()).css({'background-color': '#2c3c75', 'color': '#fff'});",
+        "}") # header color
+    )
+  ) %>%
+    DT::formatStyle(
+      columns = names(inputData),
+      target = 'row',
+    #  backgroundColor = '#212121',
+    #  color = '#fff',
+      `border-top` = '0px',
+      `text-align` = 'right'
+    )
+}
+
 ui <- dashboardPage(
   # HEAD
   dashboardHeader(disable = TRUE),
@@ -303,7 +344,7 @@ server <- function(input, output, session) {
     inputData <<- read.csv(file$datapath)
 
     output$DT <- renderDT(
-      rbind(head(inputData, 5), tail(inputData, 5))
+      getDT(inputData)
     )
   })
 
@@ -353,9 +394,8 @@ server <- function(input, output, session) {
     ))
 
     output$DT <- renderDT(
-      rbind(head(inputData, 5), tail(inputData, 5))
+      getDT(inputData)
     )
-
     updateSelectizeInput(
       session,
       inputId = "filterColumn",
@@ -378,7 +418,7 @@ server <- function(input, output, session) {
     }
 
     output$DT <- renderDT(
-      rbind(head(inputData, 5), tail(inputData, 5))
+      getDT(inputData)
     )
   })
 
@@ -403,8 +443,9 @@ server <- function(input, output, session) {
     ))
 
     output$DT <- renderDT(
-      rbind(head(inputData, 5), tail(inputData, 5))
+      getDT(inputData)
     )
+    
   })
   
   observeEvent(input$loadCleanColumn, {
@@ -461,9 +502,8 @@ server <- function(input, output, session) {
       ))
     }
     
-    
     output$DT <- renderDT(
-      rbind(head(inputData, 5), tail(inputData, 5))
+      getDT(inputData)
     )
   })
 }
