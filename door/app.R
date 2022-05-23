@@ -61,13 +61,47 @@ ui <- dashboardPage(
           )
         ),
         shinydashboardPlus::box(
-          title = "Mutate",
-          footer = "footer TEXT",
-          solidHeader = TRUE,
-          background = "teal",
+          title = 'Subset',
           collapsible = TRUE,
           collapsed = TRUE,
           width = 12,
+          status = 'navy',
+          solidHeader = TRUE,
+          gradient = TRUE,
+          # boxToolSize = 'xs',
+          background = 'gray',
+          actionButton(
+            inputId = 'loadSubsetColumn',
+            label = 'Load Variables',
+            icon = icon('check')
+          ), 
+          selectInput(
+            inputId = 'subsetColumn',
+            label = 'subsetSelectLabel',
+            choices = NULL,
+            selected = NULL,
+            multiple = FALSE
+          ),
+          actionButton(
+            inputId = 'subsetButton',
+            label = 'subset',
+            icon = icon('angle-down')
+          ) 
+          
+          
+          
+        ),
+        
+        shinydashboardPlus::box(
+          title = "Mutate",
+          collapsible = TRUE,
+          collapsed = TRUE,
+          width = 12,
+          status = 'navy',
+          solidHeader = TRUE,
+          gradient = TRUE,
+          # boxToolSize = 'xs',
+          background = 'gray',
           
           # load column
           actionButton(
@@ -288,14 +322,6 @@ server <- function(input, output, session) {
       server = TRUE
     )
     
-    updateSelectizeInput(
-      session, 
-      inputId = 'mutateColumn', 
-      label = 'mutateSelectLabel', 
-      choices = colnames(inputData), 
-      server = TRUE
-    )
-    
   })
   
   observeEvent(input$mutateButton, {
@@ -309,6 +335,31 @@ server <- function(input, output, session) {
           )
       ))
     }
+    
+    output$DT <- renderDT(
+      rbind(head(inputData, 5), tail(inputData, 5))
+    )
+    
+  })
+  
+  observeEvent(input$loadSubsetColumn, {
+    updateSelectizeInput(
+      session, 
+      inputId = 'subsetColumn', 
+      label = 'subsetSelectLabel', 
+      choices = colnames(inputData), 
+      server = TRUE
+    )
+  })
+  
+  observeEvent(input$subsetButton,{
+    eval(parse(
+      text = 
+        paste0(
+          "inputData <<- inputData %>% ",
+          'select(-', input$subsetColumn, ')'
+        )
+    ))
     
     output$DT <- renderDT(
       rbind(head(inputData, 5), tail(inputData, 5))
