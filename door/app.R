@@ -50,284 +50,292 @@ getDT <- function(inputData) {
 
 ui <- dashboardPage(
   # HEAD
-  dashboardHeader(disable = TRUE),
+  # skin = 'midnight',
+  header = shinydashboardPlus::dashboardHeader(
+    title = "HeaderTitle", # chrome tab name
+    controlbarIcon = icon("gear", verify_fa = FALSE),
+    leftUi = tagList(
+      div(
+        selectInput("module", label = NULL, choices = c("Import", "Vis"), selected = "Import", width = "10em"),
+        style = "margin-bottom: -11.5px; text-align: center; font-weight: bold;"
+      )
+    )
+    # fixed = TRUE
+  ),
 
   # SIDE MODULE
-  dashboardSidebar(
-    # disable = TRUE
-    # LOGO
-    htmlOutput("Logo", style = "text-align: center; margin-bottom:3em;"),
-
-    # FILTER BOX
-    shinyjs::hidden(
-      div(
-        id = "SideBox",
-        shinydashboardPlus::box(
-          title = "Filter",
-          collapsible = TRUE,
-          collapsed = TRUE,
-          width = 12,
-          status = "navy",
-          solidHeader = TRUE,
-          gradient = TRUE,
-          # boxToolSize = 'xs',
-          background = "gray",
-          actionButton(
-            inputId = "loadFilterColumn",
-            label = "Load Variables",
-            icon = icon("check")
+  sidebar = dashboardSidebar(
+    minified = FALSE,
+    htmlOutput("Logo", style = "text-align: center; margin-bottom:3em; margin-top:3em;"),
+    conditionalPanel(
+      condition = 'input.module == "Import"',
+      # FILTER BOX
+      shinyjs::hidden(
+        div(
+          id = "SideBox",
+          shinydashboardPlus::box(
+            title = "Filter",
+            collapsible = TRUE,
+            collapsed = TRUE,
+            width = 12,
+            status = "navy",
+            solidHeader = TRUE,
+            gradient = TRUE,
+            # boxToolSize = 'xs',
+            background = "gray",
+            actionButton(
+              inputId = "loadFilterColumn",
+              label = "Load Variables",
+              icon = icon("check")
+            ),
+            shinyjs::disabled(
+              selectInput(
+                inputId = "filterColumn",
+                label = "filterSelectLabel",
+                choices = NULL,
+                selected = NULL,
+                multiple = FALSE
+              ),
+              selectInput(
+                inputId = "filterOperator",
+                label = "filterOpeartorLabel",
+                choices = c(">", ">=", "<", "<=", "==", "!="),
+                selected = NULL,
+                multiple = FALSE
+              ),
+              textInput(
+                inputId = "filterVariable",
+                label = "filterVariableLabel"
+              ),
+              actionButton(
+                inputId = "filterButton",
+                label = "filter",
+                icon = icon("angle-down")
+              )
+            )
           ),
-          shinyjs::disabled(
+          shinydashboardPlus::box(
+            title = "Subset",
+            collapsible = TRUE,
+            collapsed = TRUE,
+            width = 12,
+            status = "navy",
+            solidHeader = TRUE,
+            gradient = TRUE,
+            # boxToolSize = 'xs',
+            background = "gray",
+            actionButton(
+              inputId = "loadSubsetColumn",
+              label = "Load Variables",
+              icon = icon("check")
+            ),
             selectInput(
-              inputId = "filterColumn",
-              label = "filterSelectLabel",
+              inputId = "subsetColumn",
+              label = "subsetSelectLabel",
               choices = NULL,
               selected = NULL,
               multiple = FALSE
             ),
+            actionButton(
+              inputId = "subsetButton",
+              label = "subset",
+              icon = icon("angle-down")
+            )
+          ),
+          shinydashboardPlus::box(
+            title = "Mutate",
+            collapsible = TRUE,
+            collapsed = TRUE,
+            width = 12,
+            status = "navy",
+            solidHeader = TRUE,
+            gradient = TRUE,
+            # boxToolSize = 'xs',
+            background = "gray",
+
+            # load column
+            actionButton(
+              inputId = "loadMutateColumn",
+              label = "Load Variables",
+              icon = icon("check")
+            ),
+
+            # which column
             selectInput(
-              inputId = "filterOperator",
-              label = "filterOpeartorLabel",
-              choices = c(">", ">=", "<", "<=", "==", "!="),
+              inputId = "mutateColumn",
+              label = "mutateSelectLabel",
+              choices = NULL,
               selected = NULL,
               multiple = FALSE
             ),
-            textInput(
-              inputId = "filterVariable",
-              label = "filterVariableLabel"
+
+            # option
+            selectInput(
+              inputId = "mutateOperator",
+              label = "mutateOpeartorLabel",
+              choices = c("Round", "Log", "Sart", "Min-Max", "Normal", "Remove"),
+              selected = NULL,
+              multiple = FALSE
             ),
+
+            #
+            textInput(
+              inputId = "mutateVariable",
+              label = "mutateVariableLabel",
+            ),
+
+            # apply button
             actionButton(
-              inputId = "filterButton",
-              label = "filter",
+              inputId = "mutateButton",
+              label = "mutate",
               icon = icon("angle-down")
             )
-          )
-        ),
-        shinydashboardPlus::box(
-          title = "Subset",
-          collapsible = TRUE,
-          collapsed = TRUE,
-          width = 12,
-          status = "navy",
-          solidHeader = TRUE,
-          gradient = TRUE,
-          # boxToolSize = 'xs',
-          background = "gray",
-          actionButton(
-            inputId = "loadSubsetColumn",
-            label = "Load Variables",
-            icon = icon("check")
           ),
-          selectInput(
-            inputId = "subsetColumn",
-            label = "subsetSelectLabel",
-            choices = NULL,
-            selected = NULL,
-            multiple = FALSE
-          ),
-          actionButton(
-            inputId = "subsetButton",
-            label = "subset",
-            icon = icon("angle-down")
-          )
-        ),
-        shinydashboardPlus::box(
-          title = "Mutate",
-          collapsible = TRUE,
-          collapsed = TRUE,
-          width = 12,
-          status = "navy",
-          solidHeader = TRUE,
-          gradient = TRUE,
-          # boxToolSize = 'xs',
-          background = "gray",
+          shinydashboardPlus::box(
+            title = "Clean",
+            collapsible = TRUE,
+            collapsed = TRUE,
+            width = 12,
+            status = "navy",
+            solidHeader = TRUE,
+            gradient = TRUE,
+            # boxToolSize = 'xs',
+            background = "gray",
 
-          # load column
-          actionButton(
-            inputId = "loadMutateColumn",
-            label = "Load Variables",
-            icon = icon("check")
-          ),
-
-          # which column
-          selectInput(
-            inputId = "mutateColumn",
-            label = "mutateSelectLabel",
-            choices = NULL,
-            selected = NULL,
-            multiple = FALSE
-          ),
-
-          # option
-          selectInput(
-            inputId = "mutateOperator",
-            label = "mutateOpeartorLabel",
-            choices = c("Round", "Log", "Sart", "Min-Max", "Normal", "Remove"),
-            selected = NULL,
-            multiple = FALSE
-          ),
-
-          #
-          textInput(
-            inputId = "mutateVariable",
-            label = "mutateVariableLabel",
-          ),
-
-          # apply button
-          actionButton(
-            inputId = "mutateButton",
-            label = "mutate",
-            icon = icon("angle-down")
-          )
-        ),
-        shinydashboardPlus::box(
-          title = "Clean",
-          collapsible = TRUE,
-          collapsed = TRUE,
-          width = 12,
-          status = "navy",
-          solidHeader = TRUE,
-          gradient = TRUE,
-          # boxToolSize = 'xs',
-          background = "gray",
-
-          ## LOAD COLUMNS
-          actionButton(
-            inputId = "loadCleanColumn",
-            label = "Load Variables",
-            icon = icon("check")
-          ),
+            ## LOAD COLUMNS
+            actionButton(
+              inputId = "loadCleanColumn",
+              label = "Load Variables",
+              icon = icon("check")
+            ),
 
 
-          ## <SELECT> column names
-          selectInput(
-            inputId = "cleanColumn",
-            label = "cleanSelectLabel",
-            choices = NULL,
-            selected = NULL,
-            multiple = FALSE
-          ),
+            ## <SELECT> column names
+            selectInput(
+              inputId = "cleanColumn",
+              label = "cleanSelectLabel",
+              choices = NULL,
+              selected = NULL,
+              multiple = FALSE
+            ),
 
-          ## Operation Option: Remove / Replace
-          selectInput(
-            inputId = "cleanOperator",
-            label = "cleanOpeartorLabel",
-            choices = c("Remove", "Replace"),
-            selected = NULL,
-            multiple = FALSE
-          ),
+            ## Operation Option: Remove / Replace
+            selectInput(
+              inputId = "cleanOperator",
+              label = "cleanOpeartorLabel",
+              choices = c("Remove", "Replace"),
+              selected = NULL,
+              multiple = FALSE
+            ),
 
-          ## Remove / Replace Keyword: null, [userInput]
-          textInput(
-            inputId = "cleanVariable",
-            label = "cleanVariableLabel",
-          ),
-          textInput(
-            inputId = "cleanKeyword",
-            label = "cleanKeywordLabel",
-          ),
+            ## Remove / Replace Keyword: null, [userInput]
+            textInput(
+              inputId = "cleanVariable",
+              label = "cleanVariableLabel",
+            ),
+            textInput(
+              inputId = "cleanKeyword",
+              label = "cleanKeywordLabel",
+            ),
 
-          ## <Button> Clean
-          actionButton(
-            inputId = "cleanButton",
-            label = "clean",
-            icon = icon("angle-down")
-          )
-        ),
-        box(
-          title = "Split",
-          collapsible = TRUE,
-          collapsed = TRUE,
-          width = 12,
-          status = "navy",
-          solidHeader = TRUE,
-          gradient = TRUE,
-          # boxToolSize = 'xs',
-          background = "gray",
-          actionButton(
-            inputId = "loadSplitColumn",
-            label = "Load Variables",
-            icon = icon("check")
+            ## <Button> Clean
+            actionButton(
+              inputId = "cleanButton",
+              label = "clean",
+              icon = icon("angle-down")
+            )
           ),
-          selectInput(
-            inputId = "splitColumn",
-            label = "splitSelectLabel",
-            choices = NULL,
-            selected = NULL,
-            multiple = FALSE
-          ),
+          box(
+            title = "Split",
+            collapsible = TRUE,
+            collapsed = TRUE,
+            width = 12,
+            status = "navy",
+            solidHeader = TRUE,
+            gradient = TRUE,
+            # boxToolSize = 'xs',
+            background = "gray",
+            actionButton(
+              inputId = "loadSplitColumn",
+              label = "Load Variables",
+              icon = icon("check")
+            ),
+            selectInput(
+              inputId = "splitColumn",
+              label = "splitSelectLabel",
+              choices = NULL,
+              selected = NULL,
+              multiple = FALSE
+            ),
 
-          # keyword
-          textInput(
-            inputId = "splitkeyword",
-            label = "splitKeywordLabel"
-          ),
+            # keyword
+            textInput(
+              inputId = "splitkeyword",
+              label = "splitKeywordLabel"
+            ),
 
-          # colnameA
-          textInput(
-            inputId = "splitA",
-            label = "colA"
+            # colnameA
+            textInput(
+              inputId = "splitA",
+              label = "colA"
+            ),
+            # colnameB
+            textInput(
+              inputId = "splitB",
+              label = "colB"
+            ),
+            actionButton(
+              inputId = "splitButton",
+              label = "split",
+              icon = icon("angle-down")
+            )
           ),
-          # colnameB
-          textInput(
-            inputId = "splitB",
-            label = "colB"
+          box( # pending
+            title = "Reshape",
+            footer = "footer TEXT",
+            solidHeader = TRUE,
+            collapsible = TRUE,
+            collapsed = TRUE,
+            width = 12,
+            status = "orange",
+            gradient = TRUE,
+            background = "gray"
           ),
-          actionButton(
-            inputId = "splitButton",
-            label = "split",
-            icon = icon("angle-down")
-          )
-        ),
-        box( # pending
-          title = "Reshape",
-          footer = "footer TEXT",
-          solidHeader = TRUE,
-          collapsible = TRUE,
-          collapsed = TRUE,
-          width = 12,
-          status = "orange",
-          gradient = TRUE,
-          background = "gray"
-        ),
-        box(
-          title = "Export",
-          solidHeader = TRUE,
-          collapsible = TRUE,
-          collapsed = TRUE,
-          width = 12,
-          status = "navy",
-          gradient = TRUE,
-          background = "gray",
-          textInput(
-            inputId = "exportFilename",
-            label = "filename"
-          ),
-          selectInput(
-            inputId = "exportOption",
-            label = "file extension",
-            selected = ".csv",
-            multiple = FALSE,
-            choices = c(".csv", ".rda", ".sqlite", ".xlsx")
-          ),
-          downloadButton(
-            outputId = "exportButton",
-            label = "export"
+          box(
+            title = "Export",
+            solidHeader = TRUE,
+            collapsible = TRUE,
+            collapsed = TRUE,
+            width = 12,
+            status = "navy",
+            gradient = TRUE,
+            background = "gray",
+            textInput(
+              inputId = "exportFilename",
+              label = "filename"
+            ),
+            selectInput(
+              inputId = "exportOption",
+              label = "file extension",
+              selected = ".csv",
+              multiple = FALSE,
+              choices = c(".csv", ".rda", ".sqlite", ".xlsx")
+            ),
+            downloadButton(
+              outputId = "exportButton",
+              label = "export"
+            )
           )
         )
       )
     ),
-
-    # OUTRO
-    actionButton(
-      inputId = "Outro",
-      label = "Github / Manual",
-      style = "margin: auto; width: 90%",
-      onclick = "window.open('https://github.com/statgarten', '_blank')",
-      icon = icon("github")
+    conditionalPanel(
+      condition = 'input.module == "Vis"',
+      p("Not Implemented")
     )
+    # OUTRO
   ),
-  dashboardBody(
+  body = dashboardBody(
     useShinyjs(),
     fluidPage(
       p(
@@ -365,7 +373,20 @@ ui <- dashboardPage(
         textOutput("LoadTest")
       )
     )
-  )
+  ),
+  controlbar = dashboardControlbar(
+    p("Control Bar")
+  ),
+  footer = dashboardFooter(
+    left = "Left Content",
+    right = actionButton(
+      inputId = "Outro",
+      label = "Github / Manual",
+      style = "margin: auto; width: 100%",
+      onclick = "window.open('https://github.com/statgarten', '_blank')",
+      icon = icon("github")
+    )
+  ),
 )
 
 server <- function(input, output, session) {
