@@ -279,23 +279,41 @@ ui <- dashboardPage(
             icon = icon("angle-down")
           )
         ),
-        box(
+        box( # pending
           title = "Reshape",
           footer = "footer TEXT",
           solidHeader = TRUE,
-          background = "teal",
           collapsible = TRUE,
           collapsed = TRUE,
-          width = 12
+          width = 12,
+          status = "orange",
+          gradient = TRUE,
+          background = "gray"
         ),
         box(
           title = "Export",
-          footer = "footer TEXT",
           solidHeader = TRUE,
-          background = "teal",
           collapsible = TRUE,
           collapsed = TRUE,
-          width = 12
+          width = 12,
+          status = "navy",
+          gradient = TRUE,
+          background = "gray",
+          textInput(
+            inputId = "exportFilename",
+            label = "filename"
+          ),
+          selectInput(
+            inputId = "exportOption",
+            label = "file extension",
+            selected = ".csv",
+            multiple = FALSE,
+            choices = c(".csv", ".rda", ".sqlite", ".xlsx")
+          ),
+          downloadButton(
+            outputId = "exportButton",
+            label = "export"
+          )
         )
       )
     ),
@@ -327,15 +345,15 @@ ui <- dashboardPage(
         outputId = "DT"
       ),
 
-      # EXPORT MODULE
-      shinyjs::hidden(
-        actionButton(
-          inputId = "ExportButton",
-          label = "ExportButtonLabel",
-          icon = icon("download")
-        ),
-        textOutput("ExportTest")
-      ),
+      # # EXPORT MODULE
+      # shinyjs::hidden(
+      #   actionButton(
+      #     inputId = "ExportButton",
+      #     label = "ExportButtonLabel",
+      #     icon = icon("download")
+      #   ),
+      #   textOutput("ExportTest")
+      # ),
 
       # LOAD TO OTHER MODULE
       shinyjs::hidden(
@@ -369,8 +387,8 @@ server <- function(input, output, session) {
     shinyjs::hide(id = "desc", anim = TRUE, animType = "slide")
     shinyjs::hide(id = "fileInputID", anim = TRUE, animType = "fade")
 
-    shinyjs::show(id = "ExportButton", anim = TRUE, animType = "slide")
-    shinyjs::show(id = "ExportTest", anim = TRUE, animType = "fade")
+    # shinyjs::show(id = "ExportButton", anim = TRUE, animType = "slide")
+    # shinyjs::show(id = "ExportTest", anim = TRUE, animType = "fade")
 
     shinyjs::show(id = "LoadButton", anim = TRUE, animType = "slide")
     shinyjs::show(id = "LoadTest", anim = TRUE, animType = "fade")
@@ -384,10 +402,10 @@ server <- function(input, output, session) {
     )
   })
 
-  observeEvent(input$ExportButton, {
-    output$ExportTest <- renderText("Export Button Clicked")
-    shinyjs::delay(2000, output$ExportTest <- renderText(""))
-  })
+  # observeEvent(input$ExportButton, {
+  #   output$ExportTest <- renderText("Export Button Clicked")
+  #   shinyjs::delay(2000, output$ExportTest <- renderText(""))
+  # })
 
   observeEvent(input$LoadButton, {
     output$LoadTest <- renderText("Load Button Clicked")
@@ -567,6 +585,29 @@ server <- function(input, output, session) {
       getDT(inputData)
     )
   })
+
+  output$exportButton <- downloadHandler(
+    filename = function() {
+      if (input$exportFilename == "") {
+        return(paste0("downloaded", input$exportOption))
+      }
+      return(paste0(input$exportFilename, input$exportOption))
+    },
+    content = function(con) {
+      if (input$exportOption == ".csv") {
+        write.csv(inputData, file = con, row.names = FALSE)
+      }
+      if (input$exportOption == ".rda") {
+        save(inputData, file = con)
+      }
+      if (input$exportOption == ".sqlite") {
+        # need to implement
+      }
+      if (input$exportOption == ".xlsx") {
+        # need to implement
+      }
+    }
+  )
 }
 
 # Run the application
