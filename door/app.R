@@ -48,6 +48,97 @@ getDT <- function(inputData) {
     )
 }
 
+filterUI <- function(id) {
+  ns <- NS(id)
+  tagList(
+    actionButton(
+      inputId = ns("loadFilterColumn"),
+      label = "Load Variables",
+      icon = icon("check")
+    ),
+    shinyjs::disabled(
+      selectInput(
+        inputId = ns("filterColumn"),
+        label = "filterSelectLabel",
+        choices = NULL,
+        selected = NULL,
+        multiple = FALSE
+      ),
+      selectInput(
+        inputId = ns("filterOperator"),
+        label = "filterOpeartorLabel",
+        choices = c(">", ">=", "<", "<=", "==", "!="),
+        selected = NULL,
+        multiple = FALSE
+      ),
+      textInput(
+        inputId = ns("filterVariable"),
+        label = "filterVariableLabel"
+      ),
+      actionButton(
+        inputId = ns("filterButton"),
+        label = "filter",
+        icon = icon("angle-down")
+      )
+    )
+  )
+}
+
+filterServer <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
+    observeEvent(input$loadFilterColumn, {
+      shinyjs::enable(id = "filterColumn")
+      shinyjs::enable(id = "filterOperator")
+      shinyjs::enable(id = "filterVariable")
+      shinyjs::enable(id = "filterButton")
+
+      updateSelectizeInput(
+        session,
+        inputId = "filterColumn",
+        label = "filterSelectLabel",
+        choices = colnames(inputData()),
+        server = TRUE
+      )
+    })
+
+    observeEvent(input$filterButton, {
+      eval(parse(
+        text =
+          paste0(
+            "inputData(inputData() %>% ",
+            "filter(", input$filterColumn, input$filterOperator, input$filterVariable, "))"
+          )
+      ))
+
+      output$DT <- renderDT(
+        getDT(inputData())
+      )
+      updateSelectizeInput(
+        session,
+        inputId = "filterColumn",
+        label = "filterSelectLabel",
+        choices = colnames(inputData()),
+        server = TRUE
+      )
+    })
+  })
+}
+
+boxUI <- function(title, elem) {
+  shinydashboardPlus::box(
+    title = title,
+    collapsible = TRUE,
+    collapsed = TRUE,
+    width = 12,
+    status = "navy",
+    solidHeader = TRUE,
+    gradient = TRUE,
+    # boxToolSize = 'xs',
+    background = "gray",
+    elem
+  )
+}
+
 ui <- dashboardPage(
   # HEAD
   # skin = 'midnight',
@@ -70,49 +161,14 @@ ui <- dashboardPage(
     conditionalPanel(
       condition = 'input.module == "Import"',
       # FILTER BOX
+
+
       shinyjs::hidden(
         div(
           id = "SideBox",
-          shinydashboardPlus::box(
+          boxUI(
             title = "Filter",
-            collapsible = TRUE,
-            collapsed = TRUE,
-            width = 12,
-            status = "navy",
-            solidHeader = TRUE,
-            gradient = TRUE,
-            # boxToolSize = 'xs',
-            background = "gray",
-            actionButton(
-              inputId = "loadFilterColumn",
-              label = "Load Variables",
-              icon = icon("check")
-            ),
-            shinyjs::disabled(
-              selectInput(
-                inputId = "filterColumn",
-                label = "filterSelectLabel",
-                choices = NULL,
-                selected = NULL,
-                multiple = FALSE
-              ),
-              selectInput(
-                inputId = "filterOperator",
-                label = "filterOpeartorLabel",
-                choices = c(">", ">=", "<", "<=", "==", "!="),
-                selected = NULL,
-                multiple = FALSE
-              ),
-              textInput(
-                inputId = "filterVariable",
-                label = "filterVariableLabel"
-              ),
-              actionButton(
-                inputId = "filterButton",
-                label = "filter",
-                icon = icon("angle-down")
-              )
-            )
+            filterUI("filterModule")
           ),
           shinydashboardPlus::box(
             title = "Subset",
@@ -395,7 +451,7 @@ server <- function(input, output, session) {
     c('<img width = "100" src="', src, '">')
   })
 
-  inputData <- NULL
+  inputData <- reactiveVal(NULL)
 
   observeEvent(input$fileInputID, {
     file <- input$fileInputID
@@ -416,12 +472,14 @@ server <- function(input, output, session) {
 
     shinyjs::show(id = "SideBox")
 
-    inputData <<- read.csv(file$datapath)
+    inputData(read.csv(file$datapath))
 
     output$DT <- renderDT(
-      getDT(inputData)
+      getDT(inputData())
     )
   })
+
+  filterServer(id = "filterModule", inputData)
 
   # observeEvent(input$ExportButton, {
   #   output$ExportTest <- renderText("Export Button Clicked")
@@ -433,48 +491,11 @@ server <- function(input, output, session) {
     shinyjs::delay(2000, output$LoadTest <- renderText(""))
   })
 
-  observeEvent(input$loadFilterColumn, {
-    shinyjs::enable(id = "filterColumn")
-    shinyjs::enable(id = "filterOperator")
-    shinyjs::enable(id = "filterVariable")
-    shinyjs::enable(id = "filterButton")
-
-    updateSelectizeInput(
-      session,
-      inputId = "filterColumn",
-      label = "filterSelectLabel",
-      choices = colnames(inputData),
-      server = TRUE
-    )
-  })
-
   observeEvent(input$loadMutateColumn, {
     updateSelectizeInput(
       session,
       inputId = "mutateColumn",
       label = "mutateSelectLabel",
-      choices = colnames(inputData),
-      server = TRUE
-    )
-  })
-
-
-  observeEvent(input$filterButton, {
-    eval(parse(
-      text =
-        paste0(
-          "inputData <<- inputData %>% ",
-          "filter(", input$filterColumn, operator, input$filterVariable, ")"
-        )
-    ))
-
-    output$DT <- renderDT(
-      getDT(inputData)
-    )
-    updateSelectizeInput(
-      session,
-      inputId = "filterColumn",
-      label = "filterSelectLabel",
       choices = colnames(inputData),
       server = TRUE
     )
@@ -496,7 +517,6 @@ server <- function(input, output, session) {
       getDT(inputData)
     )
   })
-
 
   observeEvent(input$loadSubsetColumn, {
     updateSelectizeInput(
