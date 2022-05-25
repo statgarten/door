@@ -9,7 +9,7 @@ library(tidyr)
 getDT <- function(inputData) {
   datatable(
     rbind(
-      inputData |> head(5), 
+      inputData |> head(5),
       inputData |> tail(5)
     ),
     rownames = FALSE,
@@ -104,7 +104,6 @@ filterUI <- function(id) {
 
 filterServer <- function(id, inputData) {
   moduleServer(id, function(input, output, session) {
-    
     observeEvent(input$loadFilterColumn, {
       shinyjs::enable(id = "filterColumn")
       shinyjs::enable(id = "filterOperator")
@@ -143,7 +142,7 @@ filterServer <- function(id, inputData) {
   })
 }
 
-subsetUI <- function(id){
+subsetUI <- function(id) {
   ns <- NS(id)
   tagList(
     actionButton(
@@ -162,12 +161,12 @@ subsetUI <- function(id){
       inputId = ns("subsetButton"),
       label = "subset",
       icon = icon("angle-down")
-    ) 
+    )
   )
 }
 
-subsetServer <- function(id, inputData){
-  moduleServer(id, function(input, output, session){
+subsetServer <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     observeEvent(input$loadSubsetColumn, {
       updateSelectizeInput(
         session,
@@ -177,7 +176,7 @@ subsetServer <- function(id, inputData){
         server = TRUE
       )
     })
-    
+
     observeEvent(input$subsetButton, {
       eval(parse(
         text =
@@ -186,16 +185,15 @@ subsetServer <- function(id, inputData){
             "select(-", input$subsetColumn, "))"
           )
       ))
-      
+
       output$DT <- renderDT(
         getDT(inputData())
       )
     })
-    
   })
 }
 
-mutateUI <- function(id){
+mutateUI <- function(id) {
   ns <- NS(id)
   tagList(
     # load column
@@ -204,7 +202,7 @@ mutateUI <- function(id){
       label = "Load Variables",
       icon = icon("check")
     ),
-    
+
     # which column
     selectInput(
       inputId = ns("mutateColumn"),
@@ -213,7 +211,7 @@ mutateUI <- function(id){
       selected = NULL,
       multiple = FALSE
     ),
-    
+
     # option
     selectInput(
       inputId = ns("mutateOperator"),
@@ -222,24 +220,24 @@ mutateUI <- function(id){
       selected = NULL,
       multiple = FALSE
     ),
-    
+
     #
     textInput(
       inputId = ns("mutateVariable"),
       label = "mutateVariableLabel",
     ),
-    
+
     # apply button
     actionButton(
       inputId = ns("mutateButton"),
       label = "mutate",
       icon = icon("angle-down")
     )
-  ) 
+  )
 }
 
-mutateServer <- function(id, inputData){
-  moduleServer(id, function(input, output, session){
+mutateServer <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     observeEvent(input$loadMutateColumn, {
       updateSelectizeInput(
         session,
@@ -249,7 +247,7 @@ mutateServer <- function(id, inputData){
         server = TRUE
       )
     })
-    
+
     observeEvent(input$mutateButton, {
       if (input$mutateOperator == "Round") {
         eval(parse(
@@ -261,7 +259,109 @@ mutateServer <- function(id, inputData){
             )
         ))
       }
-      
+
+      output$DT <- renderDT(
+        getDT(inputData())
+      )
+    })
+  })
+}
+
+cleanUI <- function(id) {
+  ns <- NS(id)
+  tagList(
+    ## LOAD COLUMNS
+    actionButton(
+      inputId = ns("loadCleanColumn"),
+      label = "Load Variables",
+      icon = icon("check")
+    ),
+
+    ## <SELECT> column names
+    selectInput(
+      inputId = ns("cleanColumn"),
+      label = "cleanSelectLabel",
+      choices = NULL,
+      selected = NULL,
+      multiple = FALSE
+    ),
+
+    ## Operation Option: Remove / Replace
+    selectInput(
+      inputId = ns("cleanOperator"),
+      label = "cleanOpeartorLabel",
+      choices = c("Remove", "Replace"),
+      selected = NULL,
+      multiple = FALSE
+    ),
+
+    ## Remove / Replace Keyword: null, [userInput]
+    textInput(
+      inputId = ns("cleanVariable"),
+      label = "cleanVariableLabel",
+    ),
+    textInput(
+      inputId = ns("cleanKeyword"),
+      label = "cleanKeywordLabel",
+    ),
+
+    ## <Button> Clean
+    actionButton(
+      inputId = ns("cleanButton"),
+      label = "clean",
+      icon = icon("angle-down")
+    )
+  )
+}
+
+cleanServer <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
+    observeEvent(input$loadCleanColumn, {
+      updateSelectizeInput(
+        session,
+        inputId = "cleanColumn",
+        label = "cleanSelectLabel",
+        choices = colnames(inputData()),
+        server = TRUE
+      )
+    })
+
+    observeEvent(input$cleanButton, {
+      if (input$cleanOperator == "Remove") {
+        # data $ column -> filter(which is not .)
+
+        if (input$cleanVariable == "NA") {
+          eval(parse(
+            text =
+              paste0(
+                "inputData( inputData() %>% ",
+                "filter(!is.na(", input$cleanColumn, ")))"
+              )
+          ))
+        } else {
+          eval(parse(
+            text =
+              paste0(
+                "inputData( inputData() %>% ",
+                "filter(!grepl(", input$cleanVariable, ", ", input$cleanColumn, ")))"
+              )
+          ))
+        }
+      }
+
+      if (input$cleanOperator == "Replace") {
+        keyword <- ifelse(is.null(input$cleanKeyword), "", input$cleanKeyword)
+
+        eval(parse(
+          text =
+            paste0(
+              "inputData( inputData() %>% ",
+              "mutate(", input$cleanColumn, " = ",
+              "ifelse(", input$cleanColumn, " == ", input$cleanVariable, ",", keyword, ",", input$cleanColumn, ")))"
+            )
+        ))
+      }
+
       output$DT <- renderDT(
         getDT(inputData())
       )
@@ -301,66 +401,16 @@ ui <- dashboardPage(
             filterUI("filterModule")
           ),
           boxUI(
-            title = 'Subset',
-            subsetUI('subsetModule')
+            title = "Subset",
+            subsetUI("subsetModule")
           ),
           boxUI(
-            title = 'Mutate',
+            title = "Mutate",
             mutateUI("mutateModule")
           ),
-          shinydashboardPlus::box(
+          boxUI(
             title = "Clean",
-            collapsible = TRUE,
-            collapsed = TRUE,
-            width = 12,
-            status = "navy",
-            solidHeader = TRUE,
-            gradient = TRUE,
-            # boxToolSize = 'xs',
-            background = "gray",
-
-            ## LOAD COLUMNS
-            actionButton(
-              inputId = "loadCleanColumn",
-              label = "Load Variables",
-              icon = icon("check")
-            ),
-
-
-            ## <SELECT> column names
-            selectInput(
-              inputId = "cleanColumn",
-              label = "cleanSelectLabel",
-              choices = NULL,
-              selected = NULL,
-              multiple = FALSE
-            ),
-
-            ## Operation Option: Remove / Replace
-            selectInput(
-              inputId = "cleanOperator",
-              label = "cleanOpeartorLabel",
-              choices = c("Remove", "Replace"),
-              selected = NULL,
-              multiple = FALSE
-            ),
-
-            ## Remove / Replace Keyword: null, [userInput]
-            textInput(
-              inputId = "cleanVariable",
-              label = "cleanVariableLabel",
-            ),
-            textInput(
-              inputId = "cleanKeyword",
-              label = "cleanKeywordLabel",
-            ),
-
-            ## <Button> Clean
-            actionButton(
-              inputId = "cleanButton",
-              label = "clean",
-              icon = icon("angle-down")
-            )
+            cleanUI("cleanModule")
           ),
           box(
             title = "Split",
@@ -481,14 +531,14 @@ ui <- dashboardPage(
       # ),
 
       # LOAD TO OTHER MODULE
-      shinyjs::hidden(
-        actionButton(
-          inputId = "LoadButton",
-          label = "LoadButtonLabel",
-          icon = icon("share")
-        ),
-        textOutput("LoadTest")
-      )
+      # shinyjs::hidden(
+      #   actionButton(
+      #     inputId = "LoadButton",
+      #     label = "LoadButtonLabel",
+      #     icon = icon("share")
+      #   ),
+      #   textOutput("LoadTest")
+      # )
     )
   ),
   controlbar = dashboardControlbar(
@@ -542,75 +592,25 @@ server <- function(input, output, session) {
 
   filterServer(id = "filterModule", inputData)
 
-  subsetServer(id = 'subsetModule', inputData)
-  
-  mutateServer(id = 'mutateModule', inputData)
-  
+  subsetServer(id = "subsetModule", inputData)
+
+  mutateServer(id = "mutateModule", inputData)
+
+  cleanServer(id = "cleanModule", inputData)
   # observeEvent(input$ExportButton, {
   #   output$ExportTest <- renderText("Export Button Clicked")
   #   shinyjs::delay(2000, output$ExportTest <- renderText(""))
   # })
 
-  observeEvent(input$LoadButton, {
-    output$LoadTest <- renderText("Load Button Clicked")
-    shinyjs::delay(2000, output$LoadTest <- renderText(""))
-  })
+  # observeEvent(input$LoadButton, {
+  #   output$LoadTest <- renderText("Load Button Clicked")
+  #   shinyjs::delay(2000, output$LoadTest <- renderText(""))
+  # })
+
+  ###
 
 
-  observeEvent(input$loadCleanColumn, {
-    updateSelectizeInput(
-      session,
-      inputId = "cleanColumn",
-      label = "cleanSelectLabel",
-      choices = colnames(inputData),
-      server = TRUE
-    )
-  })
 
-  observeEvent(input$cleanButton, {
-    if (input$cleanOperator == "Remove") {
-      # data $ column -> filter(which is not .)
-
-      if (input$cleanVariable == "NA") {
-        eval(parse(
-          text =
-            paste0(
-              "inputData <<- inputData %>% ",
-              "filter(!is.na(", input$cleanColumn, "))"
-            )
-        ))
-      } else {
-        eval(parse(
-          text =
-            paste0(
-              "inputData <<- inputData %>% ",
-              "filter(!grepl(", input$cleanVariable, ", ", input$cleanColumn, "))"
-            )
-        ))
-      }
-    }
-    # <cleanColumn>
-    # <cleanOperator>
-    # <cleanVariable>
-    # <cleanKeyword>
-
-    if (input$cleanOperator == "Replace") {
-      keyword <- ifelse(is.null(input$cleanKeyword), "", input$cleanKeyword)
-
-      eval(parse(
-        text =
-          paste0(
-            "inputData <<- inputData %>% ",
-            "mutate(", input$cleanColumn, " = ",
-            "ifelse(", input$cleanColumn, " == ", input$cleanVariable, ",", keyword, ",", input$cleanColumn, "))"
-          )
-      ))
-    }
-
-    output$DT <- renderDT(
-      getDT(inputData)
-    )
-  })
 
   observeEvent(input$loadSplitColumn, {
     updateSelectizeInput(
