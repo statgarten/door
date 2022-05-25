@@ -369,6 +369,74 @@ cleanServer <- function(id, inputData) {
   })
 }
 
+splitUI <- function(id) {
+  ns <- NS(id)
+  tagList(
+    actionButton(
+      inputId = ns("loadSplitColumn"),
+      label = "Load Variables",
+      icon = icon("check")
+    ),
+    selectInput(
+      inputId = ns("splitColumn"),
+      label = "splitSelectLabel",
+      choices = NULL,
+      selected = NULL,
+      multiple = FALSE
+    ),
+
+    # keyword
+    textInput(
+      inputId = ns("splitkeyword"),
+      label = "splitKeywordLabel"
+    ),
+
+    # colnameA
+    textInput(
+      inputId = ns("splitA"),
+      label = "colA"
+    ),
+    # colnameB
+    textInput(
+      inputId = ns("splitB"),
+      label = "colB"
+    ),
+    actionButton(
+      inputId = ns("splitButton"),
+      label = "split",
+      icon = icon("angle-down")
+    )
+  )
+}
+
+splitServer <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
+    observeEvent(input$loadSplitColumn, {
+      updateSelectizeInput(
+        session,
+        inputId = "splitColumn",
+        label = "splitSelectLabel",
+        choices = colnames(inputData()),
+        server = TRUE
+      )
+    })
+
+    observeEvent(input$splitButton, {
+      eval(parse(
+        text =
+          paste0(
+            "inputData( inputData() %>% ",
+            "tidyr::separate(", input$splitColumn, ", sep = '", input$splitkeyword, "', into = c('", input$splitA, "','", input$splitB, "'), fill = 'right'))"
+          )
+      ))
+
+      output$DT <- renderDT(
+        getDT(inputData())
+      )
+    })
+  })
+}
+
 ui <- dashboardPage(
   # HEAD
   # skin = 'midnight',
@@ -412,50 +480,9 @@ ui <- dashboardPage(
             title = "Clean",
             cleanUI("cleanModule")
           ),
-          box(
+          boxUI(
             title = "Split",
-            collapsible = TRUE,
-            collapsed = TRUE,
-            width = 12,
-            status = "navy",
-            solidHeader = TRUE,
-            gradient = TRUE,
-            # boxToolSize = 'xs',
-            background = "gray",
-            actionButton(
-              inputId = "loadSplitColumn",
-              label = "Load Variables",
-              icon = icon("check")
-            ),
-            selectInput(
-              inputId = "splitColumn",
-              label = "splitSelectLabel",
-              choices = NULL,
-              selected = NULL,
-              multiple = FALSE
-            ),
-
-            # keyword
-            textInput(
-              inputId = "splitkeyword",
-              label = "splitKeywordLabel"
-            ),
-
-            # colnameA
-            textInput(
-              inputId = "splitA",
-              label = "colA"
-            ),
-            # colnameB
-            textInput(
-              inputId = "splitB",
-              label = "colB"
-            ),
-            actionButton(
-              inputId = "splitButton",
-              label = "split",
-              icon = icon("angle-down")
-            )
+            splitUI("splitModule")
           ),
           box( # pending
             title = "Reshape",
@@ -574,31 +601,8 @@ server <- function(input, output, session) {
   mutateServer(id = "mutateModule", inputData)
 
   cleanServer(id = "cleanModule", inputData)
-  
-  observeEvent(input$loadSplitColumn, {
-    updateSelectizeInput(
-      session,
-      inputId = "splitColumn",
-      label = "splitSelectLabel",
-      choices = colnames(inputData),
-      server = TRUE
-    )
-  })
 
-  observeEvent(input$splitButton, {
-
-    eval(parse(
-      text =
-        paste0(
-          "inputData <<- inputData %>% ",
-          "tidyr::separate(", input$splitColumn, ", sep = '", input$splitkeyword, "', into = c('", input$splitA, "','", input$splitB, "'), fill = 'right')"
-        )
-    ))
-
-    output$DT <- renderDT(
-      getDT(inputData)
-    )
-  })
+  splitServer(id = "splitModule", inputData)
 
   output$exportButton <- downloadHandler(
     filename = function() {
