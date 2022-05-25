@@ -437,6 +437,54 @@ splitServer <- function(id, inputData) {
   })
 }
 
+exportUI <- function(id){
+  ns <- NS(id)
+  tagList(
+    textInput(
+      inputId = ns("exportFilename"),
+      label = "filename"
+    ),
+    selectInput(
+      inputId = ns("exportOption"),
+      label = "file extension",
+      selected = ".csv",
+      multiple = FALSE,
+      choices = c(".csv", ".rda", ".sqlite", ".xlsx")
+    ),
+    downloadButton(
+      outputId = ns("exportButton"),
+      label = "export"
+    )
+  )
+}
+
+exportServer <- function(id, inputData){
+  moduleServer(id, function(input, output, session){
+    output$exportButton <- downloadHandler(
+      filename = function() {
+        if (input$exportFilename == "") {
+          return(paste0("downloaded", input$exportOption))
+        }
+        return(paste0(input$exportFilename, input$exportOption))
+      },
+      content = function(con) {
+        if (input$exportOption == ".csv") {
+          write.csv(inputData(), file = con, row.names = FALSE)
+        }
+        if (input$exportOption == ".rda") {
+          save(inputData(), file = con)
+        }
+        if (input$exportOption == ".sqlite") {
+          # need to implement
+        }
+        if (input$exportOption == ".xlsx") {
+          # need to implement
+        }
+      }
+    )
+  })
+}
+
 ui <- dashboardPage(
   # HEAD
   # skin = 'midnight',
@@ -488,30 +536,9 @@ ui <- dashboardPage(
             title = '!Reshape (not)',
             p('Not Implemented')
           ),
-          box(
-            title = "Export",
-            solidHeader = TRUE,
-            collapsible = TRUE,
-            collapsed = TRUE,
-            width = 12,
-            status = "navy",
-            gradient = TRUE,
-            background = "gray",
-            textInput(
-              inputId = "exportFilename",
-              label = "filename"
-            ),
-            selectInput(
-              inputId = "exportOption",
-              label = "file extension",
-              selected = ".csv",
-              multiple = FALSE,
-              choices = c(".csv", ".rda", ".sqlite", ".xlsx")
-            ),
-            downloadButton(
-              outputId = "exportButton",
-              label = "export"
-            )
+          boxUI(
+            title = 'Export',
+            exportUI('exportModule')
           )
         )
       )
@@ -527,7 +554,7 @@ ui <- dashboardPage(
     fluidPage(
       p(
         id = "desc",
-        "Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer eleifend libero eleifend egestas faucibus. Ut venenatis vitae lorem id pulvinar. Phasellus accumsan lectus eu magna hendrerit, ac elementum ex vestibulum. Sed eget facilisis est, quis volutpat mi. Vestibulum metus odio, sollicitudin non venenatis at, dignissim eleifend turpis. Aenean porta porta augue sed pulvinar. Praesent at metus leo. Maecenas consequat luctus odio, sagittis dapibus lectus ultricies vitae. In euismod gravida enim, in tristique felis finibus non. Morbi ac velit sed arcu dignissim ornare. Ut justo velit, lobortis nec purus sed, volutpat commodo nisi. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas lacinia metus eu nisl aliquet convallis."
+        "Description Text will be here"
       ),
       fileInput(
         inputId = "fileInputID",
@@ -597,28 +624,8 @@ server <- function(input, output, session) {
 
   splitServer(id = "splitModule", inputData)
 
-  output$exportButton <- downloadHandler(
-    filename = function() {
-      if (input$exportFilename == "") {
-        return(paste0("downloaded", input$exportOption))
-      }
-      return(paste0(input$exportFilename, input$exportOption))
-    },
-    content = function(con) {
-      if (input$exportOption == ".csv") {
-        write.csv(inputData, file = con, row.names = FALSE)
-      }
-      if (input$exportOption == ".rda") {
-        save(inputData, file = con)
-      }
-      if (input$exportOption == ".sqlite") {
-        # need to implement
-      }
-      if (input$exportOption == ".xlsx") {
-        # need to implement
-      }
-    }
-  )
+  exportServer(id = 'exportModule', inputData)
+  
 }
 
 # Run the application
