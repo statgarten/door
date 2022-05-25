@@ -518,27 +518,7 @@ ui <- dashboardPage(
       ),
       DTOutput(
         outputId = "DT"
-      ),
-
-      # # EXPORT MODULE
-      # shinyjs::hidden(
-      #   actionButton(
-      #     inputId = "ExportButton",
-      #     label = "ExportButtonLabel",
-      #     icon = icon("download")
-      #   ),
-      #   textOutput("ExportTest")
-      # ),
-
-      # LOAD TO OTHER MODULE
-      # shinyjs::hidden(
-      #   actionButton(
-      #     inputId = "LoadButton",
-      #     label = "LoadButtonLabel",
-      #     icon = icon("share")
-      #   ),
-      #   textOutput("LoadTest")
-      # )
+      )
     )
   ),
   controlbar = dashboardControlbar(
@@ -575,9 +555,6 @@ server <- function(input, output, session) {
     shinyjs::hide(id = "desc", anim = TRUE, animType = "slide")
     shinyjs::hide(id = "fileInputID", anim = TRUE, animType = "fade")
 
-    # shinyjs::show(id = "ExportButton", anim = TRUE, animType = "slide")
-    # shinyjs::show(id = "ExportTest", anim = TRUE, animType = "fade")
-
     shinyjs::show(id = "LoadButton", anim = TRUE, animType = "slide")
     shinyjs::show(id = "LoadTest", anim = TRUE, animType = "fade")
 
@@ -597,21 +574,7 @@ server <- function(input, output, session) {
   mutateServer(id = "mutateModule", inputData)
 
   cleanServer(id = "cleanModule", inputData)
-  # observeEvent(input$ExportButton, {
-  #   output$ExportTest <- renderText("Export Button Clicked")
-  #   shinyjs::delay(2000, output$ExportTest <- renderText(""))
-  # })
-
-  # observeEvent(input$LoadButton, {
-  #   output$LoadTest <- renderText("Load Button Clicked")
-  #   shinyjs::delay(2000, output$LoadTest <- renderText(""))
-  # })
-
-  ###
-
-
-
-
+  
   observeEvent(input$loadSplitColumn, {
     updateSelectizeInput(
       session,
@@ -623,11 +586,6 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$splitButton, {
-    # <splitColumn>
-    # <splitkeyword>
-    # <splitA>
-    # <splitB>
-
 
     eval(parse(
       text =
