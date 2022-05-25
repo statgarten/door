@@ -48,6 +48,21 @@ getDT <- function(inputData) {
     )
 }
 
+boxUI <- function(title, elem) {
+  shinydashboardPlus::box(
+    title = title,
+    collapsible = TRUE,
+    collapsed = TRUE,
+    width = 12,
+    status = "navy",
+    solidHeader = TRUE,
+    gradient = TRUE,
+    # boxToolSize = 'xs',
+    background = "gray",
+    elem
+  )
+}
+
 filterUI <- function(id) {
   ns <- NS(id)
   tagList(
@@ -86,6 +101,7 @@ filterUI <- function(id) {
 
 filterServer <- function(id, inputData) {
   moduleServer(id, function(input, output, session) {
+    
     observeEvent(input$loadFilterColumn, {
       shinyjs::enable(id = "filterColumn")
       shinyjs::enable(id = "filterOperator")
@@ -124,19 +140,57 @@ filterServer <- function(id, inputData) {
   })
 }
 
-boxUI <- function(title, elem) {
-  shinydashboardPlus::box(
-    title = title,
-    collapsible = TRUE,
-    collapsed = TRUE,
-    width = 12,
-    status = "navy",
-    solidHeader = TRUE,
-    gradient = TRUE,
-    # boxToolSize = 'xs',
-    background = "gray",
-    elem
+
+subsetUI <- function(id){
+  ns <- NS(id)
+  tagList(
+    actionButton(
+      inputId = ns("loadSubsetColumn"),
+      label = "Load Variables",
+      icon = icon("check")
+    ),
+    selectInput(
+      inputId = ns("subsetColumn"),
+      label = "subsetSelectLabel",
+      choices = NULL,
+      selected = NULL,
+      multiple = FALSE
+    ),
+    actionButton(
+      inputId = ns("subsetButton"),
+      label = "subset",
+      icon = icon("angle-down")
+    ) 
   )
+}
+
+subsetServer <- function(id, inputData){
+  moduleServer(id, function(input, output, session){
+    observeEvent(input$loadSubsetColumn, {
+      updateSelectizeInput(
+        session,
+        inputId = "subsetColumn",
+        label = "subsetSelectLabel",
+        choices = colnames(inputData()),
+        server = TRUE
+      )
+    })
+    
+    observeEvent(input$subsetButton, {
+      eval(parse(
+        text =
+          paste0(
+            "inputData( inputData() %>% ",
+            "select(-", input$subsetColumn, "))"
+          )
+      ))
+      
+      output$DT <- renderDT(
+        getDT(inputData())
+      )
+    })
+    
+  })
 }
 
 ui <- dashboardPage(
@@ -170,33 +224,9 @@ ui <- dashboardPage(
             title = "Filter",
             filterUI("filterModule")
           ),
-          shinydashboardPlus::box(
-            title = "Subset",
-            collapsible = TRUE,
-            collapsed = TRUE,
-            width = 12,
-            status = "navy",
-            solidHeader = TRUE,
-            gradient = TRUE,
-            # boxToolSize = 'xs',
-            background = "gray",
-            actionButton(
-              inputId = "loadSubsetColumn",
-              label = "Load Variables",
-              icon = icon("check")
-            ),
-            selectInput(
-              inputId = "subsetColumn",
-              label = "subsetSelectLabel",
-              choices = NULL,
-              selected = NULL,
-              multiple = FALSE
-            ),
-            actionButton(
-              inputId = "subsetButton",
-              label = "subset",
-              icon = icon("angle-down")
-            )
+          boxUI(
+            title = 'Subset',
+            subsetUI('subsetModule')
           ),
           shinydashboardPlus::box(
             title = "Mutate",
@@ -481,6 +511,8 @@ server <- function(input, output, session) {
 
   filterServer(id = "filterModule", inputData)
 
+  subsetServer(id = 'subsetModule', inputData)
+  
   # observeEvent(input$ExportButton, {
   #   output$ExportTest <- renderText("Export Button Clicked")
   #   shinyjs::delay(2000, output$ExportTest <- renderText(""))
@@ -518,29 +550,6 @@ server <- function(input, output, session) {
     )
   })
 
-  observeEvent(input$loadSubsetColumn, {
-    updateSelectizeInput(
-      session,
-      inputId = "subsetColumn",
-      label = "subsetSelectLabel",
-      choices = colnames(inputData),
-      server = TRUE
-    )
-  })
-
-  observeEvent(input$subsetButton, {
-    eval(parse(
-      text =
-        paste0(
-          "inputData <<- inputData %>% ",
-          "select(-", input$subsetColumn, ")"
-        )
-    ))
-
-    output$DT <- renderDT(
-      getDT(inputData)
-    )
-  })
 
   observeEvent(input$loadCleanColumn, {
     updateSelectizeInput(
