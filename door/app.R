@@ -8,7 +8,10 @@ library(tidyr)
 
 getDT <- function(inputData) {
   datatable(
-    rbind(head(inputData, 5), tail(inputData, 5)),
+    rbind(
+      inputData |> head(5), 
+      inputData |> tail(5)
+    ),
     rownames = FALSE,
     editable = FALSE,
     extensions = "Buttons",
@@ -140,7 +143,6 @@ filterServer <- function(id, inputData) {
   })
 }
 
-
 subsetUI <- function(id){
   ns <- NS(id)
   tagList(
@@ -193,6 +195,80 @@ subsetServer <- function(id, inputData){
   })
 }
 
+mutateUI <- function(id){
+  ns <- NS(id)
+  tagList(
+    # load column
+    actionButton(
+      inputId = ns("loadMutateColumn"),
+      label = "Load Variables",
+      icon = icon("check")
+    ),
+    
+    # which column
+    selectInput(
+      inputId = ns("mutateColumn"),
+      label = "mutateSelectLabel",
+      choices = NULL,
+      selected = NULL,
+      multiple = FALSE
+    ),
+    
+    # option
+    selectInput(
+      inputId = ns("mutateOperator"),
+      label = "mutateOpeartorLabel",
+      choices = c("Round", "Log", "Sart", "Min-Max", "Normal", "Remove"),
+      selected = NULL,
+      multiple = FALSE
+    ),
+    
+    #
+    textInput(
+      inputId = ns("mutateVariable"),
+      label = "mutateVariableLabel",
+    ),
+    
+    # apply button
+    actionButton(
+      inputId = ns("mutateButton"),
+      label = "mutate",
+      icon = icon("angle-down")
+    )
+  ) 
+}
+
+mutateServer <- function(id, inputData){
+  moduleServer(id, function(input, output, session){
+    observeEvent(input$loadMutateColumn, {
+      updateSelectizeInput(
+        session,
+        inputId = "mutateColumn",
+        label = "mutateSelectLabel",
+        choices = colnames(inputData()),
+        server = TRUE
+      )
+    })
+    
+    observeEvent(input$mutateButton, {
+      if (input$mutateOperator == "Round") {
+        eval(parse(
+          text =
+            paste0(
+              "inputData( inputData() %>% ",
+              "mutate(",
+              input$mutateColumn, " = round(", input$mutateColumn, ", ", input$mutateVariable, ")) )"
+            )
+        ))
+      }
+      
+      output$DT <- renderDT(
+        getDT(inputData())
+      )
+    })
+  })
+}
+
 ui <- dashboardPage(
   # HEAD
   # skin = 'midnight',
@@ -214,8 +290,8 @@ ui <- dashboardPage(
     htmlOutput("Logo", style = "text-align: center; margin-bottom:3em; margin-top:3em;"),
     conditionalPanel(
       condition = 'input.module == "Import"',
-      # FILTER BOX
 
+      # FILTER BOX
 
       shinyjs::hidden(
         div(
@@ -228,54 +304,9 @@ ui <- dashboardPage(
             title = 'Subset',
             subsetUI('subsetModule')
           ),
-          shinydashboardPlus::box(
-            title = "Mutate",
-            collapsible = TRUE,
-            collapsed = TRUE,
-            width = 12,
-            status = "navy",
-            solidHeader = TRUE,
-            gradient = TRUE,
-            # boxToolSize = 'xs',
-            background = "gray",
-
-            # load column
-            actionButton(
-              inputId = "loadMutateColumn",
-              label = "Load Variables",
-              icon = icon("check")
-            ),
-
-            # which column
-            selectInput(
-              inputId = "mutateColumn",
-              label = "mutateSelectLabel",
-              choices = NULL,
-              selected = NULL,
-              multiple = FALSE
-            ),
-
-            # option
-            selectInput(
-              inputId = "mutateOperator",
-              label = "mutateOpeartorLabel",
-              choices = c("Round", "Log", "Sart", "Min-Max", "Normal", "Remove"),
-              selected = NULL,
-              multiple = FALSE
-            ),
-
-            #
-            textInput(
-              inputId = "mutateVariable",
-              label = "mutateVariableLabel",
-            ),
-
-            # apply button
-            actionButton(
-              inputId = "mutateButton",
-              label = "mutate",
-              icon = icon("angle-down")
-            )
+          boxUI(
+            title = 'Mutate',
+            mutateUI("mutateModule")
           ),
           shinydashboardPlus::box(
             title = "Clean",
@@ -513,6 +544,8 @@ server <- function(input, output, session) {
 
   subsetServer(id = 'subsetModule', inputData)
   
+  mutateServer(id = 'mutateModule', inputData)
+  
   # observeEvent(input$ExportButton, {
   #   output$ExportTest <- renderText("Export Button Clicked")
   #   shinyjs::delay(2000, output$ExportTest <- renderText(""))
@@ -521,33 +554,6 @@ server <- function(input, output, session) {
   observeEvent(input$LoadButton, {
     output$LoadTest <- renderText("Load Button Clicked")
     shinyjs::delay(2000, output$LoadTest <- renderText(""))
-  })
-
-  observeEvent(input$loadMutateColumn, {
-    updateSelectizeInput(
-      session,
-      inputId = "mutateColumn",
-      label = "mutateSelectLabel",
-      choices = colnames(inputData),
-      server = TRUE
-    )
-  })
-
-  observeEvent(input$mutateButton, {
-    if (input$mutateOperator == "Round") {
-      eval(parse(
-        text =
-          paste0(
-            "inputData <<- inputData %>% ",
-            "mutate(",
-            input$mutateColumn, " = round(", input$mutateColumn, ", ", input$mutateVariable, "))"
-          )
-      ))
-    }
-
-    output$DT <- renderDT(
-      getDT(inputData)
-    )
   })
 
 
