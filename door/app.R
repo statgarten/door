@@ -484,16 +484,9 @@ ui <- dashboardPage(
             title = "Split",
             splitUI("splitModule")
           ),
-          box( # pending
-            title = "Reshape",
-            footer = "footer TEXT",
-            solidHeader = TRUE,
-            collapsible = TRUE,
-            collapsed = TRUE,
-            width = 12,
-            status = "orange",
-            gradient = TRUE,
-            background = "gray"
+          boxUI(
+            title = '!Reshape (not)',
+            p('Not Implemented')
           ),
           box(
             title = "Export",
