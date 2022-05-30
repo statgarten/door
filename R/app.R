@@ -437,7 +437,7 @@ splitServer <- function(id, inputData) {
   })
 }
 
-exportUI <- function(id){
+exportUI <- function(id) {
   ns <- NS(id)
   tagList(
     textInput(
@@ -458,8 +458,8 @@ exportUI <- function(id){
   )
 }
 
-exportServer <- function(id, inputData){
-  moduleServer(id, function(input, output, session){
+exportServer <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     output$exportButton <- downloadHandler(
       filename = function() {
         if (input$exportFilename == "") {
@@ -506,9 +506,6 @@ ui <- dashboardPage(
     htmlOutput("Logo", style = "text-align: center; margin-bottom:3em; margin-top:3em;"),
     conditionalPanel(
       condition = 'input.module == "Import"',
-
-      # FILTER BOX
-
       shinyjs::hidden(
         div(
           id = "SideBox",
@@ -533,12 +530,12 @@ ui <- dashboardPage(
             splitUI("splitModule")
           ),
           boxUI(
-            title = '!Reshape (not)',
-            p('Not Implemented')
+            title = "!Reshape (not)",
+            p("Not Implemented")
           ),
           boxUI(
-            title = 'Export',
-            exportUI('exportModule')
+            title = "Export",
+            exportUI("exportModule")
           )
         )
       )
@@ -624,8 +621,7 @@ server <- function(input, output, session) {
 
   splitServer(id = "splitModule", inputData)
 
-  exportServer(id = 'exportModule', inputData)
-  
+  exportServer(id = "exportModule", inputData)
 }
 
 # Run the application
