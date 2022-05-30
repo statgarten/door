@@ -20,6 +20,7 @@ Imports:
     shinydashboard,
     shinydashboardPlus,
     shinyjs,
+    shinyWidgets,
     tidyr,
     tools
 Suggests: 

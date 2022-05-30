@@ -7,7 +7,10 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_filterModule_ui <- function(id){
+#' @import dplyr
+#' @importFrom shinyjs disabled enable
+#' @importFrom DT renderDT
+mod_filterModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     actionButton(
@@ -26,7 +29,7 @@ mod_filterModule_ui <- function(id){
       selectInput(
         inputId = ns("filterOperator"),
         label = "filterOpeartorLabel",
-        choices = c(">", ">=", "<", "<=", "==", "!="),
+        choices = c(">", ">=", "<", "<=", "==", "!=", "In", "Not In", "Contains", "Not Contains"),
         selected = NULL,
         multiple = FALSE
       ),
@@ -46,8 +49,8 @@ mod_filterModule_ui <- function(id){
 #' filterModule Server Functions
 #'
 #' @noRd
-mod_filterModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
+mod_filterModule_server <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observeEvent(input$loadFilterColumn, {
       shinyjs::enable(id = "filterColumn")
@@ -65,13 +68,52 @@ mod_filterModule_server <- function(id, inputData){
     })
 
     observeEvent(input$filterButton, {
-      eval(parse(
-        text =
-          paste0(
-            "inputData(inputData() %>% ",
-            "filter(", input$filterColumn, input$filterOperator, input$filterVariable, "))"
-          )
-      ))
+      if (input$filterOperator == "In") {
+        eval(parse(
+          text =
+            paste0(
+              "inputData( inputData() |> filter( ", input$filterColumn, " %in% ",
+              "c(", input$filterVariable, ") ) )"
+            )
+        ))
+      }
+      if (input$filterOperator == "Not In") {
+        eval(parse(
+          text =
+            paste0(
+              "inputData( inputData() |> filter( !", input$filterColumn, " %in% ",
+              "c(", input$filterVariable, ") ) )"
+            )
+        ))
+      }
+      if (input$filterOperator == "Contains") {
+        eval(parse(
+          text =
+            paste0(
+              "inputData (", "inputData() |> filter(grepl(", input$filterVariable, ", ", input$filterColumn,
+              ") ) )"
+            )
+        ))
+      }
+      if (input$filterOperator == "Not Contains") {
+        eval(parse(
+          text =
+            paste0(
+              "inputData (", "inputData() |> filter( ! grepl(", input$filterVariable, ", ", input$filterColumn,
+              ") ) )"
+            )
+        ))
+      }
+
+      if (input$filterOperator %in% c(">", ">=", "<", "<=", "==", "!=")) {
+        eval(parse(
+          text =
+            paste0(
+              "inputData(inputData() |> ",
+              "filter(", input$filterColumn, input$filterOperator, input$filterVariable, "))"
+            )
+        ))
+      }
 
       output$DT <- renderDT(
         getDT(inputData())
