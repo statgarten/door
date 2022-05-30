@@ -5,6 +5,7 @@
 #' @import shiny dplyr tidyr
 #' @importFrom shinyjs hidden useShinyjs
 #' @importFrom DT DTOutput
+#' @import shinyWidgets
 #' @importFrom shinydashboard dashboardBody
 #' @importFrom shinydashboardPlus box dashboardSidebar dashboardPage dashboardFooter dashboardControlbar
 #' @noRd
@@ -99,9 +100,16 @@ app_ui <- function(request) {
             multiple = FALSE,
             width = '100%'
           ),
+          shinyWidgets::prettySwitch(
+            inputId = "showAll",
+            label = "Every Data",
+            status = "success",
+            fill = TRUE
+          ),
           DT::DTOutput(
             outputId = "DT"
           )
+
         )
       ),
       controlbar = dashboardControlbar(

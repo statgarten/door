@@ -9,7 +9,45 @@
 #' @noRd
 #' @export
 
-getDT <- function(inputData) {
+getDT <- function(inputData, all = FALSE) {
+
+  if(all){
+    return(
+      DT::datatable(
+        inputData,
+        rownames = FALSE,
+        editable = FALSE,
+        selection = "none",
+        # extension = 'Scroller',
+        options = list(
+          ordering = FALSE,
+          deferRender = TRUE,
+          scrollY = TRUE,
+          scrollX = TRUE,
+          # scroller = TRUE,
+          dom = "tlpr",
+          columnDefs = list(
+            list(
+              className = "dt-head-center",
+              targets = "_all"
+            )
+          ),
+          initComplete = htmlwidgets::JS(
+            "function(settings, json) {",
+            "$(this.api().table().header()).css({'background-color': '#2c3c75', 'color': '#fff'});",
+            "}"
+          )
+        )
+      ) %>%
+      DT::formatStyle(
+        columns = names(inputData),
+        target = "row",
+        `border-top` = "0px",
+        `text-align` = "right"
+      )
+    )
+  }
+
   DT::datatable(
     rbind(
       inputData |> head(5),
@@ -17,17 +55,13 @@ getDT <- function(inputData) {
     ),
     rownames = FALSE,
     editable = FALSE,
-    extensions = "Buttons",
     selection = "none",
     options = list(
       ordering = FALSE,
-      dom = "trB",
-      buttons = c(
-        "copy",
-        "csv",
-        "excel",
-        "pdf"
-      ),
+      dom = "tr",
+      deferRender = TRUE,
+      scrollY = TRUE,
+      scrollX = TRUE,
       columnDefs = list(
         list(
           className = "dt-head-center",
