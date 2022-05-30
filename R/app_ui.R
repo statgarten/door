@@ -85,7 +85,7 @@ app_ui <- function(request) {
           ),
           fileInput(
             inputId = "fileInputID",
-            label = "FileInput Label",
+            label = NULL,
             accept = c(".csv", ".tsv", ".sas7bdat", ".sas7bcat", ".sav", ".dta", ".xls", ".xlsx", ".rda", ".rds", ".rdata"),
             # csv: Column separated
             # tsv, tab: Tab separated
@@ -94,8 +94,10 @@ app_ui <- function(request) {
             # dta: Stata file
             # xls, xlsx: Excel file
             # rda, rds, rdata: Robject file
-            buttonLabel = "Button Label",
-            placeholder = "Place Holder"
+            buttonLabel = "Browse local files",
+            placeholder = "or Drag & Drop in Here",
+            multiple = FALSE,
+            width = '100%'
           ),
           DT::DTOutput(
             outputId = "DT"
