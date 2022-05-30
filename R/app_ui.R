@@ -50,7 +50,8 @@ app_ui <- function(request) {
               ),
               boxUI(
                 title = "Mutate",
-                mutateUI("mutateModule")
+                # mutateUI("mutateModule")
+                mod_mutateModule_ui("mutateModule_1")
               ),
               boxUI(
                 title = "Clean",

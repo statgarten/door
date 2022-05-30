@@ -83,79 +83,8 @@ subsetServer <- function(id, inputData) {
   })
 }
 
-mutateUI <- function(id) {
-  ns <- NS(id)
-  tagList(
-    # load column
-    actionButton(
-      inputId = ns("loadMutateColumn"),
-      label = "Load Variables",
-      icon = icon("check")
-    ),
 
-    # which column
-    selectInput(
-      inputId = ns("mutateColumn"),
-      label = "mutateSelectLabel",
-      choices = NULL,
-      selected = NULL,
-      multiple = FALSE
-    ),
 
-    # option
-    selectInput(
-      inputId = ns("mutateOperator"),
-      label = "mutateOpeartorLabel",
-      choices = c("Round", "Log", "Sart", "Min-Max", "Normal", "Remove"),
-      selected = NULL,
-      multiple = FALSE
-    ),
-
-    #
-    textInput(
-      inputId = ns("mutateVariable"),
-      label = "mutateVariableLabel",
-    ),
-
-    # apply button
-    actionButton(
-      inputId = ns("mutateButton"),
-      label = "mutate",
-      icon = icon("angle-down")
-    )
-  )
-}
-
-mutateServer <- function(id, inputData) {
-  moduleServer(id, function(input, output, session) {
-    observeEvent(input$loadMutateColumn, {
-      updateSelectizeInput(
-        session,
-        inputId = "mutateColumn",
-        label = "mutateSelectLabel",
-        choices = colnames(inputData()),
-        server = TRUE
-      )
-    })
-
-    observeEvent(input$mutateButton, {
-      if (input$mutateOperator == "Round") {
-        eval(parse(
-          text =
-            paste0(
-              "inputData( inputData() %>% ",
-              "mutate(",
-              input$mutateColumn, " = round(", input$mutateColumn, ", ", input$mutateVariable, ")) )"
-            )
-        ))
-      }
-
-      output$DT <- renderDT(
-        getDT(inputData())
-      )
-    })
-  })
-}
 
 cleanUI <- function(id) {
   ns <- NS(id)

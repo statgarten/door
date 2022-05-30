@@ -92,7 +92,9 @@ app_server <- function(input, output, session) {
 
   subsetServer(id = "subsetModule", inputData)
 
-  mutateServer(id = "mutateModule", inputData)
+  mod_mutateModule_server("mutateModule_1", inputData)
+
+  #mutateServer(id = "mutateModule", inputData)
 
   cleanServer(id = "cleanModule", inputData)
 
