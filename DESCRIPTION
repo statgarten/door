@@ -1,13 +1,9 @@
 Package: door
-Title: An Amazing Shiny App
+Title: Shiny module for Data import
 Version: 0.0.0.9000
-Authors@R: 
-    person(given = "firstname",
-           family = "lastname",
-           role = c("aut", "cre"),
-           email = "your@email.com")
-Description: What the package does (one paragraph).
-License: What license is it under?
+Authors@R: person('Jinhwan', 'Kim', email = 'hwanistic@gmail.com', role = c('cre', 'aut'))
+Description: PKG_DESC.
+License: MIT + file LICENSE
 Imports: 
     config (>= 0.3.1),
     golem (>= 0.3.2),
@@ -15,3 +11,5 @@ Imports:
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
+URL: https://github.com/statgarten/door
+BugReports: https://github.com/statgarten/door/issues
