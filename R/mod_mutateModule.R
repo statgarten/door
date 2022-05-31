@@ -31,7 +31,7 @@ mod_mutateModule_ui <- function(id) {
     selectInput(
       inputId = ns("mutateOperator"),
       label = "mutateOpeartorLabel",
-      choices = c("Round", "Log", "Sart", "Min-Max", "Normal", "Remove"),
+      choices = c("Round", "Log", "Log10", "Sqrt", "-", "Min-Max", "Normal", "Binarize(not)"),
       selected = NULL,
       multiple = FALSE
     ),
@@ -79,6 +79,73 @@ mod_mutateModule_server <- function(id, inputData) {
             )
         ))
       }
+
+      if(input$mutateOperator == "Log"){
+        eval(parse(
+          text =
+            paste0(
+              "inputData( inputData() %>% ",
+              "mutate(",
+              input$mutateColumn, " = log(", input$mutateColumn, ")) )"
+            )
+        ))
+      }
+
+      if(input$mutateOperator == "Log10"){
+        eval(parse(
+          text =
+            paste0(
+              "inputData( inputData() %>% ",
+              "mutate(",
+              input$mutateColumn, " = log10(", input$mutateColumn, ")) )"
+            )
+        ))
+      }
+
+      if(input$mutateOperator == "Sqrt"){
+        eval(parse(
+          text =
+            paste0(
+              "inputData( inputData() %>% ",
+              "mutate(",
+              input$mutateColumn, " = sqrt(", input$mutateColumn, ")) )"
+            )
+        ))
+      }
+
+      if(input$mutateOperator == "-"){
+        eval(parse(
+          text =
+            paste0(
+              "inputData( inputData() %>% ",
+              "mutate(",
+              input$mutateColumn, " = -(", input$mutateColumn, ")) )"
+            )
+        ))
+      }
+
+      if(input$mutateOperator == "Min-Max"){
+        eval(parse(
+          text =
+            paste0(
+              "inputData( inputData() %>% ",
+              "mutate(",
+              input$mutateColumn, " = minmax(", input$mutateColumn, ")) )"
+            )
+        ))
+      }
+
+      if(input$mutateOperator == "Normal"){
+        eval(parse(
+          text =
+            paste0(
+              "inputData( inputData() %>% ",
+              "mutate(",
+              input$mutateColumn, " = normalize(", input$mutateColumn, ")) )"
+            )
+        ))
+      }
+
 
       output$DT <- renderDT(
         getDT(inputData())

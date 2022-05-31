@@ -93,6 +93,21 @@ boxUI <- function(title, elem) {
     solidHeader = TRUE,
     gradient = TRUE,
     background = "gray",
+    id = paste0(title, '_box'),
     elem
   )
+}
+
+#'
+#'
+#'
+minmax <- function(x){
+  (x - min(x)) / (max(x) - min(x))
+}
+
+#'
+#'
+#'
+normalize <- function(x){
+  (x - mean(x)) / sd(x)
 }
