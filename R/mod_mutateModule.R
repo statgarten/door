@@ -7,48 +7,53 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList icon
-mod_mutateModule_ui <- function(id) {
+mod_mutateModule_ui <- function(id, title) {
   ns <- NS(id)
-  tagList(
 
-    # load column
-    actionButton(
-      inputId = ns("loadMutateColumn"),
-      label = "Load Variables",
-      icon = icon("check")
-    ),
+  boxUI(
+    title = title,
+    id = ns("MutateBox"),
+    elem = tagList(
+      # load column
+      # actionButton(
+      #   inputId = ns("loadMutateColumn"),
+      #   label = "Load Variables",
+      #   icon = icon("check")
+      # ),
 
-    # which column
-    selectInput(
-      inputId = ns("mutateColumn"),
-      label = "mutateSelectLabel",
-      choices = NULL,
-      selected = NULL,
-      multiple = FALSE
-    ),
+      # which column
+      selectInput(
+        inputId = ns("mutateColumn"),
+        label = "mutateSelectLabel",
+        choices = NULL,
+        selected = NULL,
+        multiple = FALSE
+      ),
 
-    # option
-    selectInput(
-      inputId = ns("mutateOperator"),
-      label = "mutateOpeartorLabel",
-      choices = c("Round", "Log", "Log10", "Sqrt", "-", "Min-Max", "Normal", "Binarize(not)"),
-      selected = NULL,
-      multiple = FALSE
-    ),
+      # option
+      selectInput(
+        inputId = ns("mutateOperator"),
+        label = "mutateOpeartorLabel",
+        choices = c("Round", "Log", "Log10", "Sqrt", "-", "Min-Max", "Normal", "Binarize(not)"),
+        selected = NULL,
+        multiple = FALSE
+      ),
 
-    #
-    textInput(
-      inputId = ns("mutateVariable"),
-      label = "mutateVariableLabel",
-    ),
+      #
+      textInput(
+        inputId = ns("mutateVariable"),
+        label = "mutateVariableLabel",
+      ),
 
-    # apply button
-    actionButton(
-      inputId = ns("mutateButton"),
-      label = "mutate",
-      icon = icon("angle-down")
+      # apply button
+      actionButton(
+        inputId = ns("mutateButton"),
+        label = "mutate",
+        icon = icon("angle-down")
+      )
     )
   )
+
 }
 
 #' mutateModule Server Functions
@@ -58,15 +63,27 @@ mod_mutateModule_server <- function(id, inputData) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    observeEvent(input$loadMutateColumn, {
-      updateSelectizeInput(
-        session,
-        inputId = "mutateColumn",
-        label = "mutateSelectLabel",
-        choices = colnames(inputData()),
-        server = TRUE
-      )
+    observeEvent(input$MutateBox$collapsed, {
+      if(!input$MutateBox$collapsed){
+        updateSelectizeInput(
+          session,
+          inputId = "mutateColumn",
+          label = "mutateSelectLabel",
+          choices = colnames(inputData()),
+          server = TRUE
+        )
+      }
     })
+
+    # observeEvent(input$loadMutateColumn, {
+    #   updateSelectizeInput(
+    #     session,
+    #     inputId = "mutateColumn",
+    #     label = "mutateSelectLabel",
+    #     choices = colnames(inputData()),
+    #     server = TRUE
+    #   )
+    # })
 
     observeEvent(input$mutateButton, {
       if (input$mutateOperator == "Round") {

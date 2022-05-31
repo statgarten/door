@@ -83,7 +83,7 @@ getDT <- function(inputData, all = FALSE) {
     )
 }
 
-boxUI <- function(title, elem) {
+boxUI <- function(title, elem, id = NULL) {
   shinydashboardPlus::box(
     title = title,
     collapsible = TRUE,
@@ -93,7 +93,7 @@ boxUI <- function(title, elem) {
     solidHeader = TRUE,
     gradient = TRUE,
     background = "gray",
-    id = paste0(title, '_box'),
+    id = id,
     elem
   )
 }

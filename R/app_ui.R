@@ -48,11 +48,11 @@ app_ui <- function(request) {
                 title = "Subset",
                 subsetUI("subsetModule")
               ),
-              boxUI(
-                title = "Mutate",
+              #boxUI(
+              #  title = "Mutate",
                 # mutateUI("mutateModule")
-                mod_mutateModule_ui("mutateModule_1")
-              ),
+              mod_mutateModule_ui("mutateModule_1", title = "Mutate"),
+              #),
               boxUI(
                 title = "Clean",
                 cleanUI("cleanModule")
