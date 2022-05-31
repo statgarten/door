@@ -5,6 +5,7 @@
 #' @import shiny dplyr tidyr
 #' @importFrom shinyjs hidden useShinyjs
 #' @importFrom DT DTOutput
+#' @import shinyWidgets
 #' @importFrom shinydashboard dashboardBody
 #' @importFrom shinydashboardPlus box dashboardSidebar dashboardPage dashboardFooter dashboardControlbar
 #' @noRd
@@ -47,10 +48,11 @@ app_ui <- function(request) {
                 title = "Subset",
                 subsetUI("subsetModule")
               ),
-              boxUI(
-                title = "Mutate",
-                mutateUI("mutateModule")
-              ),
+              #boxUI(
+              #  title = "Mutate",
+                # mutateUI("mutateModule")
+              mod_mutateModule_ui("mutateModule_1", title = "Mutate"),
+              #),
               boxUI(
                 title = "Clean",
                 cleanUI("cleanModule")
@@ -85,7 +87,7 @@ app_ui <- function(request) {
           ),
           fileInput(
             inputId = "fileInputID",
-            label = "FileInput Label",
+            label = NULL,
             accept = c(".csv", ".tsv", ".sas7bdat", ".sas7bcat", ".sav", ".dta", ".xls", ".xlsx", ".rda", ".rds", ".rdata"),
             # csv: Column separated
             # tsv, tab: Tab separated
@@ -94,12 +96,21 @@ app_ui <- function(request) {
             # dta: Stata file
             # xls, xlsx: Excel file
             # rda, rds, rdata: Robject file
-            buttonLabel = "Button Label",
-            placeholder = "Place Holder"
+            buttonLabel = "Browse local files",
+            placeholder = "or Drag & Drop in Here",
+            multiple = FALSE,
+            width = '100%'
+          ),
+          shinyWidgets::prettySwitch(
+            inputId = "showAll",
+            label = "Every Data",
+            status = "success",
+            fill = TRUE
           ),
           DT::DTOutput(
             outputId = "DT"
           )
+
         )
       ),
       controlbar = dashboardControlbar(

@@ -92,7 +92,9 @@ app_server <- function(input, output, session) {
 
   subsetServer(id = "subsetModule", inputData)
 
-  mutateServer(id = "mutateModule", inputData)
+  mod_mutateModule_server("mutateModule_1", inputData)
+
+  #mutateServer(id = "mutateModule", inputData)
 
   cleanServer(id = "cleanModule", inputData)
 
@@ -100,4 +102,20 @@ app_server <- function(input, output, session) {
 
   exportServer(id = "exportModule", inputData)
   # Your application server logic
+
+  observeEvent(input$showAll,{
+    if(is.null(inputData())){return()}
+    if(input$showAll == TRUE){
+      output$DT <- inputData() |>
+        getDT(all = TRUE) |>
+        DT::renderDT()
+    }
+    if(input$showAll == FALSE){
+      output$DT <- inputData() |>
+        getDT() |>
+        DT::renderDT()
+    }
+
+  })
+
 }

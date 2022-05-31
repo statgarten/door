@@ -1,0 +1,25 @@
+/*
+
+*/
+
+body > div.wrapper > div.content-wrapper > section > div > div.form-group.shiny-input-container > div.input-group > input{
+  height:10em;
+}
+
+/*
+fileinput button
+*/
+
+body > div.wrapper > div.content-wrapper > section > div > div.form-group.shiny-input-container > div.input-group > label > span{
+
+  height: 10em;
+  border-top-left-radius: 2em;
+  border-bottom-left-radius: 2em;
+
+  display: table-cell; /*text vertical center*/
+
+  background: #001F3F; /* font style*/
+  color: white;
+  font-weight: bold;
+}
+
