@@ -17,6 +17,7 @@ Imports:
     reactable,
     readr,
     readxl,
+    RSQLite,
     shiny (>= 1.7.1),
     shinydashboard,
     shinydashboardPlus,
@@ -24,7 +25,8 @@ Imports:
     shinyWidgets,
     sortable,
     tidyr,
-    tools
+    tools,
+    writexl
 Suggests: 
     knitr,
     rmarkdown

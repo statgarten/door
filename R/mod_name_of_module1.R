@@ -277,6 +277,9 @@ exportUI <- function(id) {
   )
 }
 
+#'
+#' @importFrom RSQLite dbWriteTable dbConnect dbDriver dbDisconnect
+#'
 exportServer <- function(id, inputData) {
   moduleServer(id, function(input, output, session) {
     output$exportButton <- downloadHandler(
@@ -291,13 +294,23 @@ exportServer <- function(id, inputData) {
           write.csv(inputData(), file = con, row.names = FALSE)
         }
         if (input$exportOption == ".rda") {
-          save(inputData(), file = con)
+          saveRDS(inputData, file = con)
         }
         if (input$exportOption == ".sqlite") {
-          # need to implement
+          RSQLite::dbWriteTable(
+            conn = RSQLite::dbConnect(
+              RSQLite::dbDriver("SQLite"),
+              dbname = con
+            ),
+            name = "data1",
+            value = inputData()
+          )
+          RSQLite::dbDisconnect()
+          #con <- dbConnect(drv=RSQLite::SQLite(), dbname="SQLITE_FILENAME")
+          #data <- dbGetQuery(conn=con, statement = "SELECT * FROM 'data1'")
         }
         if (input$exportOption == ".xlsx") {
-          # need to implement
+          writexl::write_xlsx(inputData(), path = con)
         }
       }
     )
