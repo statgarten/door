@@ -26,8 +26,8 @@ body > div.wrapper > div.content-wrapper > section > div > div.form-group.shiny-
 /*
 react table header center align
 */
-.rt-align-center{
-  text-align: center;
+.rt-text-content{
+  margin:auto;
 }
 
 .my-header{

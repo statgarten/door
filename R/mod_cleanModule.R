@@ -57,7 +57,7 @@ mod_cleanModule_ui <- function(id){
 #' cleanModule Server Functions
 #'
 #' @noRd
-mod_cleanModule_server <- function(id){
+mod_cleanModule_server <- function(id, inputData){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     observeEvent(input$loadCleanColumn, {
