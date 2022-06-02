@@ -92,15 +92,15 @@ app_server <- function(input, output, session) {
   mod_filterModule_server("filterModule_1", inputData)
   # filterServer(id = "filterModule", inputData)
 
-  subsetServer(id = "subsetModule", inputData)
+  mod_subsetModule_server("subsetModule_1", inputData)
 
   mod_mutateModule_server("mutateModule_1", inputData)
 
   #mutateServer(id = "mutateModule", inputData)
 
-  cleanServer(id = "cleanModule", inputData)
+  mod_cleanModule_server("cleanModule_1", inputData)
 
-  splitServer(id = "splitModule", inputData)
+  mod_splitModule_server("splitModule_1", inputData)
 
   mod_exportModule_server("exportModule_1", inputData)
   # exportServer(id = "exportModule", inputData)

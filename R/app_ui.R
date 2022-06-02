@@ -47,20 +47,20 @@ app_ui <- function(request) {
               ),
               boxUI(
                 title = "Subset",
-                subsetUI("subsetModule")
+                mod_subsetModule_ui("subsetModule_1")
               ),
-              #boxUI(
+              # boxUI(
               #  title = "Mutate",
-                # mutateUI("mutateModule")
+              # mutateUI("mutateModule")
               mod_mutateModule_ui("mutateModule_1", title = "Mutate"),
-              #),
+              # ),
               boxUI(
                 title = "Clean",
-                cleanUI("cleanModule")
+                mod_cleanModule_ui("cleanModule_1")
               ),
               boxUI(
                 title = "Split",
-                splitUI("splitModule")
+                mod_splitModule_ui("splitModule_1")
               ),
               boxUI(
                 title = "Reshape",
@@ -100,7 +100,7 @@ app_ui <- function(request) {
             buttonLabel = "Browse local files",
             placeholder = "or Drag & Drop in Here",
             multiple = FALSE,
-            width = '100%'
+            width = "100%"
           ),
           shinyWidgets::prettySwitch(
             inputId = "showAll",
@@ -109,12 +109,11 @@ app_ui <- function(request) {
             fill = TRUE
           ),
           reactable::reactableOutput(
-            outputId = 'DT'
+            outputId = "DT"
           )
-          #DT::DTOutput(
+          # DT::DTOutput(
           #  outputId = "DT"
           # )
-
         )
       ),
       controlbar = dashboardControlbar(
