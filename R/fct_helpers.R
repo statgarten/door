@@ -6,10 +6,39 @@
 #' @importFrom DT datatable formatStyle
 #' @importFrom shinydashboardPlus box
 #' @importFrom htmlwidgets JS
+#' @importFrom reactable reactable
 #' @noRd
 #' @export
 
 getDT <- function(inputData, all = FALSE) {
+
+  ### reactable Trial
+  return(
+    reactable(
+      inputData,
+      defaultColDef = colDef(
+        align = 'right',
+        headerClass = "my-header"
+      )
+      # footer = function(values, name) htmltools::div(name, style = list(fontWeight = 600))
+      ,
+      defaultPageSize = 10,
+      minRows = 10,
+      showPageSizeOptions = TRUE,
+      pageSizeOptions = c(10, 25, 50),
+      compact = TRUE,
+      # outlined = TRUE,
+      paginationType = "simple",
+      showPageInfo = FALSE,
+      highlight = TRUE,
+      # theme = reactableTheme(
+      #     headerStyle = list(
+      #
+      #     )
+      # )
+    )
+  )
+  ###
 
   if(all){
     return(

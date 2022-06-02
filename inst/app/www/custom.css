@@ -23,3 +23,22 @@ body > div.wrapper > div.content-wrapper > section > div > div.form-group.shiny-
   font-weight: bold;
 }
 
+/*
+react table header center align
+*/
+.rt-align-center{
+  text-align: center;
+}
+
+.my-header{
+  background: #2c3c75;
+  color: #FFFFFF;
+  font-size: 15px;
+  text-align: center;
+}
+
+/*
+color of the year 2022
+
+
+*/

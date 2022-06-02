@@ -8,6 +8,7 @@
 #' @import shinyWidgets
 #' @importFrom shinydashboard dashboardBody
 #' @importFrom shinydashboardPlus box dashboardSidebar dashboardPage dashboardFooter dashboardControlbar
+#' @importFrom reactable reactableOutput
 #' @noRd
 app_ui <- function(request) {
   tagList(
@@ -62,8 +63,8 @@ app_ui <- function(request) {
                 splitUI("splitModule")
               ),
               boxUI(
-                title = "!Reshape (not)",
-                p("Not Implemented")
+                title = "Reshape",
+                mod_reshapeModule_ui("reshapeModule_1")
               ),
               boxUI(
                 title = "Export",
@@ -107,9 +108,12 @@ app_ui <- function(request) {
             status = "success",
             fill = TRUE
           ),
-          DT::DTOutput(
-            outputId = "DT"
+          reactable::reactableOutput(
+            outputId = 'DT'
           )
+          #DT::DTOutput(
+          #  outputId = "DT"
+          # )
 
         )
       ),

@@ -7,6 +7,7 @@
 #' @importFrom haven read_sas read_sav read_dta
 #' @importFrom readxl read_xls read_xlsx
 #' @importFrom readr read_rds
+#' @importFrom reactable renderReactable
 #' @noRd
 app_server <- function(input, output, session) {
   src <- "https://github.com/rstudio/shiny/blob/main/man/figures/logo.png?raw=true"
@@ -43,7 +44,7 @@ app_server <- function(input, output, session) {
     }
     if (ext == "tsv") {
       file$datapath |>
-        read.csv(sep = "\t")
+        read.csv(sep = "\t") |>
       inputData()
     }
     if (ext == "sas7bdat" || ext == "sas7bcat") {
@@ -84,7 +85,8 @@ app_server <- function(input, output, session) {
 
     output$DT <- inputData() |>
       getDT() |>
-      DT::renderDT()
+      reactable::renderReactable()
+      # DT::renderDT()
   })
 
   mod_filterModule_server("filterModule_1", inputData)
@@ -102,6 +104,8 @@ app_server <- function(input, output, session) {
 
   exportServer(id = "exportModule", inputData)
   # Your application server logic
+
+  mod_reshapeModule_server("reshapeModule_1", inputData)
 
   observeEvent(input$showAll,{
     if(is.null(inputData())){return()}
