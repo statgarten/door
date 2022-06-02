@@ -68,7 +68,7 @@ app_ui <- function(request) {
               ),
               boxUI(
                 title = "Export",
-                exportUI("exportModule")
+                mod_exportModule_ui("exportModule_1")
               )
             )
           )

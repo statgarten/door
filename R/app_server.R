@@ -102,7 +102,8 @@ app_server <- function(input, output, session) {
 
   splitServer(id = "splitModule", inputData)
 
-  exportServer(id = "exportModule", inputData)
+  mod_exportModule_server("exportModule_1", inputData)
+  # exportServer(id = "exportModule", inputData)
   # Your application server logic
 
   mod_reshapeModule_server("reshapeModule_1", inputData)

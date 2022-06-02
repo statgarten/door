@@ -277,7 +277,7 @@ exportUI <- function(id) {
   )
 }
 
-#'
+#' @importFrom writexl write_xlsx
 #' @importFrom RSQLite dbWriteTable dbConnect dbDriver dbDisconnect
 #'
 exportServer <- function(id, inputData) {
@@ -305,9 +305,9 @@ exportServer <- function(id, inputData) {
             name = "data1",
             value = inputData()
           )
-          RSQLite::dbDisconnect()
-          #con <- dbConnect(drv=RSQLite::SQLite(), dbname="SQLITE_FILENAME")
-          #data <- dbGetQuery(conn=con, statement = "SELECT * FROM 'data1'")
+          # RSQLite::dbDisconnect()
+          # con <- dbConnect(drv=RSQLite::SQLite(), dbname="SQLITE_FILENAME")
+          # data <- dbGetQuery(conn=con, statement = "SELECT * FROM 'data1'")
         }
         if (input$exportOption == ".xlsx") {
           writexl::write_xlsx(inputData(), path = con)
