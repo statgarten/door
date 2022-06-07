@@ -10,7 +10,7 @@
 #' @importFrom reactable renderReactable
 #' @noRd
 app_server <- function(input, output, session) {
-  src <- "https://github.com/rstudio/shiny/blob/main/man/figures/logo.png?raw=true"
+  src <- 'www/statgarten.png'
   output$Logo <- renderText({
     c('<img width = "100" src="', src, '">')
   })
@@ -26,15 +26,14 @@ app_server <- function(input, output, session) {
 
     req(file)
 
-    # validate(need(ext == "csv", "Please upload a csv File"))
-    # already filtered in fileinput @accepts
+    shinyjs::hide(id = "desc")
+    shinyjs::hide(id = "fileInputID")
 
-    shinyjs::hide(id = "desc", anim = TRUE, animType = "slide")
-    shinyjs::hide(id = "fileInputID", anim = TRUE, animType = "fade")
+    shinyjs::show(id = "showAll")
+    shinyjs::enable(id = "showAll")
 
-    shinyjs::show(id = "LoadButton", anim = TRUE, animType = "slide")
-    shinyjs::show(id = "LoadTest", anim = TRUE, animType = "fade")
-
+    shinyjs::show(id = "LoadButton")
+    shinyjs::show(id = "LoadTest")
     shinyjs::show(id = "SideBox")
 
     if (ext == "csv") {
@@ -83,42 +82,44 @@ app_server <- function(input, output, session) {
         inputData()
     }
 
-    output$DT <- inputData() |>
+
+    output$DT <-
+      inputData() |>
       getDT() |>
       reactable::renderReactable()
-      # DT::renderDT()
+
   })
 
   mod_filterModule_server("filterModule_1", inputData)
-  # filterServer(id = "filterModule", inputData)
 
   mod_subsetModule_server("subsetModule_1", inputData)
 
   mod_mutateModule_server("mutateModule_1", inputData)
-
-  #mutateServer(id = "mutateModule", inputData)
 
   mod_cleanModule_server("cleanModule_1", inputData)
 
   mod_splitModule_server("splitModule_1", inputData)
 
   mod_exportModule_server("exportModule_1", inputData)
-  # exportServer(id = "exportModule", inputData)
   # Your application server logic
 
   mod_reshapeModule_server("reshapeModule_1", inputData)
 
   observeEvent(input$showAll,{
+    # only shows input data exists
     if(is.null(inputData())){return()}
+
     if(input$showAll == TRUE){
-      output$DT <- inputData() |>
+      output$DT <-
+        inputData() |>
         getDT(all = TRUE) |>
-        DT::renderDT()
+        reactable::renderReactable()
     }
     if(input$showAll == FALSE){
-      output$DT <- inputData() |>
+      output$DT <-
+        inputData() |>
         getDT() |>
-        DT::renderDT()
+        reactable::renderReactable()
     }
 
   })

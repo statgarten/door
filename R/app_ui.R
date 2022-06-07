@@ -15,7 +15,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     dashboardPage(
       header = shinydashboardPlus::dashboardHeader(
-        title = "HeaderTitle", # chrome tab name
+        title = "StatGarten",
         controlbarIcon = icon("gear", verify_fa = FALSE),
         leftUi = tagList(
           div(
@@ -43,17 +43,12 @@ app_ui <- function(request) {
               boxUI(
                 title = "Filter",
                 mod_filterModule_ui("filterModule_1")
-                # filterUI("filterModule")
               ),
               boxUI(
                 title = "Subset",
                 mod_subsetModule_ui("subsetModule_1")
               ),
-              # boxUI(
-              #  title = "Mutate",
-              # mutateUI("mutateModule")
               mod_mutateModule_ui("mutateModule_1", title = "Mutate"),
-              # ),
               boxUI(
                 title = "Clean",
                 mod_cleanModule_ui("cleanModule_1")
@@ -90,37 +85,30 @@ app_ui <- function(request) {
             inputId = "fileInputID",
             label = NULL,
             accept = c(".csv", ".tsv", ".sas7bdat", ".sas7bcat", ".sav", ".dta", ".xls", ".xlsx", ".rda", ".rds", ".rdata"),
-            # csv: Column separated
-            # tsv, tab: Tab separated
-            # sas7bdat: SAS file
-            # sav: SPSS file
-            # dta: Stata file
-            # xls, xlsx: Excel file
-            # rda, rds, rdata: Robject file
             buttonLabel = "Browse local files",
             placeholder = "or Drag & Drop in Here",
             multiple = FALSE,
             width = "100%"
           ),
-          shinyWidgets::prettySwitch(
-            inputId = "showAll",
-            label = "Every Data",
-            status = "success",
-            fill = TRUE
+          shinyjs::disabled(
+            shinyjs::hidden(
+              shinyWidgets::prettySwitch(
+                inputId = "showAll",
+                label = "Show every data",
+                status = "success",
+                value = TRUE,
+                fill = TRUE
+              )
+            )
           ),
           reactable::reactableOutput(
             outputId = "DT"
           )
-          # DT::DTOutput(
-          #  outputId = "DT"
-          # )
         )
       ),
-      controlbar = dashboardControlbar(
-        p("Control Bar")
-      ),
+      controlbar = dashboardControlbar(disable = TRUE),
       footer = dashboardFooter(
-        left = "Left Content",
+        left = NULL,
         right = actionButton(
           inputId = "Outro",
           label = "Github / Manual",
