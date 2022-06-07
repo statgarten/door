@@ -59,7 +59,6 @@ app_ui <- function(request) {
                 ),
                 selected = NULL
               ),
-              uiOutput(outputId = "ImportUI"),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Filter"',
                 mod_filterModule_ui("filterModule_1")
@@ -70,35 +69,23 @@ app_ui <- function(request) {
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Mutate"',
-                mod_mutateModule_ui("mutateModule_1", title = "Mutate"),
+                mod_mutateModule_ui("mutateModule_1"),
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Clean"',
-                boxUI(
-                  title = "Clean",
-                  mod_cleanModule_ui("cleanModule_1")
-                )
+                mod_cleanModule_ui("cleanModule_1")
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Split"',
-                boxUI(
-                  title = "Split",
-                  mod_splitModule_ui("splitModule_1")
-                )
+                mod_splitModule_ui("splitModule_1")
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Reshape"',
-                boxUI(
-                  title = "Reshape",
-                  mod_reshapeModule_ui("reshapeModule_1")
-                )
+                mod_reshapeModule_ui("reshapeModule_1")
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Export"',
-                boxUI(
-                  title = "Export",
-                  mod_exportModule_ui("exportModule_1")
-                )
+                mod_exportModule_ui("exportModule_1")
               )
             )
           )

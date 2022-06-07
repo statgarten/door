@@ -32,6 +32,7 @@ mod_subsetModule_server <- function(id, inputData, opened) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observeEvent(opened(), {
+      if(opened()!="Subset"){return()}
       updateSelectizeInput(
         session,
         inputId = "subsetColumn",

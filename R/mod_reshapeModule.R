@@ -12,11 +12,6 @@
 mod_reshapeModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    actionButton(
-      inputId = ns("loadreshapeColumn"),
-      label = "load variables",
-      icon = icon("check")
-    ),
     uiOutput(ns("reshapeSortable")),
     actionButton(
       inputId = ns("applyReshape"),
@@ -29,15 +24,16 @@ mod_reshapeModule_ui <- function(id) {
 #' reshapeModule Server Functions
 #'
 #' @noRd
-mod_reshapeModule_server <- function(id, inputData) {
+mod_reshapeModule_server <- function(id, inputData, opened) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    observeEvent(input$loadreshapeColumn, {
+    observeEvent(opened, {
       output$reshapeSortable <- renderUI({
         rank_list(
-          text = "text",
+          text = "Order of Columns",
           labels = colnames(inputData()),
-          input_id = ns("reshapeSortable")
+          input_id = ns("reshapeSortable"),
+          class = c("custom-sortable", "default-sortable") # add custom style
         )
       })
     })
@@ -54,50 +50,18 @@ mod_reshapeModule_server <- function(id, inputData) {
         inputData() |>
         getDT(all = TRUE) |>
         reactable::renderReactable()
+
+      output$reshapeSortable <- renderUI({
+        rank_list(
+          text = "Order of Columns",
+          labels = colnames(inputData()),
+          input_id = ns("reshapeSortable"),
+          class = c("default-sortable", "custom-sortable") # add custom style
+        )
+      })
+
     })
 
-    # inputData <- eventReactive(input$reshapeSortable, {
-    #   inputData() |> select(input$reshapeSortable)
-    # })
-
-    observeEvent(input$reshapeSortable, {
-
-      # print(inputData() |> colnames())
-
-      # print(inputData() |> select(input$reshapeSortable) |> colnames())
-
-      # print(inputData(inputData() |> select(input$reshapeSortable)) |> colnames())
-      # eval(parse(
-      #   text =
-      #     paste0(
-      #       "inputData( inputData() |> select( ", input$reshapeSortable, ") )"
-      #     )
-      # ))
-
-      # print(inputData() |> colnames())
-
-      # inputData(
-      #   inputData() |>
-      #   dplyr::select(input$sortable[1:3])
-      # )
-
-      # inputData() |>
-      #   dim() |>
-      #   print()
-      #
-      # inputData()
-      # colnames() |>
-      # print()
-
-
-      # eval(parse(
-      #   text =
-      #     paste0("inputData( inputData() |> dplyr::select( ", input$sortable, ") )")
-      # ))
-      # print('after')
-      # print(colnames(inputData()))
-      # inputData(inputData[,input$sortable])
-    })
   })
 }
 

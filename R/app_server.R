@@ -99,13 +99,13 @@ app_server <- function(input, output, session) {
 
   mod_subsetModule_server("subsetModule_1", inputData, opened)
 
-  mod_mutateModule_server("mutateModule_1", inputData)
+  mod_mutateModule_server("mutateModule_1", inputData, opened)
 
-  mod_cleanModule_server("cleanModule_1", inputData)
+  mod_cleanModule_server("cleanModule_1", inputData, opened)
 
-  mod_splitModule_server("splitModule_1", inputData)
+  mod_splitModule_server("splitModule_1", inputData, opened)
 
-  mod_reshapeModule_server("reshapeModule_1", inputData)
+  mod_reshapeModule_server("reshapeModule_1", inputData, opened)
 
   mod_exportModule_server("exportModule_1", inputData)
 

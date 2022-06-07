@@ -47,6 +47,7 @@ mod_filterModule_server <- function(id, inputData, opened) {
     ns <- session$ns
 
     observeEvent(opened(), {
+      if(opened()!="Filter"){return()}
       updateSelectizeInput(
         session,
         inputId = "filterColumn", # ns() not work

@@ -40,5 +40,16 @@ react table header center align
 /*
 color of the year 2022
 
-
 */
+
+
+/*
+sortable color
+*/
+.rank-list-container .custom-sortable {
+  background-color: #8A8 !important;
+}
+
+.custom-sortable .rank-list-item {
+  background-color: #BDB !important;
+}
