@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_splitModule_ui <- function(id){
+mod_splitModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     actionButton(
@@ -50,8 +50,8 @@ mod_splitModule_ui <- function(id){
 #' splitModule Server Functions
 #'
 #' @noRd
-mod_splitModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
+mod_splitModule_server <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observeEvent(input$loadSplitColumn, {
       updateSelectizeInput(
@@ -76,7 +76,6 @@ mod_splitModule_server <- function(id, inputData){
         inputData() |>
         getDT(all = TRUE) |>
         reactable::renderReactable()
-
     })
   })
 }

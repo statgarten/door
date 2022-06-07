@@ -219,7 +219,6 @@ mod_mutateModule_server <- function(id, inputData) {
         inputData() |>
         getDT(all = TRUE) |>
         reactable::renderReactable()
-
     })
   })
 }

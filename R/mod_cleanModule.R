@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_cleanModule_ui <- function(id){
+mod_cleanModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     ## LOAD COLUMNS
@@ -57,8 +57,8 @@ mod_cleanModule_ui <- function(id){
 #' cleanModule Server Functions
 #'
 #' @noRd
-mod_cleanModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
+mod_cleanModule_server <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observeEvent(input$loadCleanColumn, {
       updateSelectizeInput(
@@ -110,7 +110,6 @@ mod_cleanModule_server <- function(id, inputData){
         inputData() |>
         getDT(all = TRUE) |>
         reactable::renderReactable()
-
     })
   })
 }

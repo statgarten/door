@@ -7,17 +7,16 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_name_of_module1_ui <- function(id){
+mod_name_of_module1_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-  )
+  tagList()
 }
 
 #' name_of_module1 Server Functions
 #'
 #' @noRd
-mod_name_of_module1_server <- function(id){
-  moduleServer( id, function(input, output, session){
+mod_name_of_module1_server <- function(id) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
   })
 }

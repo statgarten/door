@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_subsetModule_ui <- function(id){
+mod_subsetModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     actionButton(
@@ -33,8 +33,8 @@ mod_subsetModule_ui <- function(id){
 #' subsetModule Server Functions
 #'
 #' @noRd
-mod_subsetModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
+mod_subsetModule_server <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observeEvent(input$loadSubsetColumn, {
       updateSelectizeInput(
@@ -59,9 +59,7 @@ mod_subsetModule_server <- function(id, inputData){
         inputData() |>
         getDT(all = TRUE) |>
         reactable::renderReactable()
-
     })
-
   })
 }
 

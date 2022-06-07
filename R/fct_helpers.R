@@ -13,41 +13,41 @@
 getDT <- function(inputData, all = FALSE) {
 
   ### reactable Trial
-  if(!all){
+  if (!all) {
     return(
       reactable(
-      rbind(
-        inputData |> head(5),
-        inputData |> tail(5)
-      ),
-      defaultColDef = colDef(
-        align = 'right',
-        headerClass = "my-header"
+        rbind(
+          inputData |> head(5),
+          inputData |> tail(5)
+        ),
+        defaultColDef = colDef(
+          align = "right",
+          headerClass = "my-header"
+        )
+        # footer = function(values, name) htmltools::div(name, style = list(fontWeight = 600))
+        ,
+        defaultPageSize = 10,
+        minRows = 10,
+        showPageSizeOptions = TRUE,
+        pageSizeOptions = c(10, 25, 50),
+        compact = TRUE,
+        # outlined = TRUE,
+        paginationType = "simple",
+        showPageInfo = FALSE,
+        highlight = TRUE,
+        # theme = reactableTheme(
+        #     headerStyle = list(
+        #
+        #     )
+        # )
       )
-      # footer = function(values, name) htmltools::div(name, style = list(fontWeight = 600))
-      ,
-      defaultPageSize = 10,
-      minRows = 10,
-      showPageSizeOptions = TRUE,
-      pageSizeOptions = c(10, 25, 50),
-      compact = TRUE,
-      # outlined = TRUE,
-      paginationType = "simple",
-      showPageInfo = FALSE,
-      highlight = TRUE,
-      # theme = reactableTheme(
-      #     headerStyle = list(
-      #
-      #     )
-      # )
-    )
     )
   }
   return(
     reactable(
       inputData,
       defaultColDef = colDef(
-        align = 'right',
+        align = "right",
         headerClass = "my-header"
       )
       # footer = function(values, name) htmltools::div(name, style = list(fontWeight = 600))
@@ -68,7 +68,6 @@ getDT <- function(inputData, all = FALSE) {
       # )
     )
   )
-
 }
 
 boxUI <- function(title, elem, id = NULL) {
@@ -89,13 +88,13 @@ boxUI <- function(title, elem, id = NULL) {
 #'
 #'
 #'
-minmax <- function(x){
+minmax <- function(x) {
   (x - min(x)) / (max(x) - min(x))
 }
 
 #'
 #'
 #'
-normalize <- function(x){
+normalize <- function(x) {
   (x - mean(x)) / sd(x)
 }
