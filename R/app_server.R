@@ -97,7 +97,7 @@ app_server <- function(input, output, session) {
 
   mod_filterModule_server("filterModule_1", inputData, opened)
 
-  mod_subsetModule_server("subsetModule_1", inputData)
+  mod_subsetModule_server("subsetModule_1", inputData, opened)
 
   mod_mutateModule_server("mutateModule_1", inputData)
 

@@ -62,17 +62,11 @@ app_ui <- function(request) {
               uiOutput(outputId = "ImportUI"),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Filter"',
-                # boxUI(
-                #  title = "Filter",
                 mod_filterModule_ui("filterModule_1")
-                # )
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Subset"',
-                boxUI(
-                  title = "Subset",
-                  mod_subsetModule_ui("subsetModule_1")
-                )
+                mod_subsetModule_ui("subsetModule_1")
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Mutate"',
