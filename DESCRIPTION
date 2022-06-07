@@ -14,15 +14,19 @@ Imports:
     golem (>= 0.3.2),
     haven,
     htmlwidgets,
+    reactable,
     readr,
     readxl,
+    RSQLite,
     shiny (>= 1.7.1),
     shinydashboard,
     shinydashboardPlus,
     shinyjs,
     shinyWidgets,
+    sortable,
     tidyr,
-    tools
+    tools,
+    writexl
 Suggests: 
     knitr,
     rmarkdown

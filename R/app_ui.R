@@ -8,22 +8,29 @@
 #' @import shinyWidgets
 #' @importFrom shinydashboard dashboardBody
 #' @importFrom shinydashboardPlus box dashboardSidebar dashboardPage dashboardFooter dashboardControlbar
+#' @importFrom reactable reactableOutput
 #' @noRd
 app_ui <- function(request) {
   tagList(
     golem_add_external_resources(),
     dashboardPage(
       header = shinydashboardPlus::dashboardHeader(
-        title = "HeaderTitle", # chrome tab name
+        title = "StatGarten",
         controlbarIcon = icon("gear", verify_fa = FALSE),
         leftUi = tagList(
           div(
-            selectInput(
+            shinyWidgets::radioGroupButtons(
               inputId = "module",
               label = NULL,
-              choices = c("Import", "Vis"),
+              # status = 'warning',
+              choices = c("Import", "Vis", "EDA", "Report"),
               selected = "Import",
-              width = "10em"
+              individual = TRUE,
+              checkIcon = list(
+                yes = tags$i(class = "fa fa-circle", style = "color: gold"),
+                no = tags$i(class = "fa fa-circle-o", style = "color: gold")
+              ) # ,
+              # width = "10em"
             ),
             style = "margin-bottom: -11.5px; text-align: center; font-weight: bold;"
           )
@@ -38,42 +45,80 @@ app_ui <- function(request) {
           condition = 'input.module == "Import"',
           shinyjs::hidden(
             div(
-              id = "SideBox",
-              boxUI(
-                title = "Filter",
+              id = "ImportBox",
+              shinyWidgets::pickerInput(
+                inputId = "ImportFunction",
+                label = "Functions",
+                choices = c("", "Filter", "Subset", "Mutate", "Clean", "Split", "Reshape", "Export"),
+                choicesOpt = list(
+                  subtext = c("", "fil", "sub", "mut", "cle", "spl", "res", "exp"),
+                  style = rep(c("color: black"), 8)
+                ),
+                options = list(
+                  style = "btn-info"
+                ),
+                selected = NULL
+              ),
+              uiOutput(outputId = "ImportUI"),
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Filter"',
+                # boxUI(
+                #  title = "Filter",
                 mod_filterModule_ui("filterModule_1")
-                # filterUI("filterModule")
+                # )
               ),
-              boxUI(
-                title = "Subset",
-                subsetUI("subsetModule")
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Subset"',
+                boxUI(
+                  title = "Subset",
+                  mod_subsetModule_ui("subsetModule_1")
+                )
               ),
-              #boxUI(
-              #  title = "Mutate",
-                # mutateUI("mutateModule")
-              mod_mutateModule_ui("mutateModule_1", title = "Mutate"),
-              #),
-              boxUI(
-                title = "Clean",
-                cleanUI("cleanModule")
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Mutate"',
+                mod_mutateModule_ui("mutateModule_1", title = "Mutate"),
               ),
-              boxUI(
-                title = "Split",
-                splitUI("splitModule")
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Clean"',
+                boxUI(
+                  title = "Clean",
+                  mod_cleanModule_ui("cleanModule_1")
+                )
               ),
-              boxUI(
-                title = "!Reshape (not)",
-                p("Not Implemented")
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Split"',
+                boxUI(
+                  title = "Split",
+                  mod_splitModule_ui("splitModule_1")
+                )
               ),
-              boxUI(
-                title = "Export",
-                exportUI("exportModule")
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Reshape"',
+                boxUI(
+                  title = "Reshape",
+                  mod_reshapeModule_ui("reshapeModule_1")
+                )
+              ),
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Export"',
+                boxUI(
+                  title = "Export",
+                  mod_exportModule_ui("exportModule_1")
+                )
               )
             )
           )
         ),
         conditionalPanel(
           condition = 'input.module == "Vis"',
+          p("Not Implemented")
+        ),
+        conditionalPanel(
+          condition = 'input.module == "EDA"',
+          p("Not Implemented")
+        ),
+        conditionalPanel(
+          condition = 'input.module == "Report"',
           p("Not Implemented")
         )
         # OUTRO
@@ -89,35 +134,30 @@ app_ui <- function(request) {
             inputId = "fileInputID",
             label = NULL,
             accept = c(".csv", ".tsv", ".sas7bdat", ".sas7bcat", ".sav", ".dta", ".xls", ".xlsx", ".rda", ".rds", ".rdata"),
-            # csv: Column separated
-            # tsv, tab: Tab separated
-            # sas7bdat: SAS file
-            # sav: SPSS file
-            # dta: Stata file
-            # xls, xlsx: Excel file
-            # rda, rds, rdata: Robject file
             buttonLabel = "Browse local files",
             placeholder = "or Drag & Drop in Here",
             multiple = FALSE,
-            width = '100%'
+            width = "100%"
           ),
-          shinyWidgets::prettySwitch(
-            inputId = "showAll",
-            label = "Every Data",
-            status = "success",
-            fill = TRUE
+          shinyjs::disabled(
+            shinyjs::hidden(
+              shinyWidgets::prettySwitch(
+                inputId = "showAll",
+                label = "Show every data",
+                status = "success",
+                value = TRUE,
+                fill = TRUE
+              )
+            )
           ),
-          DT::DTOutput(
+          reactable::reactableOutput(
             outputId = "DT"
           )
-
         )
       ),
-      controlbar = dashboardControlbar(
-        p("Control Bar")
-      ),
+      controlbar = dashboardControlbar(disable = TRUE),
       footer = dashboardFooter(
-        left = "Left Content",
+        left = NULL,
         right = actionButton(
           inputId = "Outro",
           label = "Github / Manual",
@@ -148,7 +188,7 @@ golem_add_external_resources <- function() {
     favicon(),
     bundle_resources(
       path = app_sys("app/www"),
-      app_title = "door2"
+      app_title = "statgarten"
     )
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()

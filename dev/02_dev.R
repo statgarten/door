@@ -17,6 +17,8 @@
 ## Amend DESCRIPTION with dependencies read from package code parsing
 attachment::att_amend_desc()
 
+options(shiny.launch.browser = .rs.invokeShinyWindowExternal)
+
 ## Add modules ----
 ## Create a module infrastructure in R/
 golem::add_module(name = "name_of_module1", with_test = TRUE) # Name of the module

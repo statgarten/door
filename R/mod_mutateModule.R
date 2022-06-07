@@ -14,13 +14,6 @@ mod_mutateModule_ui <- function(id, title) {
     title = title,
     id = ns("MutateBox"),
     elem = tagList(
-      # load column
-      # actionButton(
-      #   inputId = ns("loadMutateColumn"),
-      #   label = "Load Variables",
-      #   icon = icon("check")
-      # ),
-
       # which column
       selectInput(
         inputId = ns("mutateColumn"),
@@ -34,7 +27,7 @@ mod_mutateModule_ui <- function(id, title) {
       selectInput(
         inputId = ns("mutateOperator"),
         label = "mutateOpeartorLabel",
-        choices = c("Round", "Log", "Log10", "Sqrt", "-", "Min-Max", "Normal", "Binarize(not)"),
+        choices = c("Round", "Log", "Log10", "Sqrt", "-", "Min-Max", "Normal", "Binarize"),
         selected = NULL,
         multiple = FALSE
       ),
@@ -43,6 +36,13 @@ mod_mutateModule_ui <- function(id, title) {
       textInput(
         inputId = ns("mutateVariable"),
         label = "mutateVariableLabel",
+      ),
+      selectInput(
+        inputId = ns("binaryOperator"),
+        label = "mutateOperatorLabel2",
+        choice = c(">", ">=", "<", "<=", "==", "!=", "In", "Not In", "Contains", "Not Contains"),
+        selected = NULL,
+        multiple = FALSE
       ),
 
       # apply button
@@ -53,7 +53,6 @@ mod_mutateModule_ui <- function(id, title) {
       )
     )
   )
-
 }
 
 #' mutateModule Server Functions
@@ -64,7 +63,7 @@ mod_mutateModule_server <- function(id, inputData) {
     ns <- session$ns
 
     observeEvent(input$MutateBox$collapsed, {
-      if(!input$MutateBox$collapsed){
+      if (!input$MutateBox$collapsed) {
         updateSelectizeInput(
           session,
           inputId = "mutateColumn",
@@ -74,16 +73,6 @@ mod_mutateModule_server <- function(id, inputData) {
         )
       }
     })
-
-    # observeEvent(input$loadMutateColumn, {
-    #   updateSelectizeInput(
-    #     session,
-    #     inputId = "mutateColumn",
-    #     label = "mutateSelectLabel",
-    #     choices = colnames(inputData()),
-    #     server = TRUE
-    #   )
-    # })
 
     observeEvent(input$mutateButton, {
       if (input$mutateOperator == "Round") {
@@ -97,7 +86,7 @@ mod_mutateModule_server <- function(id, inputData) {
         ))
       }
 
-      if(input$mutateOperator == "Log"){
+      if (input$mutateOperator == "Log") {
         eval(parse(
           text =
             paste0(
@@ -108,7 +97,7 @@ mod_mutateModule_server <- function(id, inputData) {
         ))
       }
 
-      if(input$mutateOperator == "Log10"){
+      if (input$mutateOperator == "Log10") {
         eval(parse(
           text =
             paste0(
@@ -119,7 +108,7 @@ mod_mutateModule_server <- function(id, inputData) {
         ))
       }
 
-      if(input$mutateOperator == "Sqrt"){
+      if (input$mutateOperator == "Sqrt") {
         eval(parse(
           text =
             paste0(
@@ -130,7 +119,7 @@ mod_mutateModule_server <- function(id, inputData) {
         ))
       }
 
-      if(input$mutateOperator == "-"){
+      if (input$mutateOperator == "-") {
         eval(parse(
           text =
             paste0(
@@ -141,7 +130,7 @@ mod_mutateModule_server <- function(id, inputData) {
         ))
       }
 
-      if(input$mutateOperator == "Min-Max"){
+      if (input$mutateOperator == "Min-Max") {
         eval(parse(
           text =
             paste0(
@@ -152,7 +141,7 @@ mod_mutateModule_server <- function(id, inputData) {
         ))
       }
 
-      if(input$mutateOperator == "Normal"){
+      if (input$mutateOperator == "Normal") {
         eval(parse(
           text =
             paste0(
@@ -163,10 +152,73 @@ mod_mutateModule_server <- function(id, inputData) {
         ))
       }
 
+      if (input$mutateOperator == "Binarize") {
+        shinyjs::show(id = "mutateColumn", anim = TRUE, animType = "slide")
+        op <- input$binaryOperator
+        newColumn <- paste0(input$mutateColumn, "_bin")
 
-      output$DT <- renderDT(
-        getDT(inputData())
-      )
+        if (op %in% c(">", ">=", "<", "<=", "==", "!=")) {
+          eval(parse(
+            text =
+              paste0(
+                "inputData( inputData() |> ",
+                "mutate( ", newColumn, " = ",
+                "ifelse( ", input$mutateColumn, " ", input$binaryOperator, " ", input$mutateVariable, ", 1, 0 ) ) |> ",
+                "select( -", input$mutateColumn, " ) )"
+              )
+          ))
+        }
+
+        if (op == "In") {
+          eval(parse(
+            text =
+              paste0(
+                "inputData( inputData() |> ",
+                "mutate( ", newColumn, " = ",
+                "ifelse( ", input$mutateColumn, " %in% c(", input$mutateVariable, "), 1, 0 ) ) |> ",
+                "select( -", input$mutateColumn, " ) )"
+              )
+          ))
+        }
+        if (op == "Not In") {
+          eval(parse(
+            text =
+              paste0(
+                "inputData( inputData() |> ",
+                "mutate( ", newColumn, " = ",
+                "ifelse( !", input$mutateColumn, " %in% c(", input$mutateVariable, "), 1, 0 ) ) |> ",
+                "select( -", input$mutateColumn, " ) )"
+              )
+          ))
+        }
+        if (op == "Contains") {
+          eval(parse(
+            text =
+              paste0(
+                "inputData( inputData() |> ",
+                "mutate( ", newColumn, " = ",
+                "ifelse( grepl(", input$mutateColumn, ", ", input$mutateVariable, "), 1, 0 ) ) |> ",
+                "select( -", input$mutateColumn, " ) )"
+              )
+          ))
+        }
+        if (op == "Not Contains") {
+          eval(parse(
+            text =
+              paste0(
+                "inputData( inputData() |> ",
+                "mutate( ", newColumn, " = ",
+                "ifelse( !grepl(", input$mutateColumn, ", ", input$mutateVariable, "), 1, 0 ) ) |> ",
+                "select( -", input$mutateColumn, " ) )"
+              )
+          ))
+        }
+      }
+
+      output$DT <-
+        inputData() |>
+        getDT(all = TRUE) |>
+        reactable::renderReactable()
     })
   })
 }
