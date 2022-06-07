@@ -19,12 +19,18 @@ app_ui <- function(request) {
         controlbarIcon = icon("gear", verify_fa = FALSE),
         leftUi = tagList(
           div(
-            selectInput(
+            shinyWidgets::radioGroupButtons(
               inputId = "module",
               label = NULL,
-              choices = c("Import", "Vis"),
+              # status = 'warning',
+              choices = c("Import", "Vis", "EDA", "Report"),
               selected = "Import",
-              width = "10em"
+              individual = TRUE,
+              checkIcon = list(
+                yes = tags$i(class = "fa fa-circle", style = "color: gold"),
+                no = tags$i(class = "fa fa-circle-o", style = "color: gold")
+              ) # ,
+              # width = "10em"
             ),
             style = "margin-bottom: -11.5px; text-align: center; font-weight: bold;"
           )
@@ -39,37 +45,80 @@ app_ui <- function(request) {
           condition = 'input.module == "Import"',
           shinyjs::hidden(
             div(
-              id = "SideBox",
-              boxUI(
-                title = "Filter",
+              id = "ImportBox",
+              shinyWidgets::pickerInput(
+                inputId = "ImportFunction",
+                label = "Functions",
+                choices = c("", "Filter", "Subset", "Mutate", "Clean", "Split", "Reshape", "Export"),
+                choicesOpt = list(
+                  subtext = c("", "fil", "sub", "mut", "cle", "spl", "res", "exp"),
+                  style = rep(c("color: black"), 8)
+                ),
+                options = list(
+                  style = "btn-info"
+                ),
+                selected = NULL
+              ),
+              uiOutput(outputId = "ImportUI"),
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Filter"',
+                # boxUI(
+                #  title = "Filter",
                 mod_filterModule_ui("filterModule_1")
+                # )
               ),
-              boxUI(
-                title = "Subset",
-                mod_subsetModule_ui("subsetModule_1")
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Subset"',
+                boxUI(
+                  title = "Subset",
+                  mod_subsetModule_ui("subsetModule_1")
+                )
               ),
-              mod_mutateModule_ui("mutateModule_1", title = "Mutate"),
-              boxUI(
-                title = "Clean",
-                mod_cleanModule_ui("cleanModule_1")
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Mutate"',
+                mod_mutateModule_ui("mutateModule_1", title = "Mutate"),
               ),
-              boxUI(
-                title = "Split",
-                mod_splitModule_ui("splitModule_1")
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Clean"',
+                boxUI(
+                  title = "Clean",
+                  mod_cleanModule_ui("cleanModule_1")
+                )
               ),
-              boxUI(
-                title = "Reshape",
-                mod_reshapeModule_ui("reshapeModule_1")
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Split"',
+                boxUI(
+                  title = "Split",
+                  mod_splitModule_ui("splitModule_1")
+                )
               ),
-              boxUI(
-                title = "Export",
-                mod_exportModule_ui("exportModule_1")
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Reshape"',
+                boxUI(
+                  title = "Reshape",
+                  mod_reshapeModule_ui("reshapeModule_1")
+                )
+              ),
+              conditionalPanel(
+                condition = 'input.ImportFunction == "Export"',
+                boxUI(
+                  title = "Export",
+                  mod_exportModule_ui("exportModule_1")
+                )
               )
             )
           )
         ),
         conditionalPanel(
           condition = 'input.module == "Vis"',
+          p("Not Implemented")
+        ),
+        conditionalPanel(
+          condition = 'input.module == "EDA"',
+          p("Not Implemented")
+        ),
+        conditionalPanel(
+          condition = 'input.module == "Report"',
           p("Not Implemented")
         )
         # OUTRO
@@ -139,7 +188,7 @@ golem_add_external_resources <- function() {
     favicon(),
     bundle_resources(
       path = app_sys("app/www"),
-      app_title = "door2"
+      app_title = "statgarten"
     )
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
