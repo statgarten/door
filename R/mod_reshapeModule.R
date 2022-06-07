@@ -50,9 +50,12 @@ mod_reshapeModule_server <- function(id, inputData) {
       # this will not work
       # inputData () |> inputData() |> select(input$reshapeSortable)
 
-      output$DT <- inputData() |>
-        getDT() |>
+      output$DT <-
+        inputData() |>
+        getDT(all = TRUE) |>
         reactable::renderReactable()
+
+
     })
 
     # inputData <- eventReactive(input$reshapeSortable, {

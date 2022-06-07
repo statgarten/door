@@ -55,9 +55,11 @@ mod_subsetModule_server <- function(id, inputData){
           )
       ))
 
-      output$DT <- renderDT(
-        getDT(inputData())
-      )
+      output$DT <-
+        inputData() |>
+        getDT(all = TRUE) |>
+        reactable::renderReactable()
+
     })
 
   })

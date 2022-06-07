@@ -85,7 +85,7 @@ app_server <- function(input, output, session) {
 
     output$DT <-
       inputData() |>
-      getDT() |>
+      getDT(all = TRUE) |>
       reactable::renderReactable()
 
   })
