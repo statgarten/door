@@ -10,7 +10,6 @@
 mod_name_of_module1_ui <- function(id){
   ns <- NS(id)
   tagList(
-    # NOT USED
   )
 }
 
@@ -20,7 +19,6 @@ mod_name_of_module1_ui <- function(id){
 mod_name_of_module1_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-
   })
 }
 
@@ -29,16 +27,3 @@ mod_name_of_module1_server <- function(id){
 
 ## To be copied in the server
 # mod_name_of_module1_server("name_of_module1_1")
-
-splitUI <- function(id) {
-  ns <- NS(id)
-  tagList(
-    # NOT USED
-  )
-}
-
-splitServer <- function(id, inputData) {
-  moduleServer(id, function(input, output, session) {
-
-  })
-}
