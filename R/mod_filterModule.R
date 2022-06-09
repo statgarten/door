@@ -22,19 +22,24 @@ mod_filterModule_ui <- function(id) {
     ),
     selectInput(
       inputId = ns("filterOperator"),
-      label = "filterOpeartorLabel",
+      label = NULL,
       choices = c(">", ">=", "<", "<=", "==", "!=", "In", "Not In", "Contains", "Not Contains"),
       selected = NULL,
-      multiple = FALSE
+      multiple = FALSE,
+      width = '100%'
     ),
     textInput(
       inputId = ns("filterVariable"),
-      label = "filterVariableLabel"
+      label = NULL,
+      placeholder = 'criteria',
+      width = '100%'
     ),
     actionButton(
       inputId = ns("filterButton"),
       label = "filter",
-      icon = icon("angle-down")
+      icon = icon("angle-down"),
+      width = '90%',
+      style = 'margin: auto;'
     )
   )
 }
@@ -47,6 +52,7 @@ mod_filterModule_server <- function(id, inputData, opened) {
     ns <- session$ns
 
     observeEvent(opened(), {
+      if(opened()!="Filter"){return()}
       updateSelectizeInput(
         session,
         inputId = "filterColumn", # ns() not work

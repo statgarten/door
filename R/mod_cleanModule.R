@@ -10,13 +10,6 @@
 mod_cleanModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    ## LOAD COLUMNS
-    actionButton(
-      inputId = ns("loadCleanColumn"),
-      label = "Load Variables",
-      icon = icon("check")
-    ),
-
     ## <SELECT> column names
     selectInput(
       inputId = ns("cleanColumn"),
@@ -57,10 +50,11 @@ mod_cleanModule_ui <- function(id) {
 #' cleanModule Server Functions
 #'
 #' @noRd
-mod_cleanModule_server <- function(id, inputData) {
+mod_cleanModule_server <- function(id, inputData, opened) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    observeEvent(input$loadCleanColumn, {
+    observeEvent(opened(), {
+      if(opened()!="Clean"){return()}
       updateSelectizeInput(
         session,
         inputId = "cleanColumn",
@@ -110,6 +104,15 @@ mod_cleanModule_server <- function(id, inputData) {
         inputData() |>
         getDT(all = TRUE) |>
         reactable::renderReactable()
+
+      updateSelectizeInput(
+        session,
+        inputId = "cleanColumn",
+        label = "cleanSelectLabel",
+        choices = colnames(inputData()),
+        server = TRUE
+      )
+
     })
   })
 }

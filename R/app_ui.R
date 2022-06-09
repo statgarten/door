@@ -16,6 +16,7 @@ app_ui <- function(request) {
     dashboardPage(
       header = shinydashboardPlus::dashboardHeader(
         title = "StatGarten",
+        titleWidth = 300,
         controlbarIcon = icon("gear", verify_fa = FALSE),
         leftUi = tagList(
           div(
@@ -40,12 +41,14 @@ app_ui <- function(request) {
       # SIDE MODULE
       sidebar = dashboardSidebar(
         minified = FALSE,
+        width = 300,
         htmlOutput("Logo", style = "text-align: center; margin-bottom:3em; margin-top:3em;"),
         conditionalPanel(
           condition = 'input.module == "Import"',
           shinyjs::hidden(
             div(
               id = "ImportBox",
+              style = 'text-align:center;',
               shinyWidgets::pickerInput(
                 inputId = "ImportFunction",
                 label = "Functions",
@@ -59,52 +62,33 @@ app_ui <- function(request) {
                 ),
                 selected = NULL
               ),
-              uiOutput(outputId = "ImportUI"),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Filter"',
-                # boxUI(
-                #  title = "Filter",
                 mod_filterModule_ui("filterModule_1")
-                # )
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Subset"',
-                boxUI(
-                  title = "Subset",
-                  mod_subsetModule_ui("subsetModule_1")
-                )
+                mod_subsetModule_ui("subsetModule_1")
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Mutate"',
-                mod_mutateModule_ui("mutateModule_1", title = "Mutate"),
+                mod_mutateModule_ui("mutateModule_1"),
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Clean"',
-                boxUI(
-                  title = "Clean",
-                  mod_cleanModule_ui("cleanModule_1")
-                )
+                mod_cleanModule_ui("cleanModule_1")
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Split"',
-                boxUI(
-                  title = "Split",
-                  mod_splitModule_ui("splitModule_1")
-                )
+                mod_splitModule_ui("splitModule_1")
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Reshape"',
-                boxUI(
-                  title = "Reshape",
-                  mod_reshapeModule_ui("reshapeModule_1")
-                )
+                mod_reshapeModule_ui("reshapeModule_1")
               ),
               conditionalPanel(
                 condition = 'input.ImportFunction == "Export"',
-                boxUI(
-                  title = "Export",
-                  mod_exportModule_ui("exportModule_1")
-                )
+                mod_exportModule_ui("exportModule_1")
               )
             )
           )

@@ -10,11 +10,6 @@
 mod_subsetModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    actionButton(
-      inputId = ns("loadSubsetColumn"),
-      label = "Load Variables",
-      icon = icon("check")
-    ),
     selectInput(
       inputId = ns("subsetColumn"),
       label = "subsetSelectLabel",
@@ -33,10 +28,11 @@ mod_subsetModule_ui <- function(id) {
 #' subsetModule Server Functions
 #'
 #' @noRd
-mod_subsetModule_server <- function(id, inputData) {
+mod_subsetModule_server <- function(id, inputData, opened) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    observeEvent(input$loadSubsetColumn, {
+    observeEvent(opened(), {
+      if(opened()!="Subset"){return()}
       updateSelectizeInput(
         session,
         inputId = "subsetColumn",
@@ -59,6 +55,15 @@ mod_subsetModule_server <- function(id, inputData) {
         inputData() |>
         getDT(all = TRUE) |>
         reactable::renderReactable()
+
+      updateSelectizeInput(
+        session,
+        inputId = "subsetColumn",
+        label = "subsetSelectLabel",
+        choices = colnames(inputData()),
+        server = TRUE
+      )
+
     })
   })
 }

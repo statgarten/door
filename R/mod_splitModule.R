@@ -10,11 +10,6 @@
 mod_splitModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    actionButton(
-      inputId = ns("loadSplitColumn"),
-      label = "Load Variables",
-      icon = icon("check")
-    ),
     selectInput(
       inputId = ns("splitColumn"),
       label = "splitSelectLabel",
@@ -22,13 +17,11 @@ mod_splitModule_ui <- function(id) {
       selected = NULL,
       multiple = FALSE
     ),
-
     # keyword
     textInput(
       inputId = ns("splitkeyword"),
       label = "splitKeywordLabel"
     ),
-
     # colnameA
     textInput(
       inputId = ns("splitA"),
@@ -50,10 +43,11 @@ mod_splitModule_ui <- function(id) {
 #' splitModule Server Functions
 #'
 #' @noRd
-mod_splitModule_server <- function(id, inputData) {
+mod_splitModule_server <- function(id, inputData, opened) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    observeEvent(input$loadSplitColumn, {
+    observeEvent(opened(), {
+      if(opened()!='Split'){return()}
       updateSelectizeInput(
         session,
         inputId = "splitColumn",
@@ -76,6 +70,15 @@ mod_splitModule_server <- function(id, inputData) {
         inputData() |>
         getDT(all = TRUE) |>
         reactable::renderReactable()
+
+      updateSelectizeInput(
+        session,
+        inputId = "splitColumn",
+        label = "splitSelectLabel",
+        choices = colnames(inputData()),
+        server = TRUE
+      )
+
     })
   })
 }
