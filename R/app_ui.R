@@ -16,6 +16,7 @@ app_ui <- function(request) {
     dashboardPage(
       header = shinydashboardPlus::dashboardHeader(
         title = "StatGarten",
+        titleWidth = 300,
         controlbarIcon = icon("gear", verify_fa = FALSE),
         leftUi = tagList(
           div(
@@ -40,12 +41,14 @@ app_ui <- function(request) {
       # SIDE MODULE
       sidebar = dashboardSidebar(
         minified = FALSE,
+        width = 300,
         htmlOutput("Logo", style = "text-align: center; margin-bottom:3em; margin-top:3em;"),
         conditionalPanel(
           condition = 'input.module == "Import"',
           shinyjs::hidden(
             div(
               id = "ImportBox",
+              style = 'text-align:center;',
               shinyWidgets::pickerInput(
                 inputId = "ImportFunction",
                 label = "Functions",

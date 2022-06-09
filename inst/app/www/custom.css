@@ -53,3 +53,11 @@ sortable color
 .custom-sortable .rank-list-item {
   background-color: #BDB !important;
 }
+
+
+/*
+shinydashboard sidebar width
+*/
+.left-side{
+  width: 300px;
+}
