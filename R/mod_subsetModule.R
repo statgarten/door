@@ -43,13 +43,12 @@ mod_subsetModule_server <- function(id, inputData, opened) {
     })
 
     observeEvent(input$subsetButton, {
-      eval(parse(
-        text =
-          paste0(
-            "inputData( inputData() %>% ",
-            "select(-", input$subsetColumn, "))"
+      inputData(
+          scissor::drop(
+            inputData = inputData(),
+            column = input$subsetColumn
           )
-      ))
+      )
 
       output$DT <-
         inputData() |>

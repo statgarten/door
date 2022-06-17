@@ -65,40 +65,16 @@ mod_cleanModule_server <- function(id, inputData, opened) {
     })
 
     observeEvent(input$cleanButton, {
-      if (input$cleanOperator == "Remove") {
-        # data $ column -> filter(which is not .)
-
-        if (input$cleanVariable == "NA") {
-          eval(parse(
-            text =
-              paste0(
-                "inputData( inputData() %>% ",
-                "filter(!is.na(", input$cleanColumn, ")))"
-              )
-          ))
-        } else {
-          eval(parse(
-            text =
-              paste0(
-                "inputData( inputData() %>% ",
-                "filter(!grepl(", input$cleanVariable, ", ", input$cleanColumn, ")))"
-              )
-          ))
-        }
-      }
-
-      if (input$cleanOperator == "Replace") {
-        keyword <- ifelse(is.null(input$cleanKeyword), "", input$cleanKeyword)
-
-        eval(parse(
-          text =
-            paste0(
-              "inputData( inputData() %>% ",
-              "mutate(", input$cleanColumn, " = ",
-              "ifelse(", input$cleanColumn, " == ", input$cleanVariable, ",", keyword, ",", input$cleanColumn, ")))"
-            )
-        ))
-      }
+      inputData(
+        scissor::impute(
+          inputData = inputData(),
+          column = input$cleanColumn,
+          operator = input$cleanOperator, # remove / replace
+          value = input$cleanVariable,
+          to = input$cleanKeyword # NULL -> remove NA / input -> remove that
+          # NULL -> replace NA to [to], / input -> replace to [to]
+        )
+      )
 
       output$DT <-
         inputData() |>

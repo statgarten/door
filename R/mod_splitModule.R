@@ -19,7 +19,7 @@ mod_splitModule_ui <- function(id) {
     ),
     # keyword
     textInput(
-      inputId = ns("splitkeyword"),
+      inputId = ns("splitKeyword"),
       label = "splitKeywordLabel"
     ),
     # colnameA
@@ -58,13 +58,13 @@ mod_splitModule_server <- function(id, inputData, opened) {
     })
 
     observeEvent(input$splitButton, {
-      eval(parse(
-        text =
-          paste0(
-            "inputData( inputData() %>% ",
-            "tidyr::separate(", input$splitColumn, ", sep = '", input$splitkeyword, "', into = c('", input$splitA, "','", input$splitB, "'), fill = 'right'))"
-          )
-      ))
+      inputData(
+        scissor::split(
+          inputData = inputData(),
+          column = input$splitColumn,
+          splitby = input$splitKeyword
+        )
+      )
 
       output$DT <-
         inputData() |>

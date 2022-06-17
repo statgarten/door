@@ -40,7 +40,11 @@ mod_reshapeModule_server <- function(id, inputData, opened) {
 
     observeEvent(input$applyReshape, {
       # why this work?
-      v <- inputData() |> select(input$reshapeSortable)
+      v <- scissor::reorder(
+        inputData = inputData,
+        columns = input$reshapeSortable
+        )
+
       inputData(v)
 
       # this will not work
