@@ -7,6 +7,7 @@ Description: PKG_DESC.
 License: MIT + file LICENSE
 URL: https://github.com/statgarten/door
 BugReports: https://github.com/statgarten/door/issues
+Remotes: github::statgarten/scissor
 Imports: 
     config (>= 0.3.1),
     dplyr,

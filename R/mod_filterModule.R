@@ -5,11 +5,10 @@
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
 #' @noRd
-#'
 #' @importFrom shiny NS tagList
 #' @import dplyr
 #' @importFrom shinyjs disabled enable
-#' @importFrom DT renderDT
+#'
 mod_filterModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -34,6 +33,22 @@ mod_filterModule_ui <- function(id) {
       placeholder = 'criteria',
       width = '100%'
     ),
+    selectInput(
+      inputId = ns(paste0('cond', 1)),
+      label = NULL,
+      choices = c("And", "Or")
+    ),
+
+    uiOutput(ns('filterPage2')),
+
+    ###
+
+    actionButton(
+      inputId = ns("addFilter"),
+      label = NULL,
+      icon=icon("plus", class = NULL, lib = "font-awesome")
+    ),
+
     actionButton(
       inputId = ns("filterButton"),
       label = "filter",
@@ -63,52 +78,14 @@ mod_filterModule_server <- function(id, inputData, opened) {
     })
 
     observeEvent(input$filterButton, {
-      if (input$filterOperator == "In") {
-        eval(parse(
-          text =
-            paste0(
-              "inputData( inputData() |> filter( ", input$filterColumn, " %in% ",
-              "c(", input$filterVariable, ") ) )"
-            )
-        ))
-      }
-      if (input$filterOperator == "Not In") {
-        eval(parse(
-          text =
-            paste0(
-              "inputData( inputData() |> filter( !", input$filterColumn, " %in% ",
-              "c(", input$filterVariable, ") ) )"
-            )
-        ))
-      }
-      if (input$filterOperator == "Contains") {
-        eval(parse(
-          text =
-            paste0(
-              "inputData (", "inputData() |> filter(grepl(", input$filterVariable, ", ", input$filterColumn,
-              ") ) )"
-            )
-        ))
-      }
-      if (input$filterOperator == "Not Contains") {
-        eval(parse(
-          text =
-            paste0(
-              "inputData (", "inputData() |> filter( ! grepl(", input$filterVariable, ", ", input$filterColumn,
-              ") ) )"
-            )
-        ))
-      }
-
-      if (input$filterOperator %in% c(">", ">=", "<", "<=", "==", "!=")) {
-        eval(parse(
-          text =
-            paste0(
-              "inputData(inputData() |> ",
-              "filter(", input$filterColumn, input$filterOperator, input$filterVariable, "))"
-            )
-        ))
-      }
+      inputData(
+        scissor::subset(
+          inputData = inputData(),
+          column = input$filterColumn,
+          operator = input$filterOperator,
+          value = input$filterVariable
+        )
+      )
 
       output$DT <-
         inputData() |>
