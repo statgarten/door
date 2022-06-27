@@ -7,7 +7,7 @@
 #' @importFrom DT DTOutput
 #' @import shinyWidgets
 #' @importFrom shinydashboard dashboardBody
-#' @importFrom shinydashboardPlus box dashboardSidebar dashboardPage dashboardFooter dashboardControlbar
+#' @importFrom shinydashboardPlus box dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput
 #' @noRd
 app_ui <- function(request) {
@@ -48,7 +48,7 @@ app_ui <- function(request) {
           shinyjs::hidden(
             div(
               id = "ImportBox",
-              style = 'text-align:center;',
+              style = "text-align:center;",
               shinyWidgets::pickerInput(
                 inputId = "ImportFunction",
                 label = "Functions",
@@ -99,7 +99,37 @@ app_ui <- function(request) {
         ),
         conditionalPanel(
           condition = 'input.module == "EDA"',
-          p("Not Implemented")
+          shinyjs::hidden(
+            div(
+              id = "EDABox",
+              style = "text-align:center;",
+              shinyWidgets::pickerInput(
+                inputId = "EDAFunction",
+                label = "EDA Functions",
+                choices = c("", "Brief", "Relation", "Variable"),
+                choicesOpt = list(
+                  subtext = c("", "bri", "rel", "var"),
+                  style = rep(c("color: black"), 4)
+                ),
+                options = list(
+                  style = "btn-info"
+                ),
+                selected = NULL
+              ),
+              conditionalPanel(
+                condition = 'input.EDAFunction == "Brief"',
+                mod_briefModule_ui("briefModule_1")
+              ),
+              conditionalPanel(
+                condition = 'input.EDAFunction == "Relation"',
+                mod_relationModule_ui("relationModule_1")
+              ),
+              conditionalPanel(
+                condition = 'input.EDAFunction == "Variable"',
+                mod_variableModule_ui("variableModule_1")
+              )
+            )
+          )
         ),
         conditionalPanel(
           condition = 'input.module == "Report"',
@@ -110,32 +140,81 @@ app_ui <- function(request) {
       body = dashboardBody(
         fluidPage(
           useShinyjs(),
-          p(
-            id = "desc",
-            "Description Text will be here"
+          div(
+            style = "margin-bottom : 1em",
+            reactable::reactableOutput(
+              outputId = "DT"
+            )
           ),
-          fileInput(
-            inputId = "fileInputID",
-            label = NULL,
-            accept = c(".csv", ".tsv", ".sas7bdat", ".sas7bcat", ".sav", ".dta", ".xls", ".xlsx", ".rda", ".rds", ".rdata"),
-            buttonLabel = "Browse local files",
-            placeholder = "or Drag & Drop in Here",
-            multiple = FALSE,
-            width = "100%"
-          ),
-          shinyjs::disabled(
-            shinyjs::hidden(
-              shinyWidgets::prettySwitch(
-                inputId = "showAll",
-                label = "Show every data",
-                status = "success",
-                value = TRUE,
-                fill = TRUE
+          ### Import panel
+          conditionalPanel(
+            condition = 'input.module == "Import"',
+            p(
+              id = "desc",
+              "Description Text will be here"
+            ),
+            fileInput(
+              inputId = "fileInputID",
+              label = NULL,
+              accept = c(".csv", ".tsv", ".sas7bdat", ".sas7bcat", ".sav", ".dta", ".xls", ".xlsx", ".rda", ".rds", ".rdata"),
+              buttonLabel = "Browse local files",
+              placeholder = "or Drag & Drop in Here",
+              multiple = FALSE,
+              width = "100%"
+            ),
+            shinyjs::disabled(
+              shinyjs::hidden(
+                shinyWidgets::prettySwitch(
+                  inputId = "showAll",
+                  label = "Show every data",
+                  status = "success",
+                  value = TRUE,
+                  fill = TRUE
+                )
               )
             )
           ),
-          reactable::reactableOutput(
-            outputId = "DT"
+
+          ### EDA panel
+          conditionalPanel(
+            condition = 'input.module == "EDA"',
+            shinydashboardPlus::box(
+              title = "Dataset Description",
+              status = "purple",
+              solidHeader = TRUE,
+              width = 12,
+              fluidRow(
+                column(
+                  width = 6,
+                  uiOutput("dataDimension")
+                ),
+                column(
+                  width = 6,
+                  uiOutput("missingData")
+                )
+              )
+            ),
+            shinydashboardPlus::box(
+              title = "Variables",
+              status = "purple",
+              solidHeader = TRUE,
+              width = 12,
+              reactableOutput("reactOutput")
+            ),
+            shinydashboardPlus::box(
+              title = "Correlation",
+              status = "success",
+              solidHeader = TRUE,
+              width = 12,
+              plotOutput("corplot")
+            ),
+            shinydashboardPlus::box(
+              title = "Correlation2",
+              status = "success",
+              solidHeader = TRUE,
+              width = 12,
+              plotOutput("corplot2")
+            )
           )
         )
       ),
@@ -149,7 +228,7 @@ app_ui <- function(request) {
           onclick = "window.open('https://github.com/statgarten', '_blank')",
           icon = icon("github")
         )
-      ),
+      )
     )
   )
 }

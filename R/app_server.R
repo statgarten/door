@@ -8,6 +8,8 @@
 #' @importFrom readxl read_xls read_xlsx
 #' @importFrom readr read_rds
 #' @importFrom reactable renderReactable
+#' @importFrom shinydashboardPlus descriptionBlock
+#' @importFrom GGally ggcorr
 #' @noRd
 app_server <- function(input, output, session) {
   src <- "www/statgarten.png"
@@ -16,6 +18,9 @@ app_server <- function(input, output, session) {
   })
 
   inputData <- reactiveVal(NULL)
+  ggobj <- reactiveVal(NULL)
+
+
 
   observeEvent(input$fileInputID, {
     file <- input$fileInputID
@@ -32,9 +37,8 @@ app_server <- function(input, output, session) {
     shinyjs::show(id = "showAll")
     shinyjs::enable(id = "showAll")
 
-    shinyjs::show(id = "LoadButton")
-    shinyjs::show(id = "LoadTest")
     shinyjs::show(id = "ImportBox")
+    shinyjs::show(id = "EDABox")
 
     if (ext == "csv") {
       file$datapath |>
@@ -82,11 +86,64 @@ app_server <- function(input, output, session) {
         inputData()
     }
 
+    ## Main table
 
     output$DT <-
       inputData() |>
       getDT(all = TRUE) |>
       reactable::renderReactable()
+
+    ## EDA
+
+    obj <- board::brief(inputData())
+    obj$unif <- ifelse(obj$unif, "True", NA)
+    obj$uniq <- ifelse(obj$uniq, "True", NA)
+
+    EDAres <- data.frame(
+      Name = obj$names,
+      Cardinality = obj$cards,
+      Zero = obj$zeros,
+      Missing = obj$miss,
+      isUniform = obj$unif,
+      isUnique = obj$uniq
+    )
+
+    output$corplot <- renderPlot(ggcorr(obj$cors))
+
+    output$dataDimension <- renderUI(
+      descriptionBlock(
+        header = paste0(obj$desc$nrow, " X ", obj$desc$ncol),
+        numberIcon = icon("expand"),
+        number = "Data Dimension",
+        marginBottom = FALSE
+      )
+    )
+
+    output$missingData <- renderUI(
+      descriptionBlock(
+        header = paste0(obj$desc$missingCellCount, "(", obj$desc$missingCellRatio, "%)"),
+        numberIcon = icon("question"),
+        number = "Missing Data",
+        marginBottom = FALSE
+      )
+    )
+
+    updateSelectInput(
+      inputId = "variableSelect",
+      label = "variable",
+      choices = colnames(inputData()),
+      selected = NULL
+    )
+
+    output$reactOutput <- renderReactable(
+      reactable(
+        EDAres
+      )
+    )
+
+
+
+    output$corplot2 <- renderPlot(ggobj())
   })
 
   opened <- reactiveVal(NULL)
@@ -94,6 +151,13 @@ app_server <- function(input, output, session) {
   observeEvent(input$ImportFunction, {
     opened(input$ImportFunction)
   })
+
+  observeEvent(input$EDAFunction, {
+    opened(input$EDAFunction)
+  })
+
+
+  ## Import
 
   mod_filterModule_server("filterModule_1", inputData, opened)
 
@@ -108,6 +172,14 @@ app_server <- function(input, output, session) {
   mod_reshapeModule_server("reshapeModule_1", inputData, opened)
 
   mod_exportModule_server("exportModule_1", inputData)
+
+  ## EDA
+
+  mod_briefModule_server("briefModule_1", inputData, opened)
+
+  mod_relationModule_server("relationModule_1", inputData, ggobj, opened)
+
+  mod_variableModule_server("variableModule_1")
 
   # Your application server logic
 
