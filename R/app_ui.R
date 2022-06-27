@@ -141,7 +141,7 @@ app_ui <- function(request) {
         fluidPage(
           useShinyjs(),
           div(
-            style = "margin-bottom : 1em",
+            style = "margin-bottom : 1em; padding-right: 15px; padding-left: 15px;",
             reactable::reactableOutput(
               outputId = "DT"
             )
@@ -214,7 +214,22 @@ app_ui <- function(request) {
               solidHeader = TRUE,
               width = 12,
               plotOutput("corplot2")
-            )
+            ),
+            shinydashboardPlus::box(
+              title = "Distribution (Numeric Only)" ,
+              status = "navy",
+              solidHeader = TRUE,
+              width = 12,
+              plotOutput("distplot")
+            ),
+            shinydashboardPlus::box(
+              title = "Distribution" ,
+              status = "navy",
+              solidHeader = TRUE,
+              width = 12,
+              plotOutput("distplot2")
+            ),
+
           )
         )
       ),

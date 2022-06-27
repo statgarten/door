@@ -18,9 +18,11 @@ app_server <- function(input, output, session) {
   })
 
   inputData <- reactiveVal(NULL)
+
+  # EDA Plot
   ggobj <- reactiveVal(NULL)
-
-
+  distobj <- reactiveVal(NULL)
+  distobj2 <- reactiveVal(NULL)
 
   observeEvent(input$fileInputID, {
     file <- input$fileInputID
@@ -141,9 +143,10 @@ app_server <- function(input, output, session) {
       )
     )
 
-
-
     output$corplot2 <- renderPlot(ggobj())
+
+    output$distplot <- renderPlot(distobj())
+    output$distplot2 <- renderPlot(distobj2())
   })
 
   opened <- reactiveVal(NULL)
@@ -179,7 +182,7 @@ app_server <- function(input, output, session) {
 
   mod_relationModule_server("relationModule_1", inputData, ggobj, opened)
 
-  mod_variableModule_server("variableModule_1")
+  mod_variableModule_server("variableModule_1", inputData, opened, distobj, distobj2)
 
   # Your application server logic
 
