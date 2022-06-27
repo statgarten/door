@@ -20,9 +20,10 @@ app_server <- function(input, output, session) {
   inputData <- reactiveVal(NULL)
 
   # EDA Plot
-  ggobj <- reactiveVal(NULL)
-  distobj <- reactiveVal(NULL)
-  distobj2 <- reactiveVal(NULL)
+  ggobj <- reactiveVal(NULL) # relation scatter chart
+  distobj <- reactiveVal(NULL) # variable histogram
+  distobj2 <- reactiveVal(NULL) # variable pie chart
+  uiobj <- reactiveVal(NULL) # variable quantitle box
 
   observeEvent(input$fileInputID, {
     file <- input$fileInputID
@@ -147,6 +148,8 @@ app_server <- function(input, output, session) {
 
     output$distplot <- renderPlot(distobj())
     output$distplot2 <- renderPlot(distobj2())
+
+    output$distBox <- renderUI(uiobj())
   })
 
   opened <- reactiveVal(NULL)
@@ -182,7 +185,7 @@ app_server <- function(input, output, session) {
 
   mod_relationModule_server("relationModule_1", inputData, ggobj, opened)
 
-  mod_variableModule_server("variableModule_1", inputData, opened, distobj, distobj2)
+  mod_variableModule_server("variableModule_1", inputData, opened, distobj, distobj2, uiobj)
 
   # Your application server logic
 

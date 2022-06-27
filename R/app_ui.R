@@ -220,7 +220,11 @@ app_ui <- function(request) {
               status = "navy",
               solidHeader = TRUE,
               width = 12,
-              plotOutput("distplot")
+              fluidRow(
+                column(width = 6, plotOutput("distplot")),
+                column(width = 6, uiOutput('distBox'))
+              )
+
             ),
             shinydashboardPlus::box(
               title = "Distribution" ,
