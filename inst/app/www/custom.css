@@ -61,3 +61,12 @@ shinydashboard sidebar width
 .left-side{
   width: 300px;
 }
+
+
+/*
+shinydashboard sidebar position fix
+*/
+
+.main-sidebar{
+  position:fixed;
+}
