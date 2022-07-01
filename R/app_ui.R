@@ -9,15 +9,20 @@
 #' @importFrom shinydashboard dashboardBody
 #' @importFrom shinydashboardPlus box dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput
+#' @importFrom shinyBS bsTooltip bsPopover bsButton
 #' @noRd
 app_ui <- function(request) {
   tagList(
     golem_add_external_resources(),
     dashboardPage(
+      skin = 'black',
       header = shinydashboardPlus::dashboardHeader(
-        title = "StatGarten",
+        title = tagList(
+          span(class = "logo-lg", "statgarten"),
+          img(src = "www/statgarten.png", style = 'width :150%')
+        ),
         titleWidth = 300,
-        controlbarIcon = icon("gear", verify_fa = FALSE),
+        controlbarIcon = icon("gear", verify_fa = FALSE), # to hide error
         leftUi = tagList(
           div(
             shinyWidgets::radioGroupButtons(
@@ -28,21 +33,31 @@ app_ui <- function(request) {
               selected = "Import",
               individual = TRUE,
               checkIcon = list(
-                yes = tags$i(class = "fa fa-circle", style = "color: gold"),
-                no = tags$i(class = "fa fa-circle-o", style = "color: gold")
+                yes = tags$i(class = "fa fa-circle", style = "color: #34ace0"),
+                # no = tags$i(class = "fa fa-circle-o", style = "color: gold") : empty
+                no = tags$i(class = "fa fa-circle", style = "color: gold")
               ) # ,
               # width = "10em"
             ),
             style = "margin-bottom: -11.5px; text-align: center; font-weight: bold;"
+          ),
+          div(
+            actionButton(
+              inputId = "Outro",
+              label = NULL,
+              style = "margin: auto; width: 100%; background: #000; color: #FFF",
+              onclick = "window.open('https://github.com/statgarten', '_blank')",
+              icon = icon("github", style = 'font-size: 1.3em;')
+            )
           )
         )
       ),
 
       # SIDE MODULE
       sidebar = dashboardSidebar(
-        minified = FALSE,
+        # minified = FALSE,
         width = 300,
-        htmlOutput("Logo", style = "text-align: center; margin-bottom:3em; margin-top:3em;"),
+        #htmlOutput("Logo", style = "text-align: center; margin-bottom:3em; margin-top:3em;"),
         conditionalPanel(
           condition = 'input.module == "Import"',
           shinyjs::hidden(
@@ -54,11 +69,11 @@ app_ui <- function(request) {
                 label = "Functions",
                 choices = c("", "Filter", "Subset", "Mutate", "Clean", "Split", "Reshape", "Export"),
                 choicesOpt = list(
-                  subtext = c("", "fil", "sub", "mut", "cle", "spl", "res", "exp"),
+                  subtext = c("", "select data with criteria", "delete column", "mut", "cle", "spl", "res", "exp"),
                   style = rep(c("color: black"), 8)
                 ),
                 options = list(
-                  style = "btn-info"
+                  # style = "btn-info"
                 ),
                 selected = NULL
               ),
@@ -151,16 +166,44 @@ app_ui <- function(request) {
             condition = 'input.module == "Import"',
             p(
               id = "desc",
-              "Description Text will be here"
+              "Statgarten supports Data Wrangling / Visualize / EDA and Export results"
             ),
             fileInput(
               inputId = "fileInputID",
-              label = NULL,
+              label =
+                h4("Upload your data :",
+                   tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                   bsButton(
+                     inputId = "q1",
+                     label = "",
+                     icon = icon("question"),
+                     style = "info",
+                     size = "extra-small"
+                   )
+                ),
               accept = c(".csv", ".tsv", ".sas7bdat", ".sas7bcat", ".sav", ".dta", ".xls", ".xlsx", ".rda", ".rds", ".rdata"),
               buttonLabel = "Browse local files",
-              placeholder = "or Drag & Drop in Here",
+              # placeholder = "or Drag & Drop in Here",
               multiple = FALSE,
               width = "100%"
+            ),
+            # shinyBS::bsPopover(
+            #   id = "q1", title = "Tidy data",
+            #   content = paste0("You should read the ",
+            #                    a("tidy data paper",
+            #                      href = "http://vita.had.co.nz/papers/tidy-data.pdf",
+            #                      target="_blank")
+            #   ),
+            #   placement = "right",
+            #   trigger = "focus",
+            #   options = list(container = "body")
+            # ),
+            shinyBS::bsTooltip(
+              id = 'q1',
+              title = 'Supports csv, tsv, sas7bdat, sas7bcat, dta, xls, rda, rds, rdata',
+              trigger = 'hover',
+              placement = 'right',
+              options = list(container = "body")
             ),
             shinyjs::disabled(
               shinyjs::hidden(
@@ -237,17 +280,11 @@ app_ui <- function(request) {
           )
         )
       ),
-      controlbar = dashboardControlbar(disable = TRUE),
-      footer = dashboardFooter(
-        left = NULL,
-        right = actionButton(
-          inputId = "Outro",
-          label = "Github / Manual",
-          style = "margin: auto; width: 100%",
-          onclick = "window.open('https://github.com/statgarten', '_blank')",
-          icon = icon("github")
-        )
-      )
+      controlbar = dashboardControlbar(disable = TRUE)#,
+      #footer = dashboardFooter(
+      #  left = NULL,
+      #  right =
+      #)
     )
   )
 }

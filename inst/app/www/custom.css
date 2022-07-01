@@ -1,16 +1,45 @@
 /*
-
+color theme
 */
 
-body > div.wrapper > div.content-wrapper > section > div > div.form-group.shiny-input-container > div.input-group > input{
+.content-wrapper {
+    background-color: #fff !important;
+}
+
+.skin-black .main-header .navbar {
+    background-color: #f7f1e3;
+}
+
+.skin-black .main-header .navbar .sidebar-toggle:hover {
+    color: #999;
+    background: #f7f1e3;
+}
+
+.skin-black .main-header .logo {
+    background-color: #f7f1e3;
+    color: #333;
+    border-bottom: 0 solid transparent;
+    border-right: 1px solid #eee;
+}
+
+.skin-black .main-header .logo:hover {
+    background-color: #f7f1e3;
+}
+
+/*
+fileinput Selector (LEFT)
+*/
+
+body > div.wrapper > div.content-wrapper > section > div > div:nth-child(2) > div:nth-child(2) > div.input-group > input {
   height:10em;
 }
+
 
 /*
 fileinput button
 */
 
-body > div.wrapper > div.content-wrapper > section > div > div.form-group.shiny-input-container > div.input-group > label > span{
+body > div.wrapper > div.content-wrapper > section > div > div:nth-child(2) > div:nth-child(2) > div.input-group > label > span {
 
   height: 10em;
   border-top-left-radius: 2em;
@@ -18,7 +47,7 @@ body > div.wrapper > div.content-wrapper > section > div > div.form-group.shiny-
 
   display: table-cell; /*text vertical center*/
 
-  background: #001F3F; /* font style*/
+  background: #00ACD6; /* font style*/
   color: white;
   font-weight: bold;
 }
@@ -58,15 +87,18 @@ sortable color
 /*
 shinydashboard sidebar width
 */
+
+/*
 .left-side{
   width: 300px;
 }
-
+*/
 
 /*
 shinydashboard sidebar position fix
 */
-
+/*
 .main-sidebar{
   position:fixed;
 }
+*/
