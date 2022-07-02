@@ -23,6 +23,7 @@ Imports:
     RSQLite,
     scissor,
     shiny (>= 1.7.1),
+    shinyBS,
     shinydashboard,
     shinydashboardPlus,
     shinyjs,

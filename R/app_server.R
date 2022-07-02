@@ -24,6 +24,7 @@ app_server <- function(input, output, session) {
   distobj <- reactiveVal(NULL) # variable histogram
   distobj2 <- reactiveVal(NULL) # variable pie chart
   uiobj <- reactiveVal(NULL) # variable quantitle box
+  columnTypes <- reactiveVal(NULL)
 
   observeEvent(input$fileInputID, {
     file <- input$fileInputID
@@ -38,67 +39,44 @@ app_server <- function(input, output, session) {
     shinyjs::hide(id = "fileInputID")
 
     shinyjs::show(id = "showAll")
-    shinyjs::enable(id = "showAll")
 
     shinyjs::show(id = "ImportBox")
     shinyjs::show(id = "EDABox")
 
-    if (ext == "csv") {
-      file$datapath |>
-        read.csv() |>
-        inputData()
-    }
-    if (ext == "tsv") {
-      file$datapath |>
-        read.csv(sep = "\t") |>
-        inputData()
-    }
-    if (ext == "sas7bdat" || ext == "sas7bcat") {
-      file$datapath |>
-        haven::read_sas() |>
-        inputData()
-    }
-    if (ext == "sav") {
-      file$datapath |>
-        haven::read_sav() |>
-        inputData()
-    }
-    if (ext == "dta") {
-      file$datapath |>
-        haven::read_dta() |>
-        inputData()
-    }
-    if (ext == "xls") {
-      file$datapath |>
-        readxl::read_xls() |>
-        inputData()
-    }
-    if (ext == "xlsx") {
-      file$datapath |>
-        readxl::read_xlsx() |>
-        inputData()
-    }
-    if (ext == "rds") {
-      file$datapath |>
-        readr::read_rds() |>
-        inputData()
-    }
-    if (ext == "rda" || ext == "rdata") {
-      file$datapath |>
-        load() |>
-        inputData()
-    }
+    if (ext == "csv") { file$datapath |> read.csv() |> inputData() }
+    if (ext == "tsv") { file$datapath |> read.csv(sep = "\t") |> inputData() }
+    if (ext == "sas7bdat" || ext == "sas7bcat") { file$datapath |> haven::read_sas() |> inputData() }
+    if (ext == "sav") { file$datapath |> haven::read_sav() |> inputData() }
+    if (ext == "dta") { file$datapath |> haven::read_dta() |> inputData() }
+    if (ext == "xls") { file$datapath |> readxl::read_xls() |> inputData() }
+    if (ext == "xlsx") { file$datapath |> readxl::read_xlsx() |> inputData() }
+    if (ext == "rds") { file$datapath |> readr::read_rds() |> inputData() }
+    if (ext == "rda" || ext == "rdata") { file$datapath |> load() |> inputData() }
+
+    # define column types
+    tt <- inputData() %>%
+      dplyr::summarise_all(class) %>%
+      tidyr::gather(class)
+
+    tt2 <- tt %>% pull(value)
+      names(tt2) <- tt %>% pull(class)
+    columnTypes(tt2)
+    rm(tt, tt2)
 
     ## Main table
 
     output$DT <-
       inputData() |>
-      getDT(all = TRUE) |>
+      getDT(all = TRUE, columnGroups = columnTypes()) |>
       reactable::renderReactable()
 
     ## EDA
 
-    obj <- board::brief(inputData())
+    # getexc
+    exc <- which(!columnTypes() %in% c('numeric'))
+    if(length(exc) == 0) {exc <- NULL}
+
+    obj <- board::brief(inputData(), exc = exc)
     obj$unif <- ifelse(obj$unif, "True", NA)
     obj$uniq <- ifelse(obj$uniq, "True", NA)
 
@@ -198,13 +176,13 @@ app_server <- function(input, output, session) {
     if (input$showAll == TRUE) {
       output$DT <-
         inputData() |>
-        getDT(all = TRUE) |>
+        getDT(all = TRUE, columnGroups = columnTypes()) |>
         reactable::renderReactable()
     }
     if (input$showAll == FALSE) {
       output$DT <-
         inputData() |>
-        getDT() |>
+        getDT(columnGroups = columnTypes()) |>
         reactable::renderReactable()
     }
   })

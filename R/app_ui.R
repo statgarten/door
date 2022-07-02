@@ -187,17 +187,6 @@ app_ui <- function(request) {
               multiple = FALSE,
               width = "100%"
             ),
-            # shinyBS::bsPopover(
-            #   id = "q1", title = "Tidy data",
-            #   content = paste0("You should read the ",
-            #                    a("tidy data paper",
-            #                      href = "http://vita.had.co.nz/papers/tidy-data.pdf",
-            #                      target="_blank")
-            #   ),
-            #   placement = "right",
-            #   trigger = "focus",
-            #   options = list(container = "body")
-            # ),
             shinyBS::bsTooltip(
               id = 'q1',
               title = 'Supports csv, tsv, sas7bdat, sas7bcat, dta, xls, rda, rds, rdata',
@@ -205,17 +194,16 @@ app_ui <- function(request) {
               placement = 'right',
               options = list(container = "body")
             ),
-            shinyjs::disabled(
-              shinyjs::hidden(
-                shinyWidgets::prettySwitch(
-                  inputId = "showAll",
-                  label = "Show every data",
-                  status = "success",
-                  value = TRUE,
-                  fill = TRUE
-                )
+            shinyjs::hidden(
+              shinyWidgets::prettySwitch(
+                inputId = "showAll",
+                label = "Show every data",
+                status = "success",
+                value = TRUE,
+                fill = TRUE
               )
             )
+
           ),
 
           ### EDA panel
