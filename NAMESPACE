@@ -3,6 +3,8 @@
 export(getDT)
 export(run_app)
 import(dplyr)
+import(plotGen)
+import(plotly)
 import(reactable)
 import(shiny)
 import(shinyWidgets)

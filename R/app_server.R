@@ -19,12 +19,16 @@ app_server <- function(input, output, session) {
 
   inputData <- reactiveVal(NULL)
 
+  plotlyobj <- reactiveVal(NULL) # Vis
+
   # EDA Plot
   ggobj <- reactiveVal(NULL) # relation scatter chart
   distobj <- reactiveVal(NULL) # variable histogram
   distobj2 <- reactiveVal(NULL) # variable pie chart
   uiobj <- reactiveVal(NULL) # variable quantitle box
   columnTypes <- reactiveVal(NULL)
+
+
 
   observeEvent(input$fileInputID, {
     file <- input$fileInputID
@@ -39,7 +43,7 @@ app_server <- function(input, output, session) {
     shinyjs::hide(id = "fileInputID")
 
     shinyjs::show(id = "showAll")
-
+    shinyjs::show(id = 'VisBox')
     shinyjs::show(id = "ImportBox")
     shinyjs::show(id = "EDABox")
 
@@ -128,6 +132,8 @@ app_server <- function(input, output, session) {
     output$distplot2 <- renderPlot(distobj2())
 
     output$distBox <- renderUI(uiobj())
+
+    output$plot <- renderPlotly(plotlyobj())
   })
 
   opened <- reactiveVal(NULL)
@@ -139,6 +145,11 @@ app_server <- function(input, output, session) {
   observeEvent(input$EDAFunction, {
     opened(input$EDAFunction)
   })
+
+  observeEvent(input$VisFunction, {
+    opened(input$VisFunction)
+  })
+
 
 
   ## Import
@@ -156,6 +167,10 @@ app_server <- function(input, output, session) {
   mod_reshapeModule_server("reshapeModule_1", inputData, opened)
 
   mod_exportModule_server("exportModule_1", inputData)
+
+  ## Vis
+
+  mod_visModule_server("visModule_1", inputData, opened, plotlyobj)
 
   ## EDA
 

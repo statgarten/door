@@ -3,6 +3,7 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny dplyr tidyr
+#' @import plotly
 #' @importFrom shinyjs hidden useShinyjs
 #' @importFrom DT DTOutput
 #' @import shinyWidgets
@@ -110,7 +111,29 @@ app_ui <- function(request) {
         ),
         conditionalPanel(
           condition = 'input.module == "Vis"',
-          p("Not Implemented")
+          shinyjs::hidden(
+            div(
+              id = "VisBox",
+              style = "text-align:center;",
+              shinyWidgets::pickerInput(
+                inputId = "VisFunction",
+                label = "Vis Functions",
+                choices = c("", "vis"),
+                choicesOpt = list(
+                  subtext = c(""),
+                  style = rep(c("color: black"), 1)
+                ),
+                options = list(
+                  style = "btn-info"
+                ),
+                selected = NULL
+              ),
+              #conditionalPanel(
+              #  condition = 'input.EDAFunction == "Brief"',
+                mod_visModule_ui("visModule_1")
+              #)
+            )
+          )
         ),
         conditionalPanel(
           condition = 'input.module == "EDA"',
@@ -203,6 +226,14 @@ app_ui <- function(request) {
                 fill = TRUE
               )
             )
+
+          ),
+          ### Vis panel
+          conditionalPanel(
+            condition = 'input.module == "Vis"',
+            p('asdf'),
+            plotlyOutput(outputId = 'plot'),
+            p('zxcv')
 
           ),
 
