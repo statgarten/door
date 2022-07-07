@@ -10,10 +10,11 @@ BugReports: https://github.com/statgarten/door/issues
 Imports: 
     board,
     config (>= 0.3.1),
+    data.table,
+    datamods,
     dplyr,
     DT,
     GGally,
-    ggplot2,
     golem (>= 0.3.2),
     haven,
     htmlwidgets,
@@ -31,8 +32,8 @@ Imports:
     shinyjs,
     shinyWidgets,
     sortable,
+    tibble,
     tidyr,
-    tools,
     writexl
 Suggests: 
     knitr,

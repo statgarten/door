@@ -4,11 +4,12 @@
 #'     DO NOT REMOVE.
 #' @import shiny dplyr tidyr
 #' @import plotly
+#' @import datamods
 #' @importFrom shinyjs hidden useShinyjs
 #' @importFrom DT DTOutput
 #' @import shinyWidgets
 #' @importFrom shinydashboard dashboardBody
-#' @importFrom shinydashboardPlus box dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
+#' @importFrom shinydashboardPlus box dashboardHeader dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput
 #' @importFrom shinyBS bsTooltip bsPopover bsButton
 #' @noRd
@@ -17,7 +18,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     dashboardPage(
       skin = 'black',
-      header = shinydashboardPlus::dashboardHeader(
+      header = dashboardHeader(
         title = tagList(
           span(class = "logo-lg", "statgarten"),
           img(src = "www/statgarten.png", style = 'width :150%')
@@ -61,7 +62,7 @@ app_ui <- function(request) {
         #htmlOutput("Logo", style = "text-align: center; margin-bottom:3em; margin-top:3em;"),
         conditionalPanel(
           condition = 'input.module == "Import"',
-          shinyjs::hidden(
+          #shinyjs::hidden(
             div(
               id = "ImportBox",
               style = "text-align:center;",
@@ -107,11 +108,10 @@ app_ui <- function(request) {
                 mod_exportModule_ui("exportModule_1")
               )
             )
-          )
+          # )
         ),
         conditionalPanel(
           condition = 'input.module == "Vis"',
-          shinyjs::hidden(
             div(
               id = "VisBox",
               style = "text-align:center;",
@@ -133,11 +133,11 @@ app_ui <- function(request) {
                 mod_visModule_ui("visModule_1")
               #)
             )
-          )
+
         ),
         conditionalPanel(
           condition = 'input.module == "EDA"',
-          shinyjs::hidden(
+          # shinyjs::hidden(
             div(
               id = "EDABox",
               style = "text-align:center;",
@@ -167,7 +167,7 @@ app_ui <- function(request) {
                 mod_variableModule_ui("variableModule_1")
               )
             )
-          )
+          # )
         ),
         conditionalPanel(
           condition = 'input.module == "Report"',
@@ -178,63 +178,54 @@ app_ui <- function(request) {
       body = dashboardBody(
         fluidPage(
           useShinyjs(),
+
+          div(
+            id = 'importModule',
+            datamods::import_file_ui(
+              id = 'importModule_1',
+              preview_data = FALSE,
+              file_extensions = c(
+                ".csv", '.dta', ".fst", '.rda', ".rds",
+                '.rdata','.sas7bcat', ".sas7bdat",
+                ".sav",'.tsv', ".txt", ".xls", ".xlsx"
+              )
+            )
+          ),
+
+          ## View
           div(
             style = "margin-bottom : 1em; padding-right: 15px; padding-left: 15px;",
             reactable::reactableOutput(
               outputId = "DT"
             )
           ),
+
+          ## Update
+          shinyjs::hidden(
+            div(
+              id = 'updateModule',
+              datamods::update_variables_ui('updateModule_1'),
+              actionButton(
+                inputId = 'hideupdateModule',
+                label = 'update finished!',
+                icon = icon("angle-down")
+              )
+            )
+          ),
+
           ### Import panel
           conditionalPanel(
             condition = 'input.module == "Import"',
             p(
               id = "desc",
               "Statgarten supports Data Wrangling / Visualize / EDA and Export results"
-            ),
-            fileInput(
-              inputId = "fileInputID",
-              label =
-                h4("Upload your data :",
-                   tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
-                   bsButton(
-                     inputId = "q1",
-                     label = "",
-                     icon = icon("question"),
-                     style = "info",
-                     size = "extra-small"
-                   )
-                ),
-              accept = c(".csv", ".tsv", ".sas7bdat", ".sas7bcat", ".sav", ".dta", ".xls", ".xlsx", ".rda", ".rds", ".rdata"),
-              buttonLabel = "Browse local files",
-              # placeholder = "or Drag & Drop in Here",
-              multiple = FALSE,
-              width = "100%"
-            ),
-            shinyBS::bsTooltip(
-              id = 'q1',
-              title = 'Supports csv, tsv, sas7bdat, sas7bcat, dta, xls, rda, rds, rdata',
-              trigger = 'hover',
-              placement = 'right',
-              options = list(container = "body")
-            ),
-            shinyjs::hidden(
-              shinyWidgets::prettySwitch(
-                inputId = "showAll",
-                label = "Show every data",
-                status = "success",
-                value = TRUE,
-                fill = TRUE
-              )
             )
-
           ),
+
           ### Vis panel
           conditionalPanel(
             condition = 'input.module == "Vis"',
-            p('asdf'),
             plotlyOutput(outputId = 'plot'),
-            p('zxcv')
-
           ),
 
           ### EDA panel

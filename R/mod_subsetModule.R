@@ -50,11 +50,6 @@ mod_subsetModule_server <- function(id, inputData, opened) {
           )
       )
 
-      output$DT <-
-        inputData() |>
-        getDT(all = TRUE) |>
-        reactable::renderReactable()
-
       updateSelectizeInput(
         session,
         inputId = "subsetColumn",

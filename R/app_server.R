@@ -10,6 +10,7 @@
 #' @importFrom reactable renderReactable
 #' @importFrom shinydashboardPlus descriptionBlock
 #' @importFrom GGally ggcorr
+#' @import datamods
 #' @noRd
 app_server <- function(input, output, session) {
   src <- "www/statgarten.png"
@@ -17,70 +18,73 @@ app_server <- function(input, output, session) {
     c('<img width = "100" src="', src, '">')
   })
 
-  inputData <- reactiveVal(NULL)
 
-  plotlyobj <- reactiveVal(NULL) # Vis
+  # import
+  data_rv <- reactiveValues(data = NULL)
+  inputData <- reactiveVal(NULL)
+  columnTypes <- reactiveVal(NULL)
 
   # EDA Plot
   ggobj <- reactiveVal(NULL) # relation scatter chart
   distobj <- reactiveVal(NULL) # variable histogram
   distobj2 <- reactiveVal(NULL) # variable pie chart
   uiobj <- reactiveVal(NULL) # variable quantitle box
-  columnTypes <- reactiveVal(NULL)
+
+  output$corplot2 <- renderPlot(ggobj())
+  output$distplot <- renderPlot(distobj())
+  output$distplot2 <- renderPlot(distobj2())
+  output$distBox <- renderUI(uiobj())
 
 
+  # Vis
+  plotlyobj <- reactiveVal(NULL)
+  output$plot <- renderPlotly(plotlyobj())
 
-  observeEvent(input$fileInputID, {
-    file <- input$fileInputID
+  from_file <- import_file_server(
+    id = "importModule_1",
+    read_fns = list(
+      tsv = function(file){ read.csv(file$datapath, sep = '\t') },
+      sas7bcat = function(file){ haven::read_sas(file$datapath) },
+      dta = function(file){ haven::read_dta(file$datapath) },
+      rda = function(file){ load(file$datapath) },
+      rdata = function(file){ load(file$datapath) }
+    )
+  )
 
-    ext <- file$datapath |>
-      tools::file_ext() |>
-      tolower()
-
-    req(file)
+  observeEvent(from_file$data(), {
+    data_rv$data <- from_file$data()
+    data_rv$name <- from_file$name()
+    inputData(data_rv$data)
 
     shinyjs::hide(id = "desc")
-    shinyjs::hide(id = "fileInputID")
+    shinyjs::hide(id = 'importModule')
+    shinyjs::show(id = 'updateModule')
+  })
 
-    shinyjs::show(id = "showAll")
-    shinyjs::show(id = 'VisBox')
-    shinyjs::show(id = "ImportBox")
-    shinyjs::show(id = "EDABox")
+  observeEvent(input$hideupdateModule,{
+    shinyjs::hide(id = 'updateModule')
+  })
 
-    if (ext == "csv") { file$datapath |> read.csv() |> inputData() }
-    if (ext == "tsv") { file$datapath |> read.csv(sep = "\t") |> inputData() }
-    if (ext == "sas7bdat" || ext == "sas7bcat") { file$datapath |> haven::read_sas() |> inputData() }
-    if (ext == "sav") { file$datapath |> haven::read_sav() |> inputData() }
-    if (ext == "dta") { file$datapath |> haven::read_dta() |> inputData() }
-    if (ext == "xls") { file$datapath |> readxl::read_xls() |> inputData() }
-    if (ext == "xlsx") { file$datapath |> readxl::read_xlsx() |> inputData() }
-    if (ext == "rds") { file$datapath |> readr::read_rds() |> inputData() }
-    if (ext == "rda" || ext == "rdata") { file$datapath |> load() |> inputData() }
+
+
+  observeEvent(data_rv$data, {
 
     # define column types
-    tt <- inputData() %>%
-      dplyr::summarise_all(class) %>%
-      tidyr::gather(class)
+    columnTypes <- defineColumnTypes(data_rv$data)
 
-    tt2 <- tt %>% pull(value)
-      names(tt2) <- tt %>% pull(class)
-    columnTypes(tt2)
-    rm(tt, tt2)
-
-    ## Main table
-
-    output$DT <-
-      inputData() |>
-      getDT(all = TRUE, columnGroups = columnTypes()) |>
-      reactable::renderReactable()
+    # print(columnTypes()) Confirmed
 
     ## EDA
 
     # getexc
+
     exc <- which(!columnTypes() %in% c('numeric'))
     if(length(exc) == 0) {exc <- NULL}
 
-    obj <- board::brief(inputData(), exc = exc)
+    obj <- board::brief(
+      inputData = inputData(),
+      exc = exc
+    )
     obj$unif <- ifelse(obj$unif, "True", NA)
     obj$uniq <- ifelse(obj$uniq, "True", NA)
 
@@ -116,7 +120,9 @@ app_server <- function(input, output, session) {
     updateSelectInput(
       inputId = "variableSelect",
       label = "variable",
-      choices = colnames(inputData()),
+      choices = colnames(
+        inputData()
+      ),
       selected = NULL
     )
 
@@ -126,15 +132,49 @@ app_server <- function(input, output, session) {
       )
     )
 
-    output$corplot2 <- renderPlot(ggobj())
-
-    output$distplot <- renderPlot(distobj())
-    output$distplot2 <- renderPlot(distobj2())
-
-    output$distBox <- renderUI(uiobj())
-
-    output$plot <- renderPlotly(plotlyobj())
   })
+
+
+  ## Main table
+
+  # need to check compatiblity with getDT
+
+  # output$DT <-
+  #   imported$data() |>
+  #   #inputData() |>
+  #   getDT(all = TRUE, columnGroups = columnTypes()) |>
+  #   reactable::renderReactable()
+
+
+  output$DT <- reactable::renderReactable({
+    data <- req(data_rv$data)
+    reactable::reactable(
+      data,
+      defaultColDef = reactable::colDef(header = function(value) {
+        classes <- tags$div(style = "font-style: italic; font-weight: normal; font-size: small;", get_classes(data[, value, drop = FALSE]))
+        tags$div(title = value, value, classes)}
+      ),
+      columns = list(),
+      bordered = TRUE,
+      compact = TRUE,
+      striped = TRUE
+    )
+  })
+
+  ## update module
+
+  updated_data <- update_variables_server(
+    id = "updateModule_1",
+    data = reactive(data_rv$data),
+    height = "300px"
+  )
+
+  observeEvent(updated_data(), {
+    data_rv$data <- updated_data()
+    inputData(data_rv$data)
+  })
+
+  ## Open and function change
 
   opened <- reactiveVal(NULL)
 
@@ -150,19 +190,37 @@ app_server <- function(input, output, session) {
     opened(input$VisFunction)
   })
 
-
-
   ## Import
 
-  mod_filterModule_server("filterModule_1", inputData, opened)
+  observeEvent(inputData(), {
+    data_rv$data <- inputData()
+  })
 
-  mod_subsetModule_server("subsetModule_1", inputData, opened)
+  mod_filterModule_server(
+    id = "filterModule_1",
+    inputData = inputData,
+    opened = opened
+  )
 
-  mod_mutateModule_server("mutateModule_1", inputData, opened)
+  mod_subsetModule_server(
+    id = "subsetModule_1",
+    inputData = inputData,
+    opened = opened
+  )
+
+  mod_mutateModule_server(
+    id = "mutateModule_1",
+    inputData = inputData,
+    opened = opened
+  )
 
   mod_cleanModule_server("cleanModule_1", inputData, opened)
 
-  mod_splitModule_server("splitModule_1", inputData, opened)
+  mod_splitModule_server(
+    id = "splitModule_1",
+    inputData = inputData,
+    opened =  opened
+  )
 
   mod_reshapeModule_server("reshapeModule_1", inputData, opened)
 
@@ -170,35 +228,65 @@ app_server <- function(input, output, session) {
 
   ## Vis
 
-  mod_visModule_server("visModule_1", inputData, opened, plotlyobj)
+  mod_visModule_server(
+    id = "visModule_1",
+    inputData = inputData,
+    opened = opened,
+    plotlyobj = plotlyobj
+  )
 
   ## EDA
 
-  mod_briefModule_server("briefModule_1", inputData, opened)
-
+  # mod_briefModule_server("briefModule_1", inputData, opened)
+  #
   mod_relationModule_server("relationModule_1", inputData, ggobj, opened)
 
   mod_variableModule_server("variableModule_1", inputData, opened, distobj, distobj2, uiobj)
 
   # Your application server logic
 
-  observeEvent(input$showAll, {
-    # only shows input data exists
-    if (is.null(inputData())) {
-      return()
-    }
+}
 
-    if (input$showAll == TRUE) {
-      output$DT <-
-        inputData() |>
-        getDT(all = TRUE, columnGroups = columnTypes()) |>
-        reactable::renderReactable()
+genId <- function(bytes = 12) {
+  paste(format(as.hexmode(sample(256, bytes, replace = TRUE) - 1), width = 2), collapse = "")
+}
+
+get_classes <- function(data) {
+  classes <- lapply(
+    X = data,
+    FUN = function(x) {
+      paste(class(x), collapse = ", ")
     }
-    if (input$showAll == FALSE) {
-      output$DT <-
-        inputData() |>
-        getDT(columnGroups = columnTypes()) |>
-        reactable::renderReactable()
-    }
-  })
+  )
+  unlist(classes, use.names = FALSE)
+}
+
+#' @importFrom data.table as.data.table
+#' @importFrom tibble as_tibble
+as_out <- function(x, return_class = c("data.frame", "data.table", "tbl_df")) {
+  if (is.null(x))
+    return(NULL)
+  return_class <- match.arg(return_class)
+  is_sf <- inherits(x, "sf")
+  x <- if (identical(return_class, "data.frame")) {
+    as.data.frame(x)
+  } else if (identical(return_class, "data.table")) {
+    as.data.table(x)
+  } else {
+    as_tibble(x)
+  }
+  if (is_sf)
+    class(x) <- c("sf", class(x))
+  return(x)
+}
+
+defineColumnTypes <- function(data){
+  tt <-
+    data %>%
+    dplyr::summarise_all(class) %>%
+    tidyr::gather(class)
+
+  tt2 <- tt %>% pull(value)
+  names(tt2) <- tt %>% pull(class)
+  return(reactive(tt2))
 }

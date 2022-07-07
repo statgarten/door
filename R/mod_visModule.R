@@ -49,6 +49,7 @@ mod_visModule_ui <- function(id){
 mod_visModule_server <- function(id, inputData, opened, plotlyobj){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
     observeEvent(opened(), {
       if(opened()!="vis"){return()}
       updateSelectizeInput(
@@ -79,6 +80,7 @@ mod_visModule_server <- function(id, inputData, opened, plotlyobj){
           describe = yval
         )
       )
+
     })
 
   })

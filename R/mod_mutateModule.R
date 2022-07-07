@@ -73,20 +73,6 @@ mod_mutateModule_server <- function(id, inputData, opened) {
           operator = input$mutateOperator
         )
       )
-
-      output$DT <-
-        inputData() |>
-        getDT(all = TRUE) |>
-        reactable::renderReactable()
-
-      updateSelectizeInput(
-        session,
-        inputId = "mutateColumn",
-        label = "mutateSelectLabel",
-        choices = colnames(inputData()),
-        server = TRUE
-      )
-
     })
   })
 }

@@ -41,3 +41,5 @@ vignettes/*.pdf
 inst/doc
 /doc/
 /Meta/
+EDA_prototype(NOT USED).R
+old_app.R

@@ -8,6 +8,7 @@
 #' @importFrom shiny NS tagList
 #' @import dplyr
 #' @importFrom shinyjs disabled enable
+#' @importFrom scissor subset
 #'
 mod_filterModule_ui <- function(id) {
   ns <- NS(id)
@@ -78,6 +79,7 @@ mod_filterModule_server <- function(id, inputData, opened) {
     })
 
     observeEvent(input$filterButton, {
+
       inputData(
         scissor::subset(
           inputData = inputData(),
@@ -85,19 +87,6 @@ mod_filterModule_server <- function(id, inputData, opened) {
           operator = input$filterOperator,
           value = input$filterVariable
         )
-      )
-
-      output$DT <-
-        inputData() |>
-        getDT(all = TRUE) |>
-        reactable::renderReactable()
-
-      updateSelectizeInput(
-        session,
-        inputId = "filterColumn",
-        label = "filterSelectLabel",
-        choices = colnames(inputData()),
-        server = TRUE
       )
     })
   })

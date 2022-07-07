@@ -41,19 +41,14 @@ mod_reshapeModule_server <- function(id, inputData, opened) {
     observeEvent(input$applyReshape, {
       # why this work?
       v <- scissor::reorder(
-        inputData = inputData,
+        inputData = isolate(inputData()),
         columns = input$reshapeSortable
-        )
+      )
 
       inputData(v)
 
       # this will not work
       # inputData () |> inputData() |> select(input$reshapeSortable)
-
-      output$DT <-
-        inputData() |>
-        getDT(all = TRUE) |>
-        reactable::renderReactable()
 
       output$reshapeSortable <- renderUI({
         rank_list(
@@ -63,6 +58,7 @@ mod_reshapeModule_server <- function(id, inputData, opened) {
           class = c("default-sortable", "custom-sortable") # add custom style
         )
       })
+
 
     })
 

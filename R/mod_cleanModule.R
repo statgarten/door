@@ -76,19 +76,6 @@ mod_cleanModule_server <- function(id, inputData, opened) {
         )
       )
 
-      output$DT <-
-        inputData() |>
-        getDT(all = TRUE) |>
-        reactable::renderReactable()
-
-      updateSelectizeInput(
-        session,
-        inputId = "cleanColumn",
-        label = "cleanSelectLabel",
-        choices = colnames(inputData()),
-        server = TRUE
-      )
-
     })
   })
 }
