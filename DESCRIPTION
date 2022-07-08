@@ -1,6 +1,6 @@
 Package: door
 Title: Shiny module for statgarten
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person("Jinhwan", "Kim", , "hwanistic@gmail.com", role = c("cre", "aut"))
 Description: PKG_DESC.
@@ -14,6 +14,7 @@ Imports:
     datamods,
     dplyr,
     DT,
+    esquisse,
     GGally,
     golem (>= 0.3.2),
     haven,

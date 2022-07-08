@@ -8,6 +8,7 @@
 #' @importFrom shinyjs hidden useShinyjs
 #' @importFrom DT DTOutput
 #' @import shinyWidgets
+#' @import esquisse
 #' @importFrom shinydashboard dashboardBody
 #' @importFrom shinydashboardPlus box dashboardHeader dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput
@@ -226,6 +227,11 @@ app_ui <- function(request) {
           conditionalPanel(
             condition = 'input.module == "Vis"',
             plotlyOutput(outputId = 'plot'),
+            actionButton(inputId = 'visModule_e-settings',label = 'toggle'),
+            esquisse_ui(
+              id = 'visModule_e',
+              header = FALSE
+            )
           ),
 
           ### EDA panel
