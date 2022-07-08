@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# door
+# door <img src="man/figures/logo-door.png" align="right" width="120" />
 
 <!-- badges: start -->
     
