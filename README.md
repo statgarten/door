@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# door
+# door <img src="man/figures/logo-door.png" align="right" width="120" />
 
 <!-- badges: start -->
 
@@ -61,7 +61,7 @@ library(door)
 door::run_app()
 #> Loading required package: shiny
 #> 
-#> Listening on http://127.0.0.1:5491
+#> Listening on http://127.0.0.1:7386
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />
