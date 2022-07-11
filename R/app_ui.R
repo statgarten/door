@@ -18,11 +18,11 @@ app_ui <- function(request) {
   tagList(
     golem_add_external_resources(),
     dashboardPage(
-      skin = 'black',
+      skin = "black",
       header = dashboardHeader(
         title = tagList(
           span(class = "logo-lg", "statgarten"),
-          img(src = "www/statgarten.png", style = 'width :150%')
+          img(src = "www/statgarten.png", style = "width :150%")
         ),
         titleWidth = 300,
         controlbarIcon = icon("gear", verify_fa = FALSE), # to hide error
@@ -50,7 +50,7 @@ app_ui <- function(request) {
               label = NULL,
               style = "margin: auto; width: 100%; background: #000; color: #FFF",
               onclick = "window.open('https://github.com/statgarten', '_blank')",
-              icon = icon("github", style = 'font-size: 1.3em;')
+              icon = icon("github", style = "font-size: 1.3em;")
             )
           )
         )
@@ -68,9 +68,19 @@ app_ui <- function(request) {
               shinyWidgets::pickerInput(
                 inputId = "ImportFunction",
                 label = "Functions",
-                choices = c("", "Filter", "Subset", "Mutate", "Clean", "Split", "Reshape", "Export"),
+                choices = c(
+                  "",
+                  # "Filter",
+                  # "Subset",
+                  "Mutate", "Clean", "Split", "Reshape", "Export"
+                ),
                 choicesOpt = list(
-                  subtext = c("", "select data with criteria", "delete column", "mut", "cle", "spl", "res", "exp"),
+                  subtext = c(
+                    "",
+                    # "select data with criteria",
+                    # "delete column",
+                    "mut", "cle", "spl", "res", "exp"
+                  ),
                   style = rep(c("color: black"), 8)
                 ),
                 options = list(), # style = "btn-info"
@@ -109,27 +119,27 @@ app_ui <- function(request) {
         ),
         conditionalPanel(
           condition = 'input.module == "Vis"',
-          shinyjs::hidden(
-            div(
-              id = "VisBox",
-              style = "text-align:center;",
-              actionButton(inputId = 'visModule_e-settings', label = 'Visualize Options'),
-              shinyWidgets::pickerInput(
-                inputId = "VisFunction",
-                label = "Vis Functions",
-                choices = c("", "vis"),
-                choicesOpt = list(
-                  subtext = c(""),
-                  style = rep(c("color: black"), 1)
-                ),
-                options = list(
-                  style = "btn-info"
-                ),
-                selected = NULL
-              ),
-              mod_visModule_ui("visModule_1")
-            )
-          )
+          # shinyjs::hidden(
+          #   div(
+          #     id = "VisBox",
+          #     style = "text-align:center;",
+          actionButton(inputId = "visModule_e-settings", label = "Visualize Options"),
+          #     shinyWidgets::pickerInput(
+          #       inputId = "VisFunction",
+          #       label = "Vis Functions",
+          #       choices = c("", "vis"),
+          #       choicesOpt = list(
+          #         subtext = c(""),
+          #         style = rep(c("color: black"), 1)
+          #       ),
+          #       options = list(
+          #         style = "btn-info"
+          #       ),
+          #       selected = NULL
+          #     ),
+          #     mod_visModule_ui("visModule_1")
+          #   )
+          # )
         ),
         conditionalPanel(
           condition = 'input.module == "EDA"',
@@ -169,7 +179,7 @@ app_ui <- function(request) {
           condition = 'input.module == "Report"',
           shinyjs::hidden(
             div(
-              id = 'ReportBox',
+              id = "ReportBox",
               p("Not Implemented")
             )
           )
@@ -180,139 +190,191 @@ app_ui <- function(request) {
           useShinyjs(),
 
           ## View
-          div(
-            style = "margin-bottom : 1em; padding-right: 15px; padding-left: 15px;",
-            h3(
-              'Data View'
-            ),
-            reactable::reactableOutput(
-              outputId = "DT"
+
+          shinyjs::hidden(
+            div(
+              id = "viewModule",
+              # style = "margin-bottom : 1em; padding-right: 15px; padding-left: 15px;",
+              # h3("Data View"),
+              shinydashboardPlus::box(
+                title = "Your Data",
+                collapsible = FALSE,
+                collapsed = FALSE,
+                solidHeader = TRUE,
+                status = "purple",
+                width = 12,
+                reactable::reactableOutput(outputId = "DT")
+              )
             )
           ),
-
           ### Import panel
           conditionalPanel(
             condition = 'input.module == "Import"',
-            h3(
-              id = "desc",
-              "Statgarten supports Data Wrangling / Visualize / EDA and Export results"
-            ),
+            # h3(
+            #  id = "desc",
+            #  "Statgarten supports Data Wrangling / Visualize / EDA and Export results"
+            # ),
             div(
-              id = 'importModule',
+              id = "importModule",
               datamods::import_file_ui(
-                id = 'importModule_1',
-                preview_data = FALSE,
+                id = "importModule_1",
+                preview_data = TRUE,
                 file_extensions = c(
-                  ".csv", '.dta', ".fst", '.rda', ".rds",
-                  '.rdata','.sas7bcat', ".sas7bdat",
-                  ".sav",'.tsv', ".txt", ".xls", ".xlsx"
+                  ".csv", ".dta", ".fst", ".rda", ".rds",
+                  ".rdata", ".sas7bcat", ".sas7bdat",
+                  ".sav", ".tsv", ".txt", ".xls", ".xlsx"
                 )
               )
             ),
+
             ## Update
             shinyjs::hidden(
               div(
-                id = 'updateModule',
-                datamods::update_variables_ui(
-                  id = 'updateModule_1',
-                  title = h3('Select / Rename / Convert Varibales')
-                ),
-                actionButton(
-                  inputId = 'hideupdateModule',
-                  label = 'update finished!',
-                  icon = icon("angle-down")
+                id = "updateModule",
+                shinydashboardPlus::box(
+                  style = "height:400px;",
+                  title = "Select / Rename / Convert data",
+                  collapsible = TRUE,
+                  collapsed = FALSE,
+                  solidHeader = TRUE,
+                  status = "purple",
+                  width = 6,
+                  ui2(
+                    id = "updateModule_1",
+                    title = FALSE
+                  ),
+                  footer = actionButton(
+                    inputId = "updateModule_1-validate",
+                    label = tagList(
+                      phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+                      i18n("Apply changes")
+                    ),
+                    width = "100%"
+                  )
                 )
               )
             ),
 
             ## Filter
 
-            reactable::reactableOutput('table'),
-
-            datamods::filter_data_ui(
-              id = 'filterModule_2'
-            ),
-            actionButton('applyFilter', 'apply')
-
+            shinyjs::hidden(
+              div(
+                id = "filterModule",
+                shinydashboardPlus::box(
+                  style = "height:400px;overflow-y: scroll;",
+                  title = "Filter data",
+                  collapsible = TRUE,
+                  collapsed = FALSE,
+                  solidHeader = TRUE,
+                  status = "purple",
+                  width = 6,
+                  datamods::filter_data_ui(id = "filterModule_2", show_nrow = FALSE),
+                  footer = actionButton(
+                    inputId = ("applyFilter"),
+                    label = tagList(
+                      phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+                      i18n("Apply changes")
+                    ),
+                    width = "100%"
+                  )
+                )
+              )
+            )
           ),
 
           ### Vis panel
           conditionalPanel(
             condition = 'input.module == "Vis"',
-            # plotlyOutput(outputId = 'plot'),
-            esquisse_ui(
-              id = 'visModule_e',
-              header = FALSE
+            shinyjs::hidden(
+              div(
+                id = "visModule",
+                shinydashboardPlus::box(
+                  title = "Drag column to visualize",
+                  collapsible = TRUE,
+                  collapsed = FALSE,
+                  solidHeader = TRUE,
+                  status = "purple",
+                  width = 12,
+                  esquisse_ui(
+                    id = "visModule_e",
+                    header = FALSE,
+                    controls = c("labs", "parameters", "appearance")
+                  )
+                )
+              )
             )
           ),
 
           ### EDA panel
           conditionalPanel(
             condition = 'input.module == "EDA"',
-            shinydashboardPlus::box(
-              title = "Dataset Description",
-              status = "purple",
-              solidHeader = TRUE,
-              width = 12,
-              fluidRow(
-                column(
-                  width = 6,
-                  uiOutput("dataDimension")
+            shinyjs::hidden(
+              div(
+                id = "edaModule",
+                shinydashboardPlus::box(
+                  title = "Dataset Description",
+                  status = "purple",
+                  solidHeader = TRUE,
+                  width = 12,
+                  fluidRow(
+                    column(
+                      width = 6,
+                      uiOutput("dataDimension")
+                    ),
+                    column(
+                      width = 6,
+                      uiOutput("missingData")
+                    )
+                  )
                 ),
-                column(
-                  width = 6,
-                  uiOutput("missingData")
+                shinydashboardPlus::box(
+                  title = "Variables",
+                  status = "purple",
+                  solidHeader = TRUE,
+                  width = 12,
+                  reactableOutput("reactOutput")
+                ),
+                shinydashboardPlus::box(
+                  title = "Correlation",
+                  status = "success",
+                  solidHeader = TRUE,
+                  width = 12,
+                  plotOutput("corplot")
+                ),
+                shinydashboardPlus::box(
+                  title = "Correlation2",
+                  status = "success",
+                  solidHeader = TRUE,
+                  width = 12,
+                  plotOutput("corplot2")
+                ),
+                shinydashboardPlus::box(
+                  title = "Distribution (Numeric Only)",
+                  status = "navy",
+                  solidHeader = TRUE,
+                  width = 12,
+                  fluidRow(
+                    column(width = 6, plotOutput("distplot")),
+                    column(width = 6, uiOutput("distBox"))
+                  )
+                ),
+                shinydashboardPlus::box(
+                  title = "Distribution",
+                  status = "navy",
+                  solidHeader = TRUE,
+                  width = 12,
+                  plotOutput("distplot2")
                 )
               )
-            ),
-            shinydashboardPlus::box(
-              title = "Variables",
-              status = "purple",
-              solidHeader = TRUE,
-              width = 12,
-              reactableOutput("reactOutput")
-            ),
-            shinydashboardPlus::box(
-              title = "Correlation",
-              status = "success",
-              solidHeader = TRUE,
-              width = 12,
-              plotOutput("corplot")
-            ),
-            shinydashboardPlus::box(
-              title = "Correlation2",
-              status = "success",
-              solidHeader = TRUE,
-              width = 12,
-              plotOutput("corplot2")
-            ),
-            shinydashboardPlus::box(
-              title = "Distribution (Numeric Only)" ,
-              status = "navy",
-              solidHeader = TRUE,
-              width = 12,
-              fluidRow(
-                column(width = 6, plotOutput("distplot")),
-                column(width = 6, uiOutput('distBox'))
-              )
-
-            ),
-            shinydashboardPlus::box(
-              title = "Distribution" ,
-              status = "navy",
-              solidHeader = TRUE,
-              width = 12,
-              plotOutput("distplot2")
-            ),
-
+            )
           )
         )
       ),
-      controlbar = dashboardControlbar(disable = TRUE)#,
-      #footer = dashboardFooter(
+      controlbar = dashboardControlbar(disable = TRUE) # ,
+      # footer = dashboardFooter(
       #  left = NULL,
       #  right =
-      #)
+      # )
     )
   )
 }
@@ -339,5 +401,26 @@ golem_add_external_resources <- function() {
     )
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
+  )
+}
+
+#' @import datamods
+ui2 <- function(id, title = TRUE) {
+  ns <- NS(id)
+  if (isTRUE(title)) {
+    title <- tags$h4(i18n("Update & select variables"),
+      class = "datamods-title"
+    )
+  }
+  tags$div(
+    class = "datamods-update",
+    html_dependency_pretty(),
+    tags$div(
+      style = "min-height: 25px;",
+      reactable::reactableOutput(
+        outputId = ns("table")
+      )
+    ),
+    tags$br()
   )
 }

@@ -43,11 +43,21 @@ app_server <- function(input, output, session) {
   from_file <- import_file_server(
     id = "importModule_1",
     read_fns = list(
-      tsv = function(file){ read.csv(file$datapath, sep = '\t') },
-      sas7bcat = function(file){ haven::read_sas(file$datapath) },
-      dta = function(file){ haven::read_dta(file$datapath) },
-      rda = function(file){ load(file$datapath) },
-      rdata = function(file){ load(file$datapath) }
+      tsv = function(file) {
+        read.csv(file$datapath, sep = "\t")
+      },
+      sas7bcat = function(file) {
+        haven::read_sas(file$datapath)
+      },
+      dta = function(file) {
+        haven::read_dta(file$datapath)
+      },
+      rda = function(file) {
+        load(file$datapath)
+      },
+      rdata = function(file) {
+        load(file$datapath)
+      }
     )
   )
 
@@ -57,12 +67,20 @@ app_server <- function(input, output, session) {
     inputData(data_rv$data)
 
     shinyjs::hide(id = "desc")
-    shinyjs::hide(id = 'importModule')
-    shinyjs::show(id = 'updateModule')
+    shinyjs::hide(id = "importModule")
+    shinyjs::show(id = "updateModule")
+    shinyjs::show(id = "viewModule")
+    shinyjs::show(id = "visModule")
+    shinyjs::show(id = "edaModule")
+    shinyjs::show(id = "filterModule")
   })
 
-  observeEvent(input$hideupdateModule,{
-    shinyjs::hide(id = 'updateModule')
+  observeEvent(input$hidefilterModule, {
+    shinyjs::hide(id = "filterModule")
+  })
+
+  observeEvent(input$hideupdateModule, {
+    shinyjs::hide(id = "updateModule")
   })
 
   observeEvent(input$`visModule_e-settings`, {
@@ -71,10 +89,10 @@ app_server <- function(input, output, session) {
 
   observeEvent(data_rv$data, { # Data loaded
 
-    shinyjs::show(id = 'ImportBox')
-    shinyjs::show(id = 'VisBox')
-    shinyjs::show(id = 'EDABox')
-    shinyjs::show(id = 'ReportBox')
+    shinyjs::show(id = "ImportBox")
+    shinyjs::show(id = "VisBox")
+    shinyjs::show(id = "EDABox")
+    shinyjs::show(id = "ReportBox")
 
     # define column types
     columnTypes <- defineColumnTypes(data_rv$data)
@@ -85,8 +103,10 @@ app_server <- function(input, output, session) {
 
     # getexc
 
-    exc <- which(!columnTypes() %in% c('numeric'))
-    if(length(exc) == 0) {exc <- NULL}
+    exc <- which(!columnTypes() %in% c("numeric"))
+    if (length(exc) == 0) {
+      exc <- NULL
+    }
 
     obj <- board::brief(
       inputData = inputData(),
@@ -139,8 +159,7 @@ app_server <- function(input, output, session) {
       )
     )
 
-    esquisse_server(id = 'visModule_e', data_rv = data_rv, import_from = NULL)
-
+    esquisse_server(id = "visModule_e", data_rv = data_rv, import_from = NULL)
   })
 
 
@@ -161,8 +180,8 @@ app_server <- function(input, output, session) {
       data,
       defaultColDef = reactable::colDef(header = function(value) {
         classes <- tags$div(style = "font-style: italic; font-weight: normal; font-size: small;", get_classes(data[, value, drop = FALSE]))
-        tags$div(title = value, value, classes)}
-      ),
+        tags$div(title = value, value, classes)
+      }),
       columns = list(),
       bordered = TRUE,
       compact = TRUE,
@@ -175,7 +194,7 @@ app_server <- function(input, output, session) {
   updated_data <- update_variables_server(
     id = "updateModule_1",
     data = reactive(data_rv$data),
-    height = "300px"
+    height = "400px"
   )
 
   observeEvent(updated_data(), {
@@ -187,7 +206,7 @@ app_server <- function(input, output, session) {
   ## filter module
 
   res_filter <- filter_data_server(
-    id = 'filterModule_2',
+    id = "filterModule_2",
     data = reactive(data_rv$data)
   )
 
@@ -247,7 +266,7 @@ app_server <- function(input, output, session) {
   mod_splitModule_server(
     id = "splitModule_1",
     inputData = inputData,
-    opened =  opened
+    opened = opened
   )
 
   mod_reshapeModule_server("reshapeModule_1", inputData, opened)
@@ -274,7 +293,6 @@ app_server <- function(input, output, session) {
   mod_variableModule_server("variableModule_1", inputData, opened, distobj, distobj2, uiobj)
 
   # Your application server logic
-
 }
 
 genId <- function(bytes = 12) {
@@ -294,8 +312,9 @@ get_classes <- function(data) {
 #' @importFrom data.table as.data.table
 #' @importFrom tibble as_tibble
 as_out <- function(x, return_class = c("data.frame", "data.table", "tbl_df")) {
-  if (is.null(x))
+  if (is.null(x)) {
     return(NULL)
+  }
   return_class <- match.arg(return_class)
   is_sf <- inherits(x, "sf")
   x <- if (identical(return_class, "data.frame")) {
@@ -305,12 +324,13 @@ as_out <- function(x, return_class = c("data.frame", "data.table", "tbl_df")) {
   } else {
     as_tibble(x)
   }
-  if (is_sf)
+  if (is_sf) {
     class(x) <- c("sf", class(x))
+  }
   return(x)
 }
 
-defineColumnTypes <- function(data){
+defineColumnTypes <- function(data) {
   tt <-
     data %>%
     dplyr::summarise_all(class) %>%
