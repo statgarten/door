@@ -119,11 +119,23 @@ app_ui <- function(request) {
         ),
         conditionalPanel(
           condition = 'input.module == "Vis"',
-          # shinyjs::hidden(
-          #   div(
-          #     id = "VisBox",
-          #     style = "text-align:center;",
-          actionButton(inputId = "visModule_e-settings", label = "Visualize Options"),
+          shinyjs::hidden(
+            div(
+              id = "VisBox",
+              style = "text-align:center;",
+          shinyWidgets::checkboxGroupButtons(
+            inputId = "aes",
+            label = "Graph options",
+            choices = c(
+              "fill", "color", "size", "shape", "facet", "facet_row", "facet_col"
+            ),
+            selected = c("fill", "color", "size", "facet"),
+            justified = TRUE,
+            direction = "vertical",
+            checkIcon = list(
+              yes = icon("ok", lib = "glyphicon")
+            )
+          )
           #     shinyWidgets::pickerInput(
           #       inputId = "VisFunction",
           #       label = "Vis Functions",
@@ -138,8 +150,8 @@ app_ui <- function(request) {
           #       selected = NULL
           #     ),
           #     mod_visModule_ui("visModule_1")
-          #   )
-          # )
+            )
+          )
         ),
         conditionalPanel(
           condition = 'input.module == "EDA"',

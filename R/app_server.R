@@ -159,7 +159,7 @@ app_server <- function(input, output, session) {
       )
     )
 
-    esquisse_server(id = "visModule_e", data_rv = data_rv, import_from = NULL)
+    esquisse_server(id = "visModule_e", data_rv = data_rv, default_aes = reactive(input$aes), import_from = NULL)
   })
 
 
