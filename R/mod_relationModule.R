@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_relationModule_ui <- function(id){
+mod_relationModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     selectInput(
@@ -30,17 +30,19 @@ mod_relationModule_ui <- function(id){
 #' relationModule Server Functions
 #'
 #' @noRd
-mod_relationModule_server <- function(id, inputData, ggobj, opened){
-  moduleServer( id, function(input, output, session){
+mod_relationModule_server <- function(id, inputData, ggobj, opened) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     observeEvent(opened(), {
-      if(opened()!="Relation"){return()}
+      if (opened() != "Relation") {
+        return()
+      }
       updateSelectizeInput(
         session,
         inputId = "var1",
         label = "variable 1",
-        choices = c('',colnames(inputData())),
+        choices = c("", colnames(inputData())),
         selected = NULL,
         server = TRUE
       )
@@ -48,7 +50,7 @@ mod_relationModule_server <- function(id, inputData, ggobj, opened){
         session,
         inputId = "var2",
         label = "variable 2",
-        choices = c('',colnames(inputData())),
+        choices = c("", colnames(inputData())),
         selected = NULL,
         server = TRUE
       )
@@ -65,9 +67,7 @@ mod_relationModule_server <- function(id, inputData, ggobj, opened){
           var2 = inputData()[, input$var2]
         )
       )
-
     })
-
   })
 }
 

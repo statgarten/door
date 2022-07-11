@@ -54,7 +54,9 @@ mod_cleanModule_server <- function(id, inputData, opened) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observeEvent(opened(), {
-      if(opened()!="Clean"){return()}
+      if (opened() != "Clean") {
+        return()
+      }
       updateSelectizeInput(
         session,
         inputId = "cleanColumn",
@@ -75,7 +77,6 @@ mod_cleanModule_server <- function(id, inputData, opened) {
           # NULL -> replace NA to [to], / input -> replace to [to]
         )
       )
-
     })
   })
 }

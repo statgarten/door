@@ -55,7 +55,9 @@ mod_mutateModule_server <- function(id, inputData, opened) {
     ns <- session$ns
 
     observeEvent(opened(), {
-      if(opened()!="Mutate"){return()}
+      if (opened() != "Mutate") {
+        return()
+      }
       updateSelectizeInput(
         session,
         inputId = "mutateColumn",

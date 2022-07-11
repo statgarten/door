@@ -87,10 +87,11 @@ getDT <- function(inputData, all = FALSE, columnGroups = NULL) {
             -box-shadow: none;"
           )
         )
+      } else {
+        (
+          print(i)
+        )
       }
-      else(
-        print(i)
-      )
     }
 
     for (i in 1:length(columnGroups)) {

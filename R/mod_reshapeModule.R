@@ -58,10 +58,7 @@ mod_reshapeModule_server <- function(id, inputData, opened) {
           class = c("default-sortable", "custom-sortable") # add custom style
         )
       })
-
-
     })
-
   })
 }
 

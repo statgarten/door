@@ -9,36 +9,35 @@
 #' @importFrom shiny NS tagList
 #' @import plotGen
 #' @import plotly
-mod_visModule_ui <- function(id){
+mod_visModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     # type of chart
     selectInput(
-      inputId = ns('chartType'),
-      label = 'Select Chart',
-      choices = c('', 'pie'),
+      inputId = ns("chartType"),
+      label = "Select Chart",
+      choices = c("", "pie"),
       selected = ""
     ),
     # x
     selectInput(
-      inputId = ns('xColumn'),
-      label = 'select X',
+      inputId = ns("xColumn"),
+      label = "select X",
       choices = NULL,
       selected = NULL,
       multiple = FALSE
     ),
     # y
     selectInput(
-      inputId = ns('yColumn'),
-      label = 'select Y',
+      inputId = ns("yColumn"),
+      label = "select Y",
       choices = NULL,
       selected = NULL,
       multiple = FALSE
     ),
-
     actionButton(
-      inputId = ns('plotGen'),
-      label = 'plot'
+      inputId = ns("plotGen"),
+      label = "plot"
     )
   )
 }
@@ -46,12 +45,14 @@ mod_visModule_ui <- function(id){
 #' visModule Server Functions
 #'
 #' @noRd
-mod_visModule_server <- function(id, inputData, opened, plotlyobj){
-  moduleServer( id, function(input, output, session){
+mod_visModule_server <- function(id, inputData, opened, plotlyobj) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     observeEvent(opened(), {
-      if(opened()!="vis"){return()}
+      if (opened() != "vis") {
+        return()
+      }
       updateSelectizeInput(
         session,
         inputId = "xColumn", # ns() not work
@@ -69,7 +70,6 @@ mod_visModule_server <- function(id, inputData, opened, plotlyobj){
     })
 
     observeEvent(input$plotGen, {
-
       yval <- ifelse(is.null(input$yColumn), NULL, input$yColumn)
 
       plotlyobj(
@@ -80,9 +80,7 @@ mod_visModule_server <- function(id, inputData, opened, plotlyobj){
           describe = yval
         )
       )
-
     })
-
   })
 }
 

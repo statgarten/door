@@ -8,34 +8,36 @@
 #'
 #' @importFrom shiny NS tagList
 #' @import shinyWidgets
-mod_briefModule_ui <- function(id){
+mod_briefModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
-      p('BRIEF MODULE UI'),
-      selectInput(
-        inputId = ns('excludeColumn'),
-        label = 'select Not Numeric',
-        choices = NULL,
-        selected = NULL,
-        multiple = TRUE
-      ),
-      actionButton(
-        inputId = ns("briefButton"),
-        label = "brief",
-        icon = icon("angle-down")
-      )
+    p("BRIEF MODULE UI"),
+    selectInput(
+      inputId = ns("excludeColumn"),
+      label = "select Not Numeric",
+      choices = NULL,
+      selected = NULL,
+      multiple = TRUE
+    ),
+    actionButton(
+      inputId = ns("briefButton"),
+      label = "brief",
+      icon = icon("angle-down")
+    )
   )
 }
 
 #' briefModule Server Functions
 #'
 #' @noRd
-mod_briefModule_server <- function(id, inputData, opened){
-  moduleServer( id, function(input, output, session){
+mod_briefModule_server <- function(id, inputData, opened) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     observeEvent(opened(), {
-      if(opened()!="Brief"){return()}
+      if (opened() != "Brief") {
+        return()
+      }
       updateSelectizeInput(
         session,
         inputId = "excludeColumn",
@@ -46,14 +48,14 @@ mod_briefModule_server <- function(id, inputData, opened){
     })
     observeEvent(input$briefButton, {
       exc <- NULL
-      if(!is.null(input$excludeColumn)){
-        exc <- sapply(input$excludeColumn, function(i){which(i == colnames(inputData()))})
+      if (!is.null(input$excludeColumn)) {
+        exc <- sapply(input$excludeColumn, function(i) {
+          which(i == colnames(inputData()))
+        })
       }
 
       print(board::brief(inputData(), exc = exc))
     })
-
-
   })
 }
 

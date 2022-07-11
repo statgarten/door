@@ -32,7 +32,9 @@ mod_subsetModule_server <- function(id, inputData, opened) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observeEvent(opened(), {
-      if(opened()!="Subset"){return()}
+      if (opened() != "Subset") {
+        return()
+      }
       updateSelectizeInput(
         session,
         inputId = "subsetColumn",
@@ -44,10 +46,10 @@ mod_subsetModule_server <- function(id, inputData, opened) {
 
     observeEvent(input$subsetButton, {
       inputData(
-          scissor::drop(
-            inputData = inputData(),
-            column = input$subsetColumn
-          )
+        scissor::drop(
+          inputData = inputData(),
+          column = input$subsetColumn
+        )
       )
 
       updateSelectizeInput(
@@ -57,7 +59,6 @@ mod_subsetModule_server <- function(id, inputData, opened) {
         choices = colnames(inputData()),
         server = TRUE
       )
-
     })
   })
 }

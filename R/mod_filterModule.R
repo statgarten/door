@@ -26,36 +26,34 @@ mod_filterModule_ui <- function(id) {
       choices = c(">", ">=", "<", "<=", "==", "!=", "In", "Not In", "Contains", "Not Contains"),
       selected = NULL,
       multiple = FALSE,
-      width = '100%'
+      width = "100%"
     ),
     textInput(
       inputId = ns("filterVariable"),
       label = NULL,
-      placeholder = 'criteria',
-      width = '100%'
+      placeholder = "criteria",
+      width = "100%"
     ),
     selectInput(
-      inputId = ns(paste0('cond', 1)),
+      inputId = ns(paste0("cond", 1)),
       label = NULL,
       choices = c("And", "Or")
     ),
-
-    uiOutput(ns('filterPage2')),
+    uiOutput(ns("filterPage2")),
 
     ###
 
     actionButton(
       inputId = ns("addFilter"),
       label = NULL,
-      icon=icon("plus", class = NULL, lib = "font-awesome")
+      icon = icon("plus", class = NULL, lib = "font-awesome")
     ),
-
     actionButton(
       inputId = ns("filterButton"),
       label = "filter",
       icon = icon("angle-down"),
-      width = '90%',
-      style = 'margin: auto;'
+      width = "90%",
+      style = "margin: auto;"
     )
   )
 }
@@ -68,7 +66,9 @@ mod_filterModule_server <- function(id, inputData, opened) {
     ns <- session$ns
 
     observeEvent(opened(), {
-      if(opened()!="Filter"){return()}
+      if (opened() != "Filter") {
+        return()
+      }
       updateSelectizeInput(
         session,
         inputId = "filterColumn", # ns() not work
@@ -79,7 +79,6 @@ mod_filterModule_server <- function(id, inputData, opened) {
     })
 
     observeEvent(input$filterButton, {
-
       inputData(
         scissor::subset(
           inputData = inputData(),

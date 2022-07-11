@@ -47,7 +47,9 @@ mod_splitModule_server <- function(id, inputData, opened) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observeEvent(opened(), {
-      if(opened()!='Split'){return()}
+      if (opened() != "Split") {
+        return()
+      }
       updateSelectizeInput(
         session,
         inputId = "splitColumn",
@@ -73,7 +75,6 @@ mod_splitModule_server <- function(id, inputData, opened) {
         choices = colnames(inputData()),
         server = TRUE
       )
-
     })
   })
 }
