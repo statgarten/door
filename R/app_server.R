@@ -69,7 +69,12 @@ app_server <- function(input, output, session) {
     showModal(modal_settings(aesthetics = input$aesthetics))
   })
 
-  observeEvent(data_rv$data, {
+  observeEvent(data_rv$data, { # Data loaded
+
+    shinyjs::show(id = 'ImportBox')
+    shinyjs::show(id = 'VisBox')
+    shinyjs::show(id = 'EDABox')
+    shinyjs::show(id = 'ReportBox')
 
     # define column types
     columnTypes <- defineColumnTypes(data_rv$data)
@@ -177,6 +182,25 @@ app_server <- function(input, output, session) {
     data_rv$data <- updated_data()
     inputData(data_rv$data)
   })
+
+
+  ## filter module
+
+  res_filter <- filter_data_server(
+    id = 'filterModule_2',
+    data = reactive(data_rv$data)
+  )
+
+  output$table <- reactable::renderReactable({
+    reactable::reactable(res_filter$filtered())
+  })
+
+  observeEvent(input$applyFilter, {
+    data_rv$data <- res_filter$filtered()
+    inputData(data_rv$data)
+  })
+
+  ## observeEvent
 
   ## Open and function change
 

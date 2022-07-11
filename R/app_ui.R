@@ -58,12 +58,10 @@ app_ui <- function(request) {
 
       # SIDE MODULE
       sidebar = dashboardSidebar(
-        # minified = FALSE,
         width = 300,
-        #htmlOutput("Logo", style = "text-align: center; margin-bottom:3em; margin-top:3em;"),
         conditionalPanel(
           condition = 'input.module == "Import"',
-          #shinyjs::hidden(
+          shinyjs::hidden(
             div(
               id = "ImportBox",
               style = "text-align:center;",
@@ -75,9 +73,7 @@ app_ui <- function(request) {
                   subtext = c("", "select data with criteria", "delete column", "mut", "cle", "spl", "res", "exp"),
                   style = rep(c("color: black"), 8)
                 ),
-                options = list(
-                  # style = "btn-info"
-                ),
+                options = list(), # style = "btn-info"
                 selected = NULL
               ),
               conditionalPanel(
@@ -109,13 +105,15 @@ app_ui <- function(request) {
                 mod_exportModule_ui("exportModule_1")
               )
             )
-          # )
+          )
         ),
         conditionalPanel(
           condition = 'input.module == "Vis"',
+          shinyjs::hidden(
             div(
               id = "VisBox",
               style = "text-align:center;",
+              actionButton(inputId = 'visModule_e-settings', label = 'Visualize Options'),
               shinyWidgets::pickerInput(
                 inputId = "VisFunction",
                 label = "Vis Functions",
@@ -129,16 +127,13 @@ app_ui <- function(request) {
                 ),
                 selected = NULL
               ),
-              #conditionalPanel(
-              #  condition = 'input.EDAFunction == "Brief"',
-                mod_visModule_ui("visModule_1")
-              #)
+              mod_visModule_ui("visModule_1")
             )
-
+          )
         ),
         conditionalPanel(
           condition = 'input.module == "EDA"',
-          # shinyjs::hidden(
+          shinyjs::hidden(
             div(
               id = "EDABox",
               style = "text-align:center;",
@@ -168,66 +163,83 @@ app_ui <- function(request) {
                 mod_variableModule_ui("variableModule_1")
               )
             )
-          # )
+          )
         ),
         conditionalPanel(
           condition = 'input.module == "Report"',
-          p("Not Implemented")
+          shinyjs::hidden(
+            div(
+              id = 'ReportBox',
+              p("Not Implemented")
+            )
+          )
         )
-        # OUTRO
       ),
       body = dashboardBody(
         fluidPage(
           useShinyjs(),
 
-          div(
-            id = 'importModule',
-            datamods::import_file_ui(
-              id = 'importModule_1',
-              preview_data = FALSE,
-              file_extensions = c(
-                ".csv", '.dta', ".fst", '.rda', ".rds",
-                '.rdata','.sas7bcat', ".sas7bdat",
-                ".sav",'.tsv', ".txt", ".xls", ".xlsx"
-              )
-            )
-          ),
-
           ## View
           div(
             style = "margin-bottom : 1em; padding-right: 15px; padding-left: 15px;",
+            h3(
+              'Data View'
+            ),
             reactable::reactableOutput(
               outputId = "DT"
-            )
-          ),
-
-          ## Update
-          shinyjs::hidden(
-            div(
-              id = 'updateModule',
-              datamods::update_variables_ui('updateModule_1'),
-              actionButton(
-                inputId = 'hideupdateModule',
-                label = 'update finished!',
-                icon = icon("angle-down")
-              )
             )
           ),
 
           ### Import panel
           conditionalPanel(
             condition = 'input.module == "Import"',
-            p(
+            h3(
               id = "desc",
               "Statgarten supports Data Wrangling / Visualize / EDA and Export results"
-            )
+            ),
+            div(
+              id = 'importModule',
+              datamods::import_file_ui(
+                id = 'importModule_1',
+                preview_data = FALSE,
+                file_extensions = c(
+                  ".csv", '.dta', ".fst", '.rda', ".rds",
+                  '.rdata','.sas7bcat', ".sas7bdat",
+                  ".sav",'.tsv', ".txt", ".xls", ".xlsx"
+                )
+              )
+            ),
+            ## Update
+            shinyjs::hidden(
+              div(
+                id = 'updateModule',
+                datamods::update_variables_ui(
+                  id = 'updateModule_1',
+                  title = h3('Select / Rename / Convert Varibales')
+                ),
+                actionButton(
+                  inputId = 'hideupdateModule',
+                  label = 'update finished!',
+                  icon = icon("angle-down")
+                )
+              )
+            ),
+
+            ## Filter
+
+            reactable::reactableOutput('table'),
+
+            datamods::filter_data_ui(
+              id = 'filterModule_2'
+            ),
+            actionButton('applyFilter', 'apply')
+
           ),
 
           ### Vis panel
           conditionalPanel(
             condition = 'input.module == "Vis"',
-            plotlyOutput(outputId = 'plot'),
-            actionButton(inputId = 'visModule_e-settings',label = 'toggle'),
+            # plotlyOutput(outputId = 'plot'),
             esquisse_ui(
               id = 'visModule_e',
               header = FALSE
