@@ -24,6 +24,17 @@ app_server <- function(input, output, session) {
   inputData <- reactiveVal(NULL)
   columnTypes <- reactiveVal(NULL)
 
+
+  # EXAMPLE IMPORT
+  observeEvent(input$exampleURL, {
+    updateTextInputIcon(
+      session = session,
+      inputId = 'importModule_2-link',
+      value = 'https://github.com/statgarten/door/raw/main/example_g1e.xlsx'
+    )
+  })
+
+
   # EDA Plot
   ggobj <- reactiveVal(NULL) # relation scatter chart
   distobj <- reactiveVal(NULL) # variable histogram
@@ -75,6 +86,45 @@ app_server <- function(input, output, session) {
     shinyjs::show(id = "filterModule")
   })
 
+
+  from_url <- import_url_server(
+    id = 'importModule_2'
+  )
+  observeEvent(from_url$data(), {
+    data_rv$data <- from_url$data()
+    data_rv$name <- from_url$name()
+    inputData(data_rv$data)
+
+    shinyjs::hide(id = "desc")
+    shinyjs::hide(id = "importModule")
+    shinyjs::show(id = "updateModule")
+    shinyjs::show(id = "viewModule")
+    shinyjs::show(id = "visModule")
+    shinyjs::show(id = "edaModule")
+    shinyjs::show(id = "filterModule")
+  })
+
+
+  from_gs <- import_googlesheets_server(
+    id = 'importModule_3'
+  )
+
+  observeEvent(from_gs$data(), {
+    data_rv$data <- from_gs$data()
+    data_rv$name <- from_gs$name()
+    inputData(data_rv$data)
+
+    shinyjs::hide(id = "desc")
+    shinyjs::hide(id = "importModule")
+    shinyjs::show(id = "updateModule")
+    shinyjs::show(id = "viewModule")
+    shinyjs::show(id = "visModule")
+    shinyjs::show(id = "edaModule")
+    shinyjs::show(id = "filterModule")
+  })
+
+
+
   observeEvent(input$hidefilterModule, {
     shinyjs::hide(id = "filterModule")
   })
@@ -117,7 +167,7 @@ app_server <- function(input, output, session) {
 
     EDAres <- data.frame(
       Name = obj$names,
-      Cardinality = obj$cards,
+      UniqueValues = obj$cards,
       Zero = obj$zeros,
       Missing = obj$miss,
       isUniform = obj$unif,
@@ -155,7 +205,10 @@ app_server <- function(input, output, session) {
 
     output$reactOutput <- renderReactable(
       reactable(
-        EDAres
+        EDAres,
+        bordered = TRUE,
+        compact = TRUE,
+        striped = TRUE
       )
     )
 
@@ -388,3 +441,5 @@ modal_settings <- function(aesthetics = NULL, session = shiny::getDefaultReactiv
     footer = NULL
   )
 }
+
+

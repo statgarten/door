@@ -28,16 +28,17 @@ mod_variableModule_ui <- function(id) {
 mod_variableModule_server <- function(id, inputData, opened, distobj, distobj2, uiobj) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    observeEvent(opened(), {
-      if (opened() != "Variable") {
-        return()
-      }
+    observeEvent(inputData(), {
+      # if (opened() != "Variable") {
+      #   return()
+      # }
       updateSelectizeInput(
         session,
         inputId = "variableDescription",
         label = "Select Variable",
         choices = c("", colnames(inputData())),
-        server = TRUE
+        server = TRUE,
+        selected = colnames(inputData())[1]
       )
     })
 

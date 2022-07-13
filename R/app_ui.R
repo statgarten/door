@@ -32,25 +32,33 @@ app_ui <- function(request) {
               inputId = "module",
               label = NULL,
               # status = 'warning',
-              choices = c("Import", "Vis", "EDA", "Report"),
+              choices = c("Import", "Vis", "EDA", "Stat", "ML", "Report"),
               selected = "Import",
               individual = TRUE,
               checkIcon = list(
-                yes = tags$i(class = "fa fa-circle", style = "color: #34ace0"),
+                yes = tags$i(class = "fa fa-circle", style = "color: #37E2D5"),
                 # no = tags$i(class = "fa fa-circle-o", style = "color: gold") : empty
-                no = tags$i(class = "fa fa-circle", style = "color: gold")
+                no = tags$i(class = "fa fa-circle", style = "color: #FBCB0A")
               ) # ,
               # width = "10em"
             ),
             style = "margin-bottom: -11.5px; text-align: center; font-weight: bold;"
           ),
           div(
+              actionButton(
+                inputId = "Outro",
+                label = NULL,
+                style = "margin: auto; width: 100%; background: #590696; color: #FFF",
+                onclick = "window.open('https://github.com/statgarten', '_blank')",
+                icon = icon("github", style = "font-size: 1.3em;")
+              )
+          ),
+          div(
             actionButton(
-              inputId = "Outro",
-              label = NULL,
-              style = "margin: auto; width: 100%; background: #000; color: #FFF",
-              onclick = "window.open('https://github.com/statgarten', '_blank')",
-              icon = icon("github", style = "font-size: 1.3em;")
+              inputId = 'showGuide',
+              label = "Guide",
+              style = "margin: auto; width: 100%; background: #C70A80; color: #FFF",
+              icon = icon('question', style = 'font-size: 1.3em;')
             )
           )
         )
@@ -117,76 +125,49 @@ app_ui <- function(request) {
             )
           )
         ),
-        conditionalPanel(
-          condition = 'input.module == "Vis"',
-          shinyjs::hidden(
-            div(
-              id = "VisBox",
-              style = "text-align:center;",
-          shinyWidgets::checkboxGroupButtons(
-            inputId = "aes",
-            label = "Graph options",
-            choices = c(
-              "fill", "color", "size", "shape", "facet", "facet_row", "facet_col"
-            ),
-            selected = c("fill", "color", "size", "facet"),
-            justified = TRUE,
-            direction = "vertical",
-            checkIcon = list(
-              yes = icon("ok", lib = "glyphicon")
-            )
-          )
-          #     shinyWidgets::pickerInput(
-          #       inputId = "VisFunction",
-          #       label = "Vis Functions",
-          #       choices = c("", "vis"),
-          #       choicesOpt = list(
-          #         subtext = c(""),
-          #         style = rep(c("color: black"), 1)
-          #       ),
-          #       options = list(
-          #         style = "btn-info"
-          #       ),
-          #       selected = NULL
-          #     ),
-          #     mod_visModule_ui("visModule_1")
-            )
-          )
-        ),
-        conditionalPanel(
-          condition = 'input.module == "EDA"',
-          shinyjs::hidden(
-            div(
-              id = "EDABox",
-              style = "text-align:center;",
-              shinyWidgets::pickerInput(
-                inputId = "EDAFunction",
-                label = "EDA Functions",
-                choices = c("", "Brief", "Relation", "Variable"),
-                choicesOpt = list(
-                  subtext = c("", "bri", "rel", "var"),
-                  style = rep(c("color: black"), 4)
-                ),
-                options = list(
-                  style = "btn-info"
-                ),
-                selected = NULL
-              ),
-              conditionalPanel(
-                condition = 'input.EDAFunction == "Brief"',
-                mod_briefModule_ui("briefModule_1")
-              ),
-              conditionalPanel(
-                condition = 'input.EDAFunction == "Relation"',
-                mod_relationModule_ui("relationModule_1")
-              ),
-              conditionalPanel(
-                condition = 'input.EDAFunction == "Variable"',
-                mod_variableModule_ui("variableModule_1")
-              )
-            )
-          )
-        ),
+        # conditionalPanel(
+        #   condition = 'input.module == "EDA"',
+        #   shinyjs::hidden(
+        #     div(
+        #       id = "EDABox",
+        #       style = "text-align:center;",
+        #       shinyWidgets::pickerInput(
+        #         inputId = "EDAFunction",
+        #         label = "EDA Functions",
+        #         choices = c("",
+        #                     # "Brief",
+        #                     #"Relation",
+        #                     "Variable"),
+        #         choicesOpt = list(
+        #           subtext = c("",
+        #                       # "bri",
+        #                       # "rel",
+        #                       "var"),
+        #           style = rep(c("color: black"), 2
+        #                       # 3
+        #                       # 4
+        #                       )
+        #         ),
+        #         options = list(
+        #           style = "btn-info"
+        #         ),
+        #         selected = NULL
+        #       ),
+        #       # conditionalPanel(
+        #       #   condition = 'input.EDAFunction == "Brief"',
+        #       #   mod_briefModule_ui("briefModule_1")
+        #       # ),
+        #       # conditionalPanel(
+        #       #   condition = 'input.EDAFunction == "Relation"',
+        #       #   mod_relationModule_ui("relationModule_1")
+        #       # ),
+        #       # conditionalPanel(
+        #       #   condition = 'input.EDAFunction == "Variable"',
+        #       #   mod_variableModule_ui("variableModule_1")
+        #       # )
+        #     )
+        #   )
+        # ),
         conditionalPanel(
           condition = 'input.module == "Report"',
           shinyjs::hidden(
@@ -209,9 +190,12 @@ app_ui <- function(request) {
               # style = "margin-bottom : 1em; padding-right: 15px; padding-left: 15px;",
               # h3("Data View"),
               shinydashboardPlus::box(
-                title = "Your Data",
-                collapsible = FALSE,
+                title = "Uploaded Data",
+                collapsible = TRUE,
                 collapsed = FALSE,
+                options = list(
+                  background = '#FFFDEE'
+                ),
                 solidHeader = TRUE,
                 status = "purple",
                 width = 12,
@@ -228,15 +212,48 @@ app_ui <- function(request) {
             # ),
             div(
               id = "importModule",
-              datamods::import_file_ui(
-                id = "importModule_1",
-                preview_data = TRUE,
-                file_extensions = c(
-                  ".csv", ".dta", ".fst", ".rda", ".rds",
-                  ".rdata", ".sas7bcat", ".sas7bdat",
-                  ".sav", ".tsv", ".txt", ".xls", ".xlsx"
+              tabsetPanel(
+                tabPanel( # File (Default)
+                  'File',
+                  datamods::import_file_ui(
+                    id = "importModule_1",
+                    preview_data = TRUE,
+                    file_extensions = c(
+                      ".csv", ".dta", ".fst", ".rda", ".rds",
+                      ".rdata", ".sas7bcat", ".sas7bdat",
+                      ".sav", ".tsv", ".txt", ".xls", ".xlsx"
+                    )
+                  )
+                ),
+                tabPanel( # URL
+                  "URL",
+                  # actionButton(
+                  #   inputId = 'exampleURL',
+                  #   label = 'load example data'
+                  # ),
+                  br(),
+                  shinyWidgets::actionBttn(
+                    inputId = 'exampleURL',
+                    label = 'load example data',
+                    style = 'material-flat',
+                    size = 'sm',
+                    block = TRUE,
+                    color = "royal" # Purple - White
+                    # 'default' # White - Blue
+                    # "primary" # Blue - White
+                  ),
+                  datamods::import_url_ui(
+                    id = 'importModule_2'
+                  )
+                ),
+                tabPanel( # Google Sheet
+                  "Google Sheet",
+                  datamods::import_googlesheets_ui(
+                    id = 'importModule_3'
+                  )
                 )
               )
+
             ),
 
             ## Update
@@ -307,6 +324,28 @@ app_ui <- function(request) {
                   solidHeader = TRUE,
                   status = "purple",
                   width = 12,
+                  conditionalPanel(
+                    condition = 'input.module == "Vis"',
+                    shinyjs::hidden(
+                      div(
+                        id = "VisBox",
+                        style = "text-align:center;",
+                        shinyWidgets::checkboxGroupButtons(
+                          inputId = "aes",
+                          label = "Graph options",
+                          choices = c(
+                            "fill", "color", "size", "shape", "facet", "facet_row", "facet_col"
+                          ),
+                          selected = c("fill", "color", "size", "facet"),
+                          justified = TRUE,
+                          checkIcon = list(
+                            yes = icon("ok", lib = "glyphicon")
+                          )
+                        )
+                      )
+                    )
+                  ),
+                  hr(),
                   esquisse_ui(
                     id = "visModule_e",
                     header = FALSE,
@@ -326,6 +365,7 @@ app_ui <- function(request) {
                 shinydashboardPlus::box(
                   title = "Dataset Description",
                   status = "purple",
+                  collapsible = TRUE,
                   solidHeader = TRUE,
                   width = 12,
                   fluidRow(
@@ -337,45 +377,40 @@ app_ui <- function(request) {
                       width = 6,
                       uiOutput("missingData")
                     )
+                    # zero
                   )
+                ),
+                shinydashboardPlus::box(
+                  title = "Correlation",
+                  status = "purple",
+                  collapsible = TRUE,
+                  solidHeader = TRUE,
+                  width = 6,
+                  plotOutput("corplot")
                 ),
                 shinydashboardPlus::box(
                   title = "Variables",
                   status = "purple",
+                  collapsible = TRUE,
                   solidHeader = TRUE,
-                  width = 12,
+                  width = 6,
                   reactableOutput("reactOutput")
                 ),
                 shinydashboardPlus::box(
-                  title = "Correlation",
-                  status = "success",
-                  solidHeader = TRUE,
-                  width = 12,
-                  plotOutput("corplot")
-                ),
-                shinydashboardPlus::box(
-                  title = "Correlation2",
-                  status = "success",
-                  solidHeader = TRUE,
-                  width = 12,
-                  plotOutput("corplot2")
-                ),
-                shinydashboardPlus::box(
-                  title = "Distribution (Numeric Only)",
-                  status = "navy",
-                  solidHeader = TRUE,
-                  width = 12,
-                  fluidRow(
-                    column(width = 6, plotOutput("distplot")),
-                    column(width = 6, uiOutput("distBox"))
-                  )
-                ),
-                shinydashboardPlus::box(
                   title = "Distribution",
-                  status = "navy",
+                  status = "purple",
                   solidHeader = TRUE,
+                  collapsible = TRUE,
                   width = 12,
-                  plotOutput("distplot2")
+                  #conditionalPanel(
+                  #  condition = 'input.EDAFunction == "Variable"',
+                    mod_variableModule_ui("variableModule_1"),
+                  #),
+                  fluidRow(
+                    column(width = 4, plotOutput("distplot")),
+                    column(width = 4, plotOutput("distplot2")),
+                    column(width = 4, uiOutput("distBox"))
+                  )
                 )
               )
             )

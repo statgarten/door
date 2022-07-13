@@ -2,28 +2,34 @@
 color theme
 */
 
+/* body background : FFF? FFFDEE*/
 .content-wrapper {
-    background-color: #fff !important;
+    background-color: #FFF !important;
+
 }
 
 .skin-black .main-header .navbar {
-    background-color: #f7f1e3;
+    background-color: #FFFDEE;
 }
+
+/*
+#f7f1e3;
+*/
 
 .skin-black .main-header .navbar .sidebar-toggle:hover {
     color: #999;
-    background: #f7f1e3;
+    background: #FFFDEE;
 }
 
 .skin-black .main-header .logo {
-    background-color: #f7f1e3;
+    background-color: #FFFDEE;
     color: #333;
     border-bottom: 0 solid transparent;
     border-right: 1px solid #eee;
 }
 
 .skin-black .main-header .logo:hover {
-    background-color: #f7f1e3;
+    background-color: #FFFDEE;
 }
 
 /*
