@@ -9,35 +9,24 @@
 #' @importFrom shiny NS tagList
 mod_splitModule_ui <- function(id) {
   ns <- NS(id)
+
   tagList(
-    selectInput(
-      inputId = ns("splitColumn"),
-      label = "splitSelectLabel",
-      choices = NULL,
-      selected = NULL,
-      multiple = FALSE
+    uiOutput(
+      outputId = ns('Column')
     ),
-    # keyword
+
     textInput(
-      inputId = ns("splitKeyword"),
-      label = "splitKeywordLabel"
+      inputId = ns('keyword'),
+      label = '',
+      placeholder = '/'
     ),
-    # colnameA
-    textInput(
-      inputId = ns("splitA"),
-      label = "colA"
-    ),
-    # colnameB
-    textInput(
-      inputId = ns("splitB"),
-      label = "colB"
-    ),
-    actionButton(
-      inputId = ns("splitButton"),
-      label = "split",
-      icon = icon("angle-down")
+
+    h4('Example'),
+    verbatimTextOutput(
+      ns('description')
     )
   )
+
 }
 
 #' splitModule Server Functions
@@ -46,18 +35,34 @@ mod_splitModule_ui <- function(id) {
 mod_splitModule_server <- function(id, inputData, opened) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    observeEvent(opened(), {
-      if (opened() != "Split") {
-        return()
-      }
-      updateSelectizeInput(
-        session,
-        inputId = "splitColumn",
-        label = "splitSelectLabel",
+
+    output$Column <- renderUI({
+      selectInput(
+        inputId = ns('cols'),
+        label = 'on Column',
         choices = colnames(inputData()),
-        server = TRUE
+        multiple = FALSE
       )
     })
+
+    output$description <- renderText({
+      paste0('[COL] 12/34 -> [COLA] 12, [COLB] 34')
+    })
+
+    data_splited <- reactive({
+      req(inputData())
+      data <- inputData()
+
+      data <- scissor::split(
+        inputData = data,
+        column = input$cols,
+        splitby = input$keyword
+      )
+
+      data
+    })
+
+    return(data_splited)
 
     observeEvent(input$splitButton, {
       inputData(

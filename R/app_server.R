@@ -10,6 +10,8 @@
 #' @importFrom reactable renderReactable
 #' @importFrom shinydashboardPlus descriptionBlock
 #' @importFrom GGally ggcorr
+#' @importFrom shinyjs hide show
+#' @importFrom tibble as_tibble
 #' @import datamods
 #' @noRd
 app_server <- function(input, output, session) {
@@ -17,7 +19,7 @@ app_server <- function(input, output, session) {
   output$Logo <- renderText({
     c('<img width = "100" src="', src, '">')
   })
-
+  require(tibble)
 
   # import
   data_rv <- reactiveValues(data = NULL)
@@ -77,31 +79,55 @@ app_server <- function(input, output, session) {
     data_rv$name <- from_file$name()
     inputData(data_rv$data)
 
-    shinyjs::hide(id = "desc")
-    shinyjs::hide(id = "importModule")
-    shinyjs::show(id = "updateModule")
-    shinyjs::show(id = "viewModule")
-    shinyjs::show(id = "visModule")
-    shinyjs::show(id = "edaModule")
-    shinyjs::show(id = "filterModule")
+    hide(id = "desc")
+
+    show(id = "viewModule")
+
+    ## Import
+    hide(id = "importModule")
+    show(id = "updateModule")
+    show(id = "filterModule")
+    show(id = "transformModule")
+    show(id = 'splitModule')
+    show(id = 'reorderModule')
+    show(id = 'exportModule')
+
+    ## Vis
+    show(id = "visModule")
+
+    ## EDA
+    show(id = "edaModule")
+
   })
 
 
   from_url <- import_url_server(
     id = 'importModule_2'
   )
+
   observeEvent(from_url$data(), {
     data_rv$data <- from_url$data()
     data_rv$name <- from_url$name()
     inputData(data_rv$data)
 
-    shinyjs::hide(id = "desc")
-    shinyjs::hide(id = "importModule")
-    shinyjs::show(id = "updateModule")
-    shinyjs::show(id = "viewModule")
-    shinyjs::show(id = "visModule")
-    shinyjs::show(id = "edaModule")
-    shinyjs::show(id = "filterModule")
+    hide(id = "desc")
+
+    show(id = "viewModule")
+
+    ## Import
+    hide(id = "importModule")
+    show(id = "updateModule")
+    show(id = "filterModule")
+    show(id = "transformModule")
+    show(id = 'splitModule')
+    show(id = 'reorderModule')
+    show(id = 'exportModule')
+
+    ## Vis
+    show(id = "visModule")
+
+    ## EDA
+    show(id = "edaModule")
   })
 
 
@@ -114,23 +140,32 @@ app_server <- function(input, output, session) {
     data_rv$name <- from_gs$name()
     inputData(data_rv$data)
 
-    shinyjs::hide(id = "desc")
-    shinyjs::hide(id = "importModule")
-    shinyjs::show(id = "updateModule")
-    shinyjs::show(id = "viewModule")
-    shinyjs::show(id = "visModule")
-    shinyjs::show(id = "edaModule")
-    shinyjs::show(id = "filterModule")
+    hide(id = "desc")
+
+    show(id = "viewModule")
+
+    ## Import
+    hide(id = "importModule")
+    show(id = "updateModule")
+    show(id = "filterModule")
+    show(id = "transformModule")
+    show(id = 'splitModule')
+    show(id = 'reorderModule')
+    show(id = 'exportModule')
+
+    ## Vis
+    show(id = "visModule")
+
+    ## EDA
+    show(id = "edaModule")
   })
 
-
-
   observeEvent(input$hidefilterModule, {
-    shinyjs::hide(id = "filterModule")
+    hide(id = "filterModule")
   })
 
   observeEvent(input$hideupdateModule, {
-    shinyjs::hide(id = "updateModule")
+    hide(id = "updateModule")
   })
 
   observeEvent(input$`visModule_e-settings`, {
@@ -139,10 +174,18 @@ app_server <- function(input, output, session) {
 
   observeEvent(data_rv$data, { # Data loaded
 
-    shinyjs::show(id = "ImportBox")
-    shinyjs::show(id = "VisBox")
-    shinyjs::show(id = "EDABox")
-    shinyjs::show(id = "ReportBox")
+    # Box -> Sidebar
+    # Module -> Body
+    show(id = "ImportBox")
+    show(id = "VisBox")
+    show(id = "EDABox")
+    # show(id = "StatBox")
+    # show(id = "MLBox")
+    # show(id = "ReportBox")
+
+    show(id = "StatModule")
+    show(id = "MLModule")
+    show(id = "ReportModule")
 
     # define column types
     columnTypes <- defineColumnTypes(data_rv$data)
@@ -242,6 +285,11 @@ app_server <- function(input, output, session) {
     )
   })
 
+  # table on import (realtime updates)
+  output$table <- reactable::renderReactable({
+    reactable::reactable(data_rv$data)
+  })
+
   ## update module
 
   updated_data <- update_variables_server(
@@ -251,9 +299,11 @@ app_server <- function(input, output, session) {
   )
 
   observeEvent(updated_data(), {
-    data_rv$data <- updated_data()
-    inputData(data_rv$data)
+    data_rv$data <- updated_data() # reactive
+    inputData(data_rv$data) # then use isolated
   })
+
+
 
 
   ## filter module
@@ -263,13 +313,102 @@ app_server <- function(input, output, session) {
     data = reactive(data_rv$data)
   )
 
-  output$table <- reactable::renderReactable({
-    reactable::reactable(res_filter$filtered())
+  observeEvent(input$applyFilter, {
+    data_rv$data <- res_filter() # reactive
+    inputData(data_rv$data) # then use isolated
   })
 
-  observeEvent(input$applyFilter, {
-    data_rv$data <- res_filter$filtered()
-    inputData(data_rv$data)
+  ### TRANSFORMS
+
+  ## round module
+
+  res_round <- mod_roundModule_server(
+    id = 'roundModule_1',
+    inputData = reactive(data_rv$data)
+  )
+
+  ## log Module
+
+  res_log <- mod_logModule_server(
+    id = 'logModule_1',
+    inputData = reactive(data_rv$data)
+  )
+
+  ## replace Module
+
+  res_replace <- mod_replaceModule_server(
+    id = 'replaceModule_1',
+    inputData = reactive(data_rv$data)
+  )
+
+  ## binarize Module
+  res_binary <- mod_binarizeModule_server(
+    id = 'binModule_1',
+    inputData = reactive(data_rv$data)
+  )
+
+  ## etc Module
+
+  res_trans <- mod_etcModlue_server(
+    id = 'etcModule_1',
+    inputData = reactive(data_rv$data)
+  )
+
+  ## transform apply
+
+  observeEvent(input$applyRound, {
+
+    if(input$transformPanel == 'Round'){
+      data_rv$data <- res_round() # reactive
+      inputData(data_rv$data) # then use isolated
+    }
+
+    if(input$transformPanel == 'Log'){
+      data_rv$data <- res_log() # reactive
+      inputData(data_rv$data) # then use isolated
+    }
+
+    if(input$transformPanel == 'Replace'){
+      data_rv$data <- res_replace() # reactive
+      inputData(data_rv$data) # then use isolated
+    }
+
+    if(input$transformPanel == 'Binarize'){
+      data_rv$data <- res_binary() # reactive
+      inputData(data_rv$data) # then use isolated
+    }
+
+    if(input$transformPanel == 'Etc'){
+      data_rv$data <- res_trans() # reactive
+      inputData(data_rv$data) # then use isolated
+    }
+
+
+  })
+
+  ## Split Module
+
+  res_split <- mod_splitModule_server(
+    id = 'splitModule_1',
+    inputData = reactive(data_rv$data)
+  )
+
+  observeEvent(input$applySplit, {
+    data_rv$data <- res_split() # reactive
+    inputData(data_rv$data) # then use isolated
+  })
+
+
+  ## reorder Module
+
+  res_reorder <- mod_reorderModule_server(
+    id = 'reorderModule_1',
+    inputData = reactive(data_rv$data)
+  )
+
+  observeEvent(input$applyReorder, {
+    data_rv$data <- res_reorder() # reactive
+    inputData(data_rv$data) # then use isolated
   })
 
   ## observeEvent
@@ -296,6 +435,7 @@ app_server <- function(input, output, session) {
     data_rv$data <- inputData()
   })
 
+
   mod_filterModule_server(
     id = "filterModule_1",
     inputData = inputData,
@@ -316,11 +456,11 @@ app_server <- function(input, output, session) {
 
   mod_cleanModule_server("cleanModule_1", inputData, opened)
 
-  mod_splitModule_server(
-    id = "splitModule_1",
-    inputData = inputData,
-    opened = opened
-  )
+  # mod_splitModule_server(
+  #   id = "splitModule_1",
+  #   inputData = inputData,
+  #   opened = opened
+  # )
 
   mod_reshapeModule_server("reshapeModule_1", inputData, opened)
 

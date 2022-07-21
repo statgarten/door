@@ -20,11 +20,13 @@ app_ui <- function(request) {
     dashboardPage(
       skin = "black",
       header = dashboardHeader(
-        title = tagList(
-          span(class = "logo-lg", "statgarten"),
-          img(src = "www/statgarten.png", style = "width :150%")
-        ),
-        titleWidth = 300,
+        title = "Statgarten",
+        titleWidth = NULL,
+        # title = tagList(
+        #   span(class = "logo-lg", "statgarten"),
+        #   img(src = "www/statgarten.png", style = "width :150%")
+        # ),
+        # titleWidth = 300,
         controlbarIcon = icon("gear", verify_fa = FALSE), # to hide error
         leftUi = tagList(
           div(
@@ -65,66 +67,77 @@ app_ui <- function(request) {
       ),
 
       # SIDE MODULE
-      sidebar = dashboardSidebar(
-        width = 300,
-        conditionalPanel(
-          condition = 'input.module == "Import"',
-          shinyjs::hidden(
-            div(
-              id = "ImportBox",
-              style = "text-align:center;",
-              shinyWidgets::pickerInput(
-                inputId = "ImportFunction",
-                label = "Functions",
-                choices = c(
-                  "",
-                  # "Filter",
-                  # "Subset",
-                  "Mutate", "Clean", "Split", "Reshape", "Export"
-                ),
-                choicesOpt = list(
-                  subtext = c(
-                    "",
-                    # "select data with criteria",
-                    # "delete column",
-                    "mut", "cle", "spl", "res", "exp"
-                  ),
-                  style = rep(c("color: black"), 8)
-                ),
-                options = list(), # style = "btn-info"
-                selected = NULL
-              ),
-              conditionalPanel(
-                condition = 'input.ImportFunction == "Filter"',
-                mod_filterModule_ui("filterModule_1")
-              ),
-              conditionalPanel(
-                condition = 'input.ImportFunction == "Subset"',
-                mod_subsetModule_ui("subsetModule_1")
-              ),
-              conditionalPanel(
-                condition = 'input.ImportFunction == "Mutate"',
-                mod_mutateModule_ui("mutateModule_1"),
-              ),
-              conditionalPanel(
-                condition = 'input.ImportFunction == "Clean"',
-                mod_cleanModule_ui("cleanModule_1")
-              ),
-              conditionalPanel(
-                condition = 'input.ImportFunction == "Split"',
-                mod_splitModule_ui("splitModule_1")
-              ),
-              conditionalPanel(
-                condition = 'input.ImportFunction == "Reshape"',
-                mod_reshapeModule_ui("reshapeModule_1")
-              ),
-              conditionalPanel(
-                condition = 'input.ImportFunction == "Export"',
-                mod_exportModule_ui("exportModule_1")
-              )
-            )
-          )
-        ),
+      sidebar = ,
+        dashboardSidebar(
+          disable = TRUE,
+          minified = FALSE,
+          width = 0
+        # width = 300,
+        # conditionalPanel(
+        #   condition = 'input.module == "Import"',
+        #   shinyjs::hidden(
+        #     div(
+        #       id = "ImportBox",
+        #       style = "text-align:center;",
+        #       shinyWidgets::pickerInput(
+        #         inputId = "ImportFunction",
+        #         label = "Functions",
+        #         choices = c(
+        #           "",
+        #           # "Filter",
+        #           # "Subset",
+        #           # "Mutate",
+        #           # "Clean",
+        #           # "Split",
+        #           "Reshape",
+        #           "Export"
+        #         ),
+        #         choicesOpt = list(
+        #           subtext = c(
+        #             "",
+        #             # "select data with criteria",
+        #             # "delete column",
+        #             # "mut",
+        #             # "cle",
+        #             "spl", "res", "exp"
+        #           ),
+        #           style = rep(c("color: black"), 8)
+        #         ),
+        #         options = list(), # style = "btn-info"
+        #         selected = NULL
+        #       ),
+        #       conditionalPanel(
+        #         condition = 'input.ImportFunction == "Filter"',
+        #         mod_filterModule_ui("filterModule_1")
+        #       ),
+        #       conditionalPanel(
+        #         condition = 'input.ImportFunction == "Subset"',
+        #         mod_subsetModule_ui("subsetModule_1")
+        #       ),
+        #       conditionalPanel(
+        #         condition = 'input.ImportFunction == "Mutate"',
+        #         mod_mutateModule_ui("mutateModule_1"),
+        #       ),
+        #       conditionalPanel(
+        #         condition = 'input.ImportFunction == "Clean"',
+        #         mod_cleanModule_ui("cleanModule_1")
+        #       ),
+        #       # conditionalPanel(
+        #       #   condition = 'input.ImportFunction == "Split"',
+        #       #   mod_splitModule_ui("splitModule_1")
+        #       # ),
+        #       conditionalPanel(
+        #         condition = 'input.ImportFunction == "Reshape"',
+        #         mod_reshapeModule_ui("reshapeModule_1")
+        #       )# ,
+        #       # conditionalPanel(
+        #       #   condition = 'input.ImportFunction == "Export"',
+        #       #   mod_exportModule_ui("exportModule_1")
+        #       # )
+        #     )
+        #   )
+        # )
+
         # conditionalPanel(
         #   condition = 'input.module == "EDA"',
         #   shinyjs::hidden(
@@ -168,16 +181,8 @@ app_ui <- function(request) {
         #     )
         #   )
         # ),
-        conditionalPanel(
-          condition = 'input.module == "Report"',
-          shinyjs::hidden(
-            div(
-              id = "ReportBox",
-              p("Not Implemented")
-            )
-          )
-        )
       ),
+
       body = dashboardBody(
         fluidPage(
           useShinyjs(),
@@ -308,8 +313,140 @@ app_ui <- function(request) {
                   )
                 )
               )
+            ),
+
+            ## Transform
+
+            shinyjs::hidden(
+              div(
+                id = "transformModule",
+                shinydashboardPlus::box(
+                  style = "height:400px;overflow-y: scroll;",
+                  title = "Transform data",
+                  collapsible = TRUE,
+                  collapsed = FALSE,
+                  solidHeader = TRUE,
+                  status = "purple",
+                  width = 6,
+                  tabsetPanel(
+                    id = 'transformPanel',
+                    tabPanel(
+                      title = "Round",
+                      icon = icon('cut'),
+                      mod_roundModule_ui('roundModule_1')
+                    ),
+                    tabPanel( # Log2 / Log / Log10
+                      title = "Log",
+                      icon = icon('ruler'),
+                      mod_logModule_ui('logModule_1')
+                    ),
+                    tabPanel(
+                      title = 'Replace',
+                      icon = icon('font'),
+                      mod_replaceModule_ui('replaceModule_1')
+                    ),
+                    tabPanel(
+                      title = "Etc",
+                      icon = icon('minus'),
+                      mod_etcModlue_ui('etcModule_1')
+                    ),
+                    tabPanel(
+                      title = 'Binarize',
+                      icon = icon('slash'),
+                      mod_binarizeModule_ui('binModule_1')
+                    )
+                  ),
+                  footer = actionButton(
+                    inputId = ("applyRound"),
+                    label = tagList(
+                      phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+                      i18n("Apply changes")
+                    ),
+                    width = "100%"
+                  )
+                )
+              )
+            ),
+
+            ## Split
+
+            shinyjs::hidden(
+              div(
+                id = "splitModule",
+                shinydashboardPlus::box(
+                  style = "height:400px; overflow-y: scroll;",
+                  title = "Split data",
+                  collapsible = TRUE,
+                  collapsed = FALSE,
+                  solidHeader = TRUE,
+                  status = "purple",
+                  width = 6,
+                  mod_splitModule_ui(id = 'splitModule_1'),
+                  footer = actionButton(
+                    inputId = ("applySplit"),
+                    label = tagList(
+                      phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+                      i18n("Apply changes")
+                    ),
+                    width = "100%"
+                  )
+                )
+              )
+            ),
+
+            ## Reorder
+
+            shinyjs::hidden(
+              div(
+                id = "reorderModule",
+                shinydashboardPlus::box(
+                  style = "height:400px; overflow-y: scroll;",
+                  title = "Reorder Column",
+                  collapsible = TRUE,
+                  collapsed = FALSE,
+                  solidHeader = TRUE,
+                  status = "purple",
+                  width = 6,
+                  mod_reorderModule_ui(id = 'reorderModule_1'),
+                  footer = actionButton(
+                    inputId = ("applyReorder"),
+                    label = tagList(
+                      phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+                      i18n("Apply changes")
+                    ),
+                    width = "100%"
+                  )
+                )
+              )
+            ),
+
+            shinyjs::hidden(
+              div(
+                id = "exportModule",
+                shinydashboardPlus::box(
+                  style = "height:400px; overflow-y: scroll;",
+                  title = "Export Data",
+                  collapsible = TRUE,
+                  collapsed = FALSE,
+                  solidHeader = TRUE,
+                  status = "purple",
+                  width = 6,
+                  mod_exportModule_ui(id = 'exportModule_1')# ,
+                  # footer = actionButton(
+                  #   inputId = ("applyExport"),
+                  #   label = tagList(
+                  #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+                  #     i18n("Export Data")
+                  #   ),
+                  #   width = "100%"
+                  # )
+                )
+              )
             )
+
+
           ),
+
 
           ### Vis panel
           conditionalPanel(
@@ -412,6 +549,38 @@ app_ui <- function(request) {
                     column(width = 4, uiOutput("distBox"))
                   )
                 )
+              )
+            )
+          ),
+
+
+          ## Stat Panel
+          conditionalPanel(
+            condition = 'input.module == "Stat"',
+            shinyjs::hidden(
+              div(
+                id = "StatModule",
+                h1("Not Implemented")
+              )
+            )
+          ),
+          ## Stat Panel
+          conditionalPanel(
+            condition = 'input.module == "ML"',
+            shinyjs::hidden(
+              div(
+                id = "MLModule",
+                h1("Not Implemented")
+              )
+            )
+          ),
+          ## Stat Panel
+          conditionalPanel(
+            condition = 'input.module == "Report"',
+            shinyjs::hidden(
+              div(
+                id = "ReportModule",
+                h1("Not Implemented")
               )
             )
           )

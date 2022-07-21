@@ -11,11 +11,11 @@ mod_exportModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     textInput(
-      inputId = ns("exportFilename"),
+      inputId = ns("filename"),
       label = "filename"
     ),
     selectInput(
-      inputId = ns("exportOption"),
+      inputId = ns("ext"),
       label = "file extension",
       selected = ".csv",
       multiple = FALSE,
@@ -23,7 +23,8 @@ mod_exportModule_ui <- function(id) {
     ),
     downloadButton(
       outputId = ns("exportButton"),
-      label = "export"
+      label = "export",
+      style = 'width: 100%'
     )
   )
 }
@@ -37,21 +38,22 @@ mod_exportModule_ui <- function(id) {
 mod_exportModule_server <- function(id, inputData) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+
     output$exportButton <- downloadHandler(
       filename = function() {
-        if (input$exportFilename == "") {
-          return(paste0("downloaded", input$exportOption))
+        if (input$filename == "") {
+          return(paste0("downloaded", input$ext))
         }
-        return(paste0(input$exportFilename, input$exportOption))
+        return(paste0(input$filename, input$ext))
       },
       content = function(con) {
-        if (input$exportOption == ".csv") {
+        if (input$ext == ".csv") {
           write.csv(inputData(), file = con, row.names = FALSE)
         }
-        if (input$exportOption == ".rda") {
-          saveRDS(inputData, file = con)
+        if (input$ext == ".rda") {
+          saveRDS(inputData(), file = con)
         }
-        if (input$exportOption == ".sqlite") {
+        if (input$ext == ".sqlite") {
           RSQLite::dbWriteTable(
             conn = RSQLite::dbConnect(
               RSQLite::dbDriver("SQLite"),
@@ -64,7 +66,7 @@ mod_exportModule_server <- function(id, inputData) {
           # con <- dbConnect(drv=RSQLite::SQLite(), dbname="SQLITE_FILENAME")
           # data <- dbGetQuery(conn=con, statement = "SELECT * FROM 'data1'")
         }
-        if (input$exportOption == ".xlsx") {
+        if (input$ext == ".xlsx") {
           writexl::write_xlsx(inputData(), path = con)
         }
       }
