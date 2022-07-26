@@ -26,6 +26,10 @@ app_server <- function(input, output, session) {
   inputData <- reactiveVal(NULL)
   columnTypes <- reactiveVal(NULL)
 
+  # ML
+  data_ml <- reactiveValues(train = NULL, test = NULL)
+  trainData <- reactiveVal(NULL)
+  testData <- reactiveVal(NULL)
 
   # EXAMPLE IMPORT
   observeEvent(input$exampleURL, {
@@ -484,6 +488,22 @@ app_server <- function(input, output, session) {
   mod_relationModule_server("relationModule_1", inputData, ggobj, opened)
 
   mod_variableModule_server("variableModule_1", inputData, opened, distobj, distobj2, uiobj)
+
+  ## ML
+
+  splitresult <- mod_ttSplitModule_server(
+    id = 'ttSplitModule_1',
+    inputData = reactive(data_rv$data)
+  )
+
+  observeEvent(input$applyML, {
+    data_ml$train <- splitresult()$train # reactive
+    trainData(data_ml$train) # then use isolated
+
+    data_ml$test <- splitresult()$test # reactive
+    testData(data_ml$test) # then use isolated
+
+  })
 
   # Your application server logic
 }
