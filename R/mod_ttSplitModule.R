@@ -79,7 +79,8 @@ mod_ttSplitModule_server <- function(id, inputData) {
         train = result$train,
         test = result$test,
         dataSplit = result$dataSplit,
-        target = isolate(input$cols)
+        target = isolate(input$cols),
+        formula = isolate(paste0(input$cols, " ~ ."))
       )
     })
 

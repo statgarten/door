@@ -31,6 +31,8 @@ app_server <- function(input, output, session) {
   trainData <- reactiveVal(NULL)
   testData <- reactiveVal(NULL)
 
+  models_list <- reactiveVal(list())
+
   # EXAMPLE IMPORT
   observeEvent(input$exampleURL, {
     updateTextInputIcon(
@@ -491,25 +493,36 @@ app_server <- function(input, output, session) {
 
   ## ML
 
+
+  ### split
   splitresult <- mod_ttSplitModule_server(
     id = 'ttSplitModule_1',
     inputData = reactive(data_rv$data)
   )
 
+  # required?
   observeEvent(input$applyML, {
     data_ml$train <- splitresult()$train # reactive
     trainData(data_ml$train) # then use isolated
 
     data_ml$test <- splitresult()$test # reactive
     testData(data_ml$test) # then use isolated
-
   })
 
+
+  ### preprocess
   processresult <- mod_preprocessModule_server(
     id = 'preprocessModule_1',
     splitresult = splitresult
   )
 
+  ### model
+  models_list <- mod_modelingModule_server(
+    id = 'modelingModule_1',
+    splitresult = splitresult,
+    processresult = processresult,
+    models_list = models_list
+  )
 
   # Your application server logic
 }

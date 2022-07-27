@@ -568,30 +568,33 @@ app_ui <- function(request) {
           conditionalPanel(
             condition = 'input.module == "ML"',
 
-            ## split
+
             shinyjs::hidden(
               div(
                 id = "MLModule",
+                ## split
                 shinydashboardPlus::box(
-                  style = "height:75vh; overflow-y: scroll;",
+                  style = "height:50vh; overflow-y: scroll;",
                   title = "TrainTestSplit",
                   collapsible = TRUE,
                   collapsed = FALSE,
                   solidHeader = TRUE,
                   status = "purple",
                   width = 12,
-                  mod_ttSplitModule_ui(id = "ttSplitModule_1"),
-                  footer = actionButton(
-                    inputId = ("applyML"),
-                    label = tagList(
-                      phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                      i18n("Apply changes")
-                    ),
-                    width = "100%"
-                  )
+                  mod_ttSplitModule_ui(id = "ttSplitModule_1")
+                  # ,
+                  # footer = actionButton(
+                  #   inputId = ("applyML"),
+                  #   label = tagList(
+                  #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+                  #     i18n("Apply changes")
+                  #   ),
+                  #   width = "100%"
+                  # )
                 ),
+                ## preprocess
                 shinydashboardPlus::box(
-                  style = "height:75vh; overflow-y: scroll;",
+                  style = "height:400px; overflow-y: scroll;",
                   title = "Preprocess",
                   collapsible = TRUE,
                   collapsed = FALSE,
@@ -607,12 +610,28 @@ app_ui <- function(request) {
                   #   ),
                   #   width = "100%"
                   # )
+                ),
+                shinydashboardPlus::box(
+                  style = "height:400px; overflow-y: scroll;",
+                  title = "Modeling",
+                  collapsible = TRUE,
+                  collapsed = FALSE,
+                  solidHeader = TRUE,
+                  status = "purple",
+                  width = 12,
+                  mod_modelingModule_ui("modelingModule_1") #,
+                  # footer = actionButton(
+                  #   inputId = ("applyML"),
+                  #   label = tagList(
+                  #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+                  #     i18n("Apply changes")
+                  #   ),
+                  #   width = "100%"
+                  # )
                 )
-
 
               )
             ),
-            ## preprocess
 
 
           ),
