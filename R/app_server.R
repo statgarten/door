@@ -505,6 +505,12 @@ app_server <- function(input, output, session) {
 
   })
 
+  processresult <- mod_preprocessModule_server(
+    id = 'preprocessModule_1',
+    splitresult = splitresult
+  )
+
+
   # Your application server logic
 }
 

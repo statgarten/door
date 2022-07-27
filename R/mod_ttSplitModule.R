@@ -75,7 +75,12 @@ mod_ttSplitModule_server <- function(id, inputData) {
         target = input$cols,
         prop = input$ratio
       )
-      result
+      list(
+        train = result$train,
+        test = result$test,
+        dataSplit = result$dataSplit,
+        target = isolate(input$cols)
+      )
     })
 
     return(splitresult)
