@@ -47,20 +47,20 @@ app_ui <- function(request) {
             style = "margin-bottom: -11.5px; text-align: center; font-weight: bold;"
           ),
           div(
-              actionButton(
-                inputId = "Outro",
-                label = NULL,
-                style = "margin: auto; width: 100%; background: #590696; color: #FFF",
-                onclick = "window.open('https://github.com/statgarten', '_blank')",
-                icon = icon("github", style = "font-size: 1.3em;")
-              )
+            actionButton(
+              inputId = "Outro",
+              label = NULL,
+              style = "margin: auto; width: 100%; background: #590696; color: #FFF",
+              onclick = "window.open('https://github.com/statgarten', '_blank')",
+              icon = icon("github", style = "font-size: 1.3em;")
+            )
           ),
           div(
             actionButton(
-              inputId = 'showGuide',
+              inputId = "showGuide",
               label = "Guide",
               style = "margin: auto; width: 100%; background: #C70A80; color: #FFF",
-              icon = icon('question', style = 'font-size: 1.3em;')
+              icon = icon("question", style = "font-size: 1.3em;")
             )
           )
         )
@@ -68,10 +68,10 @@ app_ui <- function(request) {
 
       # SIDE MODULE
       sidebar = ,
-        dashboardSidebar(
-          disable = TRUE,
-          minified = FALSE,
-          width = 0
+      dashboardSidebar(
+        disable = TRUE,
+        minified = FALSE,
+        width = 0
         # width = 300,
         # conditionalPanel(
         #   condition = 'input.module == "Import"',
@@ -182,7 +182,6 @@ app_ui <- function(request) {
         #   )
         # ),
       ),
-
       body = dashboardBody(
         fluidPage(
           useShinyjs(),
@@ -199,7 +198,7 @@ app_ui <- function(request) {
                 collapsible = TRUE,
                 collapsed = FALSE,
                 options = list(
-                  background = '#FFFDEE'
+                  background = "#FFFDEE"
                 ),
                 solidHeader = TRUE,
                 status = "purple",
@@ -219,7 +218,7 @@ app_ui <- function(request) {
               id = "importModule",
               tabsetPanel(
                 tabPanel( # File (Default)
-                  'File',
+                  "File",
                   datamods::import_file_ui(
                     id = "importModule_1",
                     preview_data = TRUE,
@@ -238,27 +237,26 @@ app_ui <- function(request) {
                   # ),
                   br(),
                   shinyWidgets::actionBttn(
-                    inputId = 'exampleURL',
-                    label = 'load example data',
-                    style = 'material-flat',
-                    size = 'sm',
+                    inputId = "exampleURL",
+                    label = "load example data",
+                    style = "material-flat",
+                    size = "sm",
                     block = TRUE,
                     color = "royal" # Purple - White
                     # 'default' # White - Blue
                     # "primary" # Blue - White
                   ),
                   datamods::import_url_ui(
-                    id = 'importModule_2'
+                    id = "importModule_2"
                   )
                 ),
                 tabPanel( # Google Sheet
                   "Google Sheet",
                   datamods::import_googlesheets_ui(
-                    id = 'importModule_3'
+                    id = "importModule_3"
                   )
                 )
               )
-
             ),
 
             ## Update
@@ -329,31 +327,31 @@ app_ui <- function(request) {
                   status = "purple",
                   width = 6,
                   tabsetPanel(
-                    id = 'transformPanel',
+                    id = "transformPanel",
                     tabPanel(
                       title = "Round",
-                      icon = icon('cut'),
-                      mod_roundModule_ui('roundModule_1')
+                      icon = icon("cut"),
+                      mod_roundModule_ui("roundModule_1")
                     ),
                     tabPanel( # Log2 / Log / Log10
                       title = "Log",
-                      icon = icon('ruler'),
-                      mod_logModule_ui('logModule_1')
+                      icon = icon("ruler"),
+                      mod_logModule_ui("logModule_1")
                     ),
                     tabPanel(
-                      title = 'Replace',
-                      icon = icon('font'),
-                      mod_replaceModule_ui('replaceModule_1')
+                      title = "Replace",
+                      icon = icon("font"),
+                      mod_replaceModule_ui("replaceModule_1")
                     ),
                     tabPanel(
                       title = "Etc",
-                      icon = icon('minus'),
-                      mod_etcModlue_ui('etcModule_1')
+                      icon = icon("minus"),
+                      mod_etcModlue_ui("etcModule_1")
                     ),
                     tabPanel(
-                      title = 'Binarize',
-                      icon = icon('slash'),
-                      mod_binarizeModule_ui('binModule_1')
+                      title = "Binarize",
+                      icon = icon("slash"),
+                      mod_binarizeModule_ui("binModule_1")
                     )
                   ),
                   footer = actionButton(
@@ -381,7 +379,7 @@ app_ui <- function(request) {
                   solidHeader = TRUE,
                   status = "purple",
                   width = 6,
-                  mod_splitModule_ui(id = 'splitModule_1'),
+                  mod_splitModule_ui(id = "splitModule_1"),
                   footer = actionButton(
                     inputId = ("applySplit"),
                     label = tagList(
@@ -407,7 +405,7 @@ app_ui <- function(request) {
                   solidHeader = TRUE,
                   status = "purple",
                   width = 6,
-                  mod_reorderModule_ui(id = 'reorderModule_1'),
+                  mod_reorderModule_ui(id = "reorderModule_1"),
                   footer = actionButton(
                     inputId = ("applyReorder"),
                     label = tagList(
@@ -419,7 +417,6 @@ app_ui <- function(request) {
                 )
               )
             ),
-
             shinyjs::hidden(
               div(
                 id = "exportModule",
@@ -431,7 +428,7 @@ app_ui <- function(request) {
                   solidHeader = TRUE,
                   status = "purple",
                   width = 6,
-                  mod_exportModule_ui(id = 'exportModule_1')# ,
+                  mod_exportModule_ui(id = "exportModule_1") # ,
                   # footer = actionButton(
                   #   inputId = ("applyExport"),
                   #   label = tagList(
@@ -443,8 +440,6 @@ app_ui <- function(request) {
                 )
               )
             )
-
-
           ),
 
 
@@ -539,10 +534,10 @@ app_ui <- function(request) {
                   solidHeader = TRUE,
                   collapsible = TRUE,
                   width = 12,
-                  #conditionalPanel(
+                  # conditionalPanel(
                   #  condition = 'input.EDAFunction == "Variable"',
-                    mod_variableModule_ui("variableModule_1"),
-                  #),
+                  mod_variableModule_ui("variableModule_1"),
+                  # ),
                   fluidRow(
                     column(width = 4, plotOutput("distplot")),
                     column(width = 4, plotOutput("distplot2")),
@@ -567,8 +562,6 @@ app_ui <- function(request) {
           ## ML Panel
           conditionalPanel(
             condition = 'input.module == "ML"',
-
-
             shinyjs::hidden(
               div(
                 id = "MLModule",
@@ -601,7 +594,7 @@ app_ui <- function(request) {
                   solidHeader = TRUE,
                   status = "purple",
                   width = 12,
-                  mod_preprocessModule_ui("preprocessModule_1") #,
+                  mod_preprocessModule_ui("preprocessModule_1") # ,
                   # footer = actionButton(
                   #   inputId = ("applyML"),
                   #   label = tagList(
@@ -619,7 +612,7 @@ app_ui <- function(request) {
                   solidHeader = TRUE,
                   status = "purple",
                   width = 12,
-                  mod_modelingModule_ui("modelingModule_1") #,
+                  mod_modelingModule_ui("modelingModule_1") # ,
                   # footer = actionButton(
                   #   inputId = ("applyML"),
                   #   label = tagList(
@@ -629,11 +622,8 @@ app_ui <- function(request) {
                   #   width = "100%"
                   # )
                 )
-
               )
             ),
-
-
           ),
 
           ## Report Panel
