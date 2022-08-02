@@ -13,6 +13,7 @@
 #' @importFrom shinyjs hide show
 #' @importFrom tibble as_tibble
 #' @import datamods
+#' @import rmarkdown
 #' @noRd
 app_server <- function(input, output, session) {
   src <- "www/statgarten.png"
@@ -32,6 +33,9 @@ app_server <- function(input, output, session) {
   testData <- reactiveVal(NULL)
 
   models_list <- reactiveVal(list())
+
+  # Reports
+  rmarkdownParams <- reactiveVal(NULL)
 
   # EXAMPLE IMPORT
   observeEvent(input$exampleURL, {
@@ -53,6 +57,9 @@ app_server <- function(input, output, session) {
   output$distplot <- renderPlot(distobj())
   output$distplot2 <- renderPlot(distobj2())
   output$distBox <- renderUI(uiobj())
+
+
+
 
 
   # Vis
@@ -103,6 +110,7 @@ app_server <- function(input, output, session) {
 
     ## EDA
     show(id = "edaModule")
+
 
   })
 
@@ -211,8 +219,20 @@ app_server <- function(input, output, session) {
       inputData = inputData(),
       exc = exc
     )
+
+
     obj$unif <- ifelse(obj$unif, "True", NA)
     obj$uniq <- ifelse(obj$uniq, "True", NA)
+
+
+    rmarkdownParams <<- do.call("reactiveValues", obj)
+
+    # no needs to make named params in Rmarkdown
+
+
+    # print(isolate(reactiveValuesToList(rmarkdownParams)))
+    # work checked
+
 
     EDAres <- data.frame(
       Name = obj$names,
@@ -493,7 +513,6 @@ app_server <- function(input, output, session) {
 
   ## ML
 
-
   ### split
   splitresult <- mod_ttSplitModule_server(
     id = 'ttSplitModule_1',
@@ -524,7 +543,48 @@ app_server <- function(input, output, session) {
     models_list = models_list
   )
 
-  # Your application server logic
+  ## Report
+
+  observeEvent(input$report, {
+    print(isolate(reactiveValuesToList(
+      rmarkdownParams
+    )))
+  })
+
+  output$downloadReport <- downloadHandler(
+    filename = function() {
+      paste('my-report', sep = '.',
+            switch(
+              input$format,
+              PDF = 'pdf',
+              HTML = 'html',
+              Word = 'docx'
+            )
+      )
+    },
+
+    content = function(file) {
+
+      #src <- normalizePath('report.Rmd')
+      #owd <- setwd(tempdir())
+
+      #on.exit(setwd(owd))
+      #file.copy(src, 'report.Rmd', overwrite = TRUE)
+      setwd(app_sys())
+
+      out <- rmarkdown::render(
+        params = isolate(reactiveValuesToList(rmarkdownParams)),
+        input = 'report.Rmd',
+        output_format = switch(
+          input$format,
+          PDF = pdf_document(),
+          HTML = html_document(),
+          Word = word_document()
+        )
+      )
+      file.rename(out, file)
+    }
+  )
 }
 
 genId <- function(bytes = 12) {

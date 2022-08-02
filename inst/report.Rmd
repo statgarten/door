@@ -1,0 +1,62 @@
+
+
+
+<!-- 
+no needs to declare
+---
+params:
+  names: NA
+  desc: NA
+  cards: NA
+  cors: NA
+  miss: NA
+  zeros: NA
+  unif: NA
+  uniq: NA
+---
+-->
+
+<!-- parameter is given as obj-->
+
+## data dimension
+
+```{r, echo=FALSE }
+
+paste0(obj$desc$nrow, " X ", obj$desc$ncol)
+
+```
+
+
+
+## missing Data
+
+```{r, echo = FALSE}
+paste0(obj$desc$missingCellCount, "(", obj$desc$missingCellRatio, "%)")
+```
+
+## data table
+
+```{r, echo=FALSE}
+EDAres <- data.frame(
+      Name = obj$names,
+      UniqueValues = obj$cards,
+      Zero = obj$zeros,
+      Missing = obj$miss,
+      isUniform = obj$unif,
+      isUnique = obj$uniq
+    )
+
+reactable::reactable(
+        EDAres,
+        bordered = TRUE,
+        compact = TRUE,
+        striped = TRUE
+      )
+```
+
+## correlation
+
+```{r, echo = FALSE}
+GGally::ggcorr(obj$cors)
+```
+

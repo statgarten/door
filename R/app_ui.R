@@ -632,7 +632,9 @@ app_ui <- function(request) {
             shinyjs::hidden(
               div(
                 id = "ReportModule",
-                h1("Not Implemented")
+                radioButtons('format', 'Document format', c('PDF', 'HTML', 'Word'),inline = TRUE),
+                downloadButton(outputId = 'downloadReport')
+                # h1("Not Implemented")
               )
             )
           )
