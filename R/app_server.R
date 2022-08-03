@@ -330,17 +330,15 @@ app_server <- function(input, output, session) {
   })
 
 
-
-
   ## filter module
 
-  res_filter <- filter_data_server(
+  res_filter <- datamods::filter_data_server(
     id = "filterModule_2",
     data = reactive(data_rv$data)
   )
 
   observeEvent(input$applyFilter, {
-    data_rv$data <- res_filter() # reactive
+    data_rv$data <- res_filter$filtered() # reactive
     inputData(data_rv$data) # then use isolated
   })
 

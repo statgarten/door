@@ -302,7 +302,7 @@ app_ui <- function(request) {
                   width = 6,
                   datamods::filter_data_ui(id = "filterModule_2", show_nrow = FALSE),
                   footer = actionButton(
-                    inputId = ("applyFilter"),
+                    inputId = "applyFilter",
                     label = tagList(
                       phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
                       i18n("Apply changes")
