@@ -330,7 +330,7 @@ app_ui <- function(request) {
                     id = "transformPanel",
                     tabPanel(
                       title = "Round",
-                      icon = icon("cut"),
+                      icon = icon("scissors"),
                       mod_roundModule_ui("roundModule_1")
                     ),
                     tabPanel( # Log2 / Log / Log10
