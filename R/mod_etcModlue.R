@@ -7,24 +7,22 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_etcModlue_ui <- function(id){
+mod_etcModlue_ui <- function(id) {
   ns <- NS(id)
   tagList(
     uiOutput(
-      outputId = ns('Column')
+      outputId = ns("Column")
     ),
-
     radioButtons(
-      inputId = ns('type'),
-      label = 'Type of transformation',
-      choices = c('-', 'Sqrt', 'Min-Max', 'Normal'),
-      selected = '-',
+      inputId = ns("type"),
+      label = "Type of transformation",
+      choices = c("-", "Sqrt", "Min-Max", "Normal"),
+      selected = "-",
       inline = TRUE
     ),
-
-    h4('Example'),
+    h4("Example"),
     verbatimTextOutput(
-      ns('description')
+      ns("description")
     )
   )
 }
@@ -32,40 +30,40 @@ mod_etcModlue_ui <- function(id){
 #' etcModlue Server Functions
 #'
 #' @noRd
-mod_etcModlue_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
+mod_etcModlue_server <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     output$Column <- renderUI({
       selectInput(
-        inputId = ns('cols'),
-        label = 'on Column',
+        inputId = ns("cols"),
+        label = "on Column",
         choices = colnames(inputData()),
         multiple = FALSE
       )
     })
 
-    observeEvent(input$type,{
-      if(input$type == '-'){
+    observeEvent(input$type, {
+      if (input$type == "-") {
         output$description <- renderText({
           "-(10) -> -10"
         })
       }
-      if(input$type == 'Sqrt'){
+      if (input$type == "Sqrt") {
         output$description <- renderText({
-          'sqrt(4) -> 2'
+          "sqrt(4) -> 2"
         })
       }
 
-      if(input$type == 'Min-Max'){
+      if (input$type == "Min-Max") {
         output$description <- renderText({
-          '[1, 3, 2, 5, 4] -> [0, 0.5, 0.25, 1, 0.75]'
+          "[1, 3, 2, 5, 4] -> [0, 0.5, 0.25, 1, 0.75]"
         })
       }
 
-      if(input$type == 'Normal'){
+      if (input$type == "Normal") {
         output$description <- renderText({
-          '[1, 3, 2, 5, 4] -> [-1.26, 0, -0.63, 1.26, 0.63]'
+          "[1, 3, 2, 5, 4] -> [-1.26, 0, -0.63, 1.26, 0.63]"
         })
       }
     })
@@ -85,7 +83,6 @@ mod_etcModlue_server <- function(id, inputData){
     })
 
     return(data_transed)
-
   })
 }
 

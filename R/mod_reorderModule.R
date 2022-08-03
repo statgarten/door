@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_reorderModule_ui <- function(id){
+mod_reorderModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     uiOutput(ns("Sortable")),
@@ -21,8 +21,8 @@ mod_reorderModule_ui <- function(id){
 #' reorderModule Server Functions
 #'
 #' @noRd
-mod_reorderModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
+mod_reorderModule_server <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
     output$Sortable <- renderUI({
       rank_list(
@@ -33,7 +33,7 @@ mod_reorderModule_server <- function(id, inputData){
       )
     })
 
-    data_reorder <-reactive({
+    data_reorder <- reactive({
       req(inputData())
       data <- inputData()
 
@@ -46,7 +46,6 @@ mod_reorderModule_server <- function(id, inputData){
     })
 
     return(data_reorder)
-
   })
 }
 

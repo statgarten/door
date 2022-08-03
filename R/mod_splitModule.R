@@ -12,21 +12,18 @@ mod_splitModule_ui <- function(id) {
 
   tagList(
     uiOutput(
-      outputId = ns('Column')
+      outputId = ns("Column")
     ),
-
     textInput(
-      inputId = ns('keyword'),
-      label = '',
-      placeholder = '/'
+      inputId = ns("keyword"),
+      label = "",
+      placeholder = "/"
     ),
-
-    h4('Example'),
+    h4("Example"),
     verbatimTextOutput(
-      ns('description')
+      ns("description")
     )
   )
-
 }
 
 #' splitModule Server Functions
@@ -38,15 +35,15 @@ mod_splitModule_server <- function(id, inputData, opened) {
 
     output$Column <- renderUI({
       selectInput(
-        inputId = ns('cols'),
-        label = 'on Column',
+        inputId = ns("cols"),
+        label = "on Column",
         choices = colnames(inputData()),
         multiple = FALSE
       )
     })
 
     output$description <- renderText({
-      paste0('[COL] 12/34 -> [COLA] 12, [COLB] 34')
+      paste0("[COL] 12/34 -> [COLA] 12, [COLB] 34")
     })
 
     data_splited <- reactive({

@@ -33,7 +33,7 @@ mod_modelingModule_ui <- function(id) {
             "Random Forest" = "RF",
             "XGBoost",
             "lightGBM",
-            "K Means Clustering" = 'KMC'
+            "K Means Clustering" = "KMC"
           )
         ),
         selectInput(
@@ -43,11 +43,11 @@ mod_modelingModule_ui <- function(id) {
             "glmnet", # logitistic Regression, Linera Regression
             "kknn", # KNN
             "kiaR", # NB
-            "nnet", #MLP
-            "rpart", #DT
+            "nnet", # MLP
+            "rpart", # DT
             "ranger", # RF
-            "xgboost", #XGBoost
-            "lightgbm", #Light GBM,
+            "xgboost", # XGBoost
+            "lightgbm", # Light GBM,
             "-" # KMC
           )
         ),
@@ -70,7 +70,7 @@ mod_modelingModule_ui <- function(id) {
         ## Penalty
         # Logistic / Linear / MLP
         conditionalPanel(
-          "input.algo == 'LogisticR' || input.algo == 'LinearR' || input.algo == 'MLP'" ,
+          "input.algo == 'LogisticR' || input.algo == 'LinearR' || input.algo == 'MLP'",
           ns = ns,
           fluidRow(
             column(
@@ -112,7 +112,7 @@ mod_modelingModule_ui <- function(id) {
         ## Mixtures
         # Logistic / Linear Regression
         conditionalPanel(
-          "input.algo == 'LogisticR' || input.algo == 'LinearR'" ,
+          "input.algo == 'LogisticR' || input.algo == 'LinearR'",
           ns = ns,
           fluidRow(
             column(
@@ -154,7 +154,7 @@ mod_modelingModule_ui <- function(id) {
         ## Neighbors
         # KNN
         conditionalPanel(
-          "input.algo == 'KNN'" ,
+          "input.algo == 'KNN'",
           ns = ns,
           fluidRow(
             column(
@@ -196,7 +196,7 @@ mod_modelingModule_ui <- function(id) {
         ## Smooth & Laplace
         # NB
         conditionalPanel(
-          "input.algo == 'NB'" ,
+          "input.algo == 'NB'",
           ns = ns,
           fluidRow(
             column(
@@ -275,7 +275,7 @@ mod_modelingModule_ui <- function(id) {
         ## hidden_units & epoches
         # MLP
         conditionalPanel(
-          "input.algo == 'MLP'" ,
+          "input.algo == 'MLP'",
           ns = ns,
           fluidRow(
             column(
@@ -353,7 +353,7 @@ mod_modelingModule_ui <- function(id) {
         ## treeDepth
         # DT lightgbm, xgboost
         conditionalPanel(
-          "input.algo == 'DT' || input.algo == 'XGBoost' || input.algo == 'lightGBM'" ,
+          "input.algo == 'DT' || input.algo == 'XGBoost' || input.algo == 'lightGBM'",
           ns = ns,
           fluidRow(
             column(
@@ -395,7 +395,7 @@ mod_modelingModule_ui <- function(id) {
         ## minN
         # DT, RF, lightGBM, xgboost
         conditionalPanel(
-          "input.algo == 'DT' || input.algo=='RF' || input.algo == 'XGBoost' || input.algo == 'lightGBM'" ,
+          "input.algo == 'DT' || input.algo=='RF' || input.algo == 'XGBoost' || input.algo == 'lightGBM'",
           ns = ns,
           fluidRow(
             column(
@@ -437,7 +437,7 @@ mod_modelingModule_ui <- function(id) {
         ## costComplexity
         # DT
         conditionalPanel(
-          "input.algo == 'DT'" ,
+          "input.algo == 'DT'",
           ns = ns,
           fluidRow(
             column(
@@ -479,7 +479,7 @@ mod_modelingModule_ui <- function(id) {
         ## mtry & trees
         # RF, XGboost, lightBGM
         conditionalPanel(
-          "input.algo=='RF' || input.algo == 'XGBoost' || input.algo == 'lightGBM'" ,
+          "input.algo=='RF' || input.algo == 'XGBoost' || input.algo == 'lightGBM'",
           ns = ns,
           fluidRow(
             column(
@@ -557,7 +557,7 @@ mod_modelingModule_ui <- function(id) {
         ## learnRate & lossReduction
         # XGBOOST, LightGBM
         conditionalPanel(
-          "input.algo == 'XGBoost' || input.algo == 'lightGBM'" ,
+          "input.algo == 'XGBoost' || input.algo == 'lightGBM'",
           ns = ns,
           fluidRow(
             column(
@@ -636,7 +636,7 @@ mod_modelingModule_ui <- function(id) {
         # xgboost
 
         conditionalPanel(
-          "input.algo == 'XGBoost'" ,
+          "input.algo == 'XGBoost'",
           ns = ns,
           fluidRow(
             column(
@@ -689,7 +689,7 @@ mod_modelingModule_ui <- function(id) {
         ## KMC
 
         conditionalPanel(
-          "input.algo == 'KMC'" ,
+          "input.algo == 'KMC'",
           ns = ns,
           fluidRow(
             column(
@@ -769,8 +769,6 @@ mod_modelingModule_ui <- function(id) {
             )
           )
         ),
-
-
         actionButton(
           inputId = ns("applyModel"),
           label = "모델 생성 버튼"
@@ -823,7 +821,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
       ## loader
 
 
-      if(input$algo == 'LogisticR'){
+      if (input$algo == "LogisticR") {
         modelObj <- reactive({
           Obj <- goophi::logisticRegression(
             algo = input$algo,
@@ -850,10 +848,9 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         models_list(
           append(models_list, list("LogisticR_glmnet" = modelObj()))
         )
-
       }
 
-      if(input$algo == 'LinearR'){
+      if (input$algo == "LinearR") {
         modelObj <- reactive({
           Obj <- goophi::linearRegression(
             algo = input$algo,
@@ -875,17 +872,15 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
           Obj <- Obj$finalFittedModel
 
           Obj
-
         })
         models_list(
           append(models_list, list("LinearR_glmnet" = modelObj()))
         )
-
       }
 
 
       ## CHECK
-      if(input$algo == 'KNN'){
+      if (input$algo == "KNN") {
         modelObj <- reactive({
           Obj <- goophi::KNN(
             algo = input$algo,
@@ -899,24 +894,21 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             neighborsRangeMin = input$neighborsRangeMin,
             neighborsRangeMax = input$neighborsRangeMax,
             neighborsRangeLevels = input$neighborsRangeLevels,
-            metric = 'roc_auc'
+            metric = "roc_auc"
           )
 
 
           Obj <- Obj$finalFittedModel
 
           Obj
-
         })
 
         models_list(
           append(models_list, list("KNN_kknn" = modelObj()))
         )
-
       }
 
-      if(input$algo =='NB'){
-
+      if (input$algo == "NB") {
         modelObj <- reactive({
           Obj <- goophi::naiveBayes(
             algo = input$algo,
@@ -927,20 +919,18 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             formula = splitresult()$formula,
             rec = processresult(),
             v = input$fold,
-
             smoothnessRangeMin = input$smoothnessRangeMin,
             smoothnessRangeMax = input$smoothnessRangeMax,
             smoothnessRangeLevels = input$smoothnessRangeLevels,
             LaplaceRangeMin = input$LaplaceRangeMin,
             LaplaceRangeMax = input$LaplaceRangeMax,
             LaplaceRangeLevels = input$LaplaceRangeLevels,
-            metric = 'roc_auc'
+            metric = "roc_auc"
           )
 
           Obj <- Obj$finalFittedModel
 
           Obj
-
         })
 
         models_list(
@@ -948,7 +938,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         )
       }
 
-      if(input$algo =='MLP'){
+      if (input$algo == "MLP") {
         modelObj <- reactive({
           Obj <- goophi::MLP(
             algo = input$algo,
@@ -959,7 +949,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             formula = splitresult()$formula,
             rec = processresult(),
             v = input$fold,
-
             hiddenUnitsRangeMin = input$hiddenUnitsRangeMin,
             hiddenUnitsRangeMax = input$hiddenUnitsRangeMax,
             hiddenUnitsRangeLevels = input$hiddenUnitsRangeLevels,
@@ -969,13 +958,12 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             epochsRangeMin = input$epochsRangeMin,
             epochsRangeMax = input$epochsRangeMax,
             epochsRangeLevels = input$epochsRangeLevels,
-            metric = 'roc_auc'
+            metric = "roc_auc"
           )
 
           Obj <- Obj$finalFittedModel
 
           Obj
-
         })
 
         models_list(
@@ -983,8 +971,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         )
       }
 
-      if(input$algo == 'DT'){
-
+      if (input$algo == "DT") {
         modelObj <- reactive({
           Obj <- goophi::decision_tree(
             algo = input$algo,
@@ -995,7 +982,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             formula = splitresult()$formula,
             rec = processresult(),
             v = input$fold,
-
             treeDepthRangeMin = input$treeDepthRangeMin,
             treeDepthRangeMax = input$treeDepthRangeMax,
             treeDepthRangeLevels = input$treeDepthRangeLevels,
@@ -1005,14 +991,12 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             costComplexityRangeMin = input$costComplexityRangeMin,
             costComplexityRangeMax = input$costComplexityRangeMax,
             costComplexityRangeLevels = input$costComplexityRangeLevels,
-
-            metric = 'roc_auc'
+            metric = "roc_auc"
           )
 
           Obj <- Obj$finalFittedModel
 
           Obj
-
         })
 
         models_list(
@@ -1020,7 +1004,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         )
       }
 
-      if(input$algo =='RF'){
+      if (input$algo == "RF") {
         modelObj <- reactive({
           Obj <- goophi::randomForest(
             algo = input$algo,
@@ -1031,7 +1015,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             formula = splitresult()$formula,
             rec = processresult(),
             v = input$fold,
-
             mtryRangeMin = input$mtryRangeMin,
             mtryRangeMax = input$mtryRangeMax,
             mtryRangeLevels = input$mtryRangeLevels,
@@ -1041,14 +1024,12 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             minNRangeMin = input$minNRangeMin,
             minNRangeMax = input$minNRangeMax,
             minNRangeLevels = input$minNRangeLevels,
-
-            metric = 'roc_auc'
+            metric = "roc_auc"
           )
 
           Obj <- Obj$finalFittedModel
 
           Obj
-
         })
 
         models_list(
@@ -1056,7 +1037,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         )
       }
 
-      if(input$algo =='XGBoost'){
+      if (input$algo == "XGBoost") {
         modelObj <- reactive({
           Obj <- goophi::xgboost(
             algo = input$algo,
@@ -1067,7 +1048,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             formula = splitresult()$formula,
             rec = processresult(),
             v = input$fold,
-
             treeDepthRangeMin = input$treeDepthRangeMin,
             treeDepthRangeMax = input$treeDepthRangeMax,
             treeDepthRangeLevels = input$treeDepthRangeLevels,
@@ -1090,14 +1070,12 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             sampleSizeRangeMax = input$sampleSizeRangeMax,
             sampleSizeRangeLevels = input$sampleSizeRangeLevels,
             stopIter = input$stopIter,
-
-            metric = 'roc_auc'
+            metric = "roc_auc"
           )
 
           Obj <- Obj$finalFittedModel
 
           Obj
-
         })
 
         models_list(
@@ -1105,7 +1083,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         )
       }
 
-      if(input$algo == 'lightGBM'){
+      if (input$algo == "lightGBM") {
         modelObj <- reactive({
           Obj <- goophi::lightGbm(
             algo = input$algo,
@@ -1116,7 +1094,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             formula = splitresult()$formula,
             rec = processresult(),
             v = input$fold,
-
             treeDepthRangeMin = input$treeDepthRangeMin,
             treeDepthRangeMax = input$treeDepthRangeMax,
             treeDepthRangeLevels = input$treeDepthRangeLevels,
@@ -1135,14 +1112,12 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             lossReductionRangeMin = input$lossReductionRangeMin,
             lossReductionRangeMax = input$lossReductionRangeMax,
             lossReductionRangeLevels = input$lossReductionRangeLevels,
-
-            metric = 'roc_auc'
+            metric = "roc_auc"
           )
 
           Obj <- Obj$finalFittedModel
 
           Obj
-
         })
 
         models_list(
@@ -1150,14 +1125,13 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         )
       }
 
-      if(input$algo == 'KMC'){
-
+      if (input$algo == "KMC") {
         modelObj <- reactive({
           Obj <- goophi::kMeansClustering(
-            data = rbind( splitresult()$train, splitresult()$test) ,
+            data = rbind(splitresult()$train, splitresult()$test),
             maxK = input$maxK,
             nStart = input$nStart,
-            iterMax =input$iterMax,
+            iterMax = input$iterMax,
             nBoot = input$nBoot,
             algorithm = input$algorithm,
             selectOptimal = input$selectOptimal,
@@ -1165,7 +1139,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
           )
 
           Obj
-
         })
 
         models_list(
@@ -1181,11 +1154,10 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
 
     observeEvent(input$mode, {
       req(input$mode)
-      if(input$mode == 'classification'){
-
+      if (input$mode == "classification") {
         updateSelectInput(
           inputId = "algo",
-          label = 'algo 지정',
+          label = "algo 지정",
           choices = c(
             "Logistic Regression" = "LogisticR",
             "K Nearest Neighbor" = "KNN",
@@ -1199,18 +1171,17 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
           selected = NULL
         )
         updateSelectInput(
-          inputId = 'metric',
-          label = 'metric 지정',
-          choices = 'roc_auc',
-          selected = 'roc_auc'
+          inputId = "metric",
+          label = "metric 지정",
+          choices = "roc_auc",
+          selected = "roc_auc"
         )
-        shinyjs::enable('metric')
+        shinyjs::enable("metric")
       }
-      if(input$mode == 'regression'){
-
+      if (input$mode == "regression") {
         updateSelectInput(
           inputId = "algo",
-          label = 'algo 지정',
+          label = "algo 지정",
           choices = c(
             "Linear Regression" = "LinearR",
             "K Nearest Neighbor" = "KNN",
@@ -1224,30 +1195,29 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         )
 
         updateSelectInput(
-          inputId = 'metric',
-          label = 'metric 지정',
-          choices = 'rmse',
-          selected = 'rmse'
+          inputId = "metric",
+          label = "metric 지정",
+          choices = "rmse",
+          selected = "rmse"
         )
-        shinyjs::enable('metric')
+        shinyjs::enable("metric")
       }
 
-      if(input$mode == 'clustering'){
+      if (input$mode == "clustering") {
         updateSelectInput(
           inputId = "algo",
-          label = 'algo 지정',
+          label = "algo 지정",
           choices = "KMC",
           selected = NULL
         )
-        shinyjs::disable('metric')
+        shinyjs::disable("metric")
         updateSelectInput(
-          inputId = 'metric',
-          label = 'metric 지정',
-          choices = '',
-          selected = ''
+          inputId = "metric",
+          label = "metric 지정",
+          choices = "",
+          selected = ""
         )
       }
-
     })
 
 

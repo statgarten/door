@@ -7,36 +7,35 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_replaceModule_ui <- function(id){
+mod_replaceModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     uiOutput(
-      outputId = ns('Column')
+      outputId = ns("Column")
     ),
-
     fluidRow(
       column(
         width = 6,
         textInput(
-          inputId = ns('from'),
-          label = 'A',
-          value = '',
-          placeholder = 'this value will be'
+          inputId = ns("from"),
+          label = "A",
+          value = "",
+          placeholder = "this value will be"
         )
       ),
       column(
         width = 6,
         textInput(
-          inputId = ns('to'),
-          label = 'X',
-          value = '',
-          placeholder = 'changed to this'
+          inputId = ns("to"),
+          label = "X",
+          value = "",
+          placeholder = "changed to this"
         )
       )
     ),
-    h4('Example'),
+    h4("Example"),
     verbatimTextOutput(
-      ns('description')
+      ns("description")
     )
   )
 }
@@ -44,14 +43,14 @@ mod_replaceModule_ui <- function(id){
 #' replaceModule Server Functions
 #'
 #' @noRd
-mod_replaceModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
+mod_replaceModule_server <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     output$Column <- renderUI({
       selectInput(
-        inputId = ns('cols'),
-        label = 'on Column',
+        inputId = ns("cols"),
+        label = "on Column",
         choices = colnames(inputData()),
         multiple = FALSE
       )
@@ -72,7 +71,7 @@ mod_replaceModule_server <- function(id, inputData){
       data <- scissor::impute(
         inputData = data,
         column = input$cols,
-        operator = 'Replace',
+        operator = "Replace",
         value = input$from,
         to = input$to
       )

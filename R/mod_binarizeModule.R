@@ -7,11 +7,11 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_binarizeModule_ui <- function(id){
+mod_binarizeModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     uiOutput(
-      outputId = ns('Column')
+      outputId = ns("Column")
     ),
     fluidRow(
       column(
@@ -27,15 +27,15 @@ mod_binarizeModule_ui <- function(id){
       column(
         width = 6,
         textInput(
-          inputId = ns('value'),
-          label = '',
-          placeholder = '2'
+          inputId = ns("value"),
+          label = "",
+          placeholder = "2"
         )
       )
     ),
-    h5('Example'),
+    h5("Example"),
     verbatimTextOutput(
-      ns('description')
+      ns("description")
     )
   )
 }
@@ -43,14 +43,14 @@ mod_binarizeModule_ui <- function(id){
 #' binarizeModule Server Functions
 #'
 #' @noRd
-mod_binarizeModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
+mod_binarizeModule_server <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     output$Column <- renderUI({
       selectInput(
-        inputId = ns('cols'),
-        label = 'on Column',
+        inputId = ns("cols"),
+        label = "on Column",
         choices = colnames(inputData()),
         multiple = FALSE
       )
@@ -62,7 +62,7 @@ mod_binarizeModule_server <- function(id, inputData){
         "[0, 1, 2, 3, 4, 5, 6] -> [0, 0, 0, 1, 1, 1, 1]",
         "# In requires value with c() : ",
         "ex: c('X', 'Y', 'Z') ",
-        sep = '\n'
+        sep = "\n"
       )
     })
 
@@ -81,7 +81,6 @@ mod_binarizeModule_server <- function(id, inputData){
     })
 
     return(data_binarize)
-
   })
 }
 

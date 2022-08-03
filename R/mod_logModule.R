@@ -7,61 +7,58 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_logModule_ui <- function(id){
+mod_logModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     uiOutput(
-      outputId = ns('Column')
+      outputId = ns("Column")
     ),
-
-     radioButtons(
-     inputId = ns('type'),
-     label = 'Type of Log',
-     choices = c('2', 'e', '10'),
-     selected = 'e',
-     inline = TRUE
-   ),
-
-   h4('Example'),
-   verbatimTextOutput(
-     ns('description')
-   )
-
+    radioButtons(
+      inputId = ns("type"),
+      label = "Type of Log",
+      choices = c("2", "e", "10"),
+      selected = "e",
+      inline = TRUE
+    ),
+    h4("Example"),
+    verbatimTextOutput(
+      ns("description")
+    )
   )
 }
 
 #' logModule Server Functions
 #'
 #' @noRd
-mod_logModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
+mod_logModule_server <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     output$Column <- renderUI({
       selectInput(
-        inputId = ns('cols'),
-        label = 'on Column',
+        inputId = ns("cols"),
+        label = "on Column",
         choices = colnames(inputData()),
         multiple = FALSE
       )
     })
 
-    observeEvent(input$type,{
-     if(input$type == '2'){
-       output$description <- renderText({
-         "log2(4) -> 2"
-       })
-     }
-
-      if(input$type == 'e'){
+    observeEvent(input$type, {
+      if (input$type == "2") {
         output$description <- renderText({
-          'log(e^2) -> 2'
+          "log2(4) -> 2"
         })
       }
 
-      if(input$type == '10'){
+      if (input$type == "e") {
         output$description <- renderText({
-          'log10(100) -> 2'
+          "log(e^2) -> 2"
+        })
+      }
+
+      if (input$type == "10") {
+        output$description <- renderText({
+          "log10(100) -> 2"
         })
       }
     })
@@ -73,7 +70,7 @@ mod_logModule_server <- function(id, inputData){
       data <- scissor::trans(
         inputData = data,
         column = input$cols,
-        operator = ifelse(input$type == '2', 'Log2', ifelse(input$type == 'e', 'Log', 'Log10'))
+        operator = ifelse(input$type == "2", "Log2", ifelse(input$type == "e", "Log", "Log10"))
       )
 
       data

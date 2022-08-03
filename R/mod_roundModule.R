@@ -7,25 +7,23 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_roundModule_ui <- function(id){
+mod_roundModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     uiOutput(
-      outputId = ns('Column')
+      outputId = ns("Column")
     ),
-
     sliderInput(
-      inputId = ns('num'),
-      label = 'Round Digits',
+      inputId = ns("num"),
+      label = "Round Digits",
       min = -5,
       max = 5,
       value = 0,
       step = 1
     ),
-
-    h4('Example'),
+    h4("Example"),
     verbatimTextOutput(
-      ns('description')
+      ns("description")
     )
   )
 }
@@ -33,21 +31,21 @@ mod_roundModule_ui <- function(id){
 #' roundModule Server Functions
 #'
 #' @noRd
-mod_roundModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
+mod_roundModule_server <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     output$Column <- renderUI({
       selectInput(
-        inputId = ns('cols'),
-        label = 'on Column',
+        inputId = ns("cols"),
+        label = "on Column",
         choices = colnames(inputData()),
         multiple = FALSE
       )
     })
 
     output$description <- renderText({
-      paste0('12345.56789 -> ', round(12345.56789, digits = input$num))
+      paste0("12345.56789 -> ", round(12345.56789, digits = input$num))
     })
 
     data_rounded <- reactive({
@@ -57,7 +55,7 @@ mod_roundModule_server <- function(id, inputData){
       data <- scissor::trans(
         inputData = data,
         column = input$cols,
-        operator = 'Round',
+        operator = "Round",
         value = input$num
       )
 
@@ -65,7 +63,6 @@ mod_roundModule_server <- function(id, inputData){
     })
 
     return(data_rounded)
-
   })
 }
 

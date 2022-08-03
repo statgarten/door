@@ -41,8 +41,8 @@ app_server <- function(input, output, session) {
   observeEvent(input$exampleURL, {
     updateTextInputIcon(
       session = session,
-      inputId = 'importModule_2-link',
-      value = 'https://github.com/statgarten/door/raw/main/example_g1e.xlsx'
+      inputId = "importModule_2-link",
+      value = "https://github.com/statgarten/door/raw/main/example_g1e.xlsx"
     )
   })
 
@@ -101,22 +101,20 @@ app_server <- function(input, output, session) {
     show(id = "updateModule")
     show(id = "filterModule")
     show(id = "transformModule")
-    show(id = 'splitModule')
-    show(id = 'reorderModule')
-    show(id = 'exportModule')
+    show(id = "splitModule")
+    show(id = "reorderModule")
+    show(id = "exportModule")
 
     ## Vis
     show(id = "visModule")
 
     ## EDA
     show(id = "edaModule")
-
-
   })
 
 
   from_url <- import_url_server(
-    id = 'importModule_2'
+    id = "importModule_2"
   )
 
   observeEvent(from_url$data(), {
@@ -133,9 +131,9 @@ app_server <- function(input, output, session) {
     show(id = "updateModule")
     show(id = "filterModule")
     show(id = "transformModule")
-    show(id = 'splitModule')
-    show(id = 'reorderModule')
-    show(id = 'exportModule')
+    show(id = "splitModule")
+    show(id = "reorderModule")
+    show(id = "exportModule")
 
     ## Vis
     show(id = "visModule")
@@ -146,7 +144,7 @@ app_server <- function(input, output, session) {
 
 
   from_gs <- import_googlesheets_server(
-    id = 'importModule_3'
+    id = "importModule_3"
   )
 
   observeEvent(from_gs$data(), {
@@ -163,9 +161,9 @@ app_server <- function(input, output, session) {
     show(id = "updateModule")
     show(id = "filterModule")
     show(id = "transformModule")
-    show(id = 'splitModule')
-    show(id = 'reorderModule')
-    show(id = 'exportModule')
+    show(id = "splitModule")
+    show(id = "reorderModule")
+    show(id = "exportModule")
 
     ## Vis
     show(id = "visModule")
@@ -347,73 +345,70 @@ app_server <- function(input, output, session) {
   ## round module
 
   res_round <- mod_roundModule_server(
-    id = 'roundModule_1',
+    id = "roundModule_1",
     inputData = reactive(data_rv$data)
   )
 
   ## log Module
 
   res_log <- mod_logModule_server(
-    id = 'logModule_1',
+    id = "logModule_1",
     inputData = reactive(data_rv$data)
   )
 
   ## replace Module
 
   res_replace <- mod_replaceModule_server(
-    id = 'replaceModule_1',
+    id = "replaceModule_1",
     inputData = reactive(data_rv$data)
   )
 
   ## binarize Module
   res_binary <- mod_binarizeModule_server(
-    id = 'binModule_1',
+    id = "binModule_1",
     inputData = reactive(data_rv$data)
   )
 
   ## etc Module
 
   res_trans <- mod_etcModlue_server(
-    id = 'etcModule_1',
+    id = "etcModule_1",
     inputData = reactive(data_rv$data)
   )
 
   ## transform apply
 
   observeEvent(input$applyRound, {
-
-    if(input$transformPanel == 'Round'){
+    if (input$transformPanel == "Round") {
       data_rv$data <- res_round() # reactive
       inputData(data_rv$data) # then use isolated
     }
 
-    if(input$transformPanel == 'Log'){
+    if (input$transformPanel == "Log") {
       data_rv$data <- res_log() # reactive
       inputData(data_rv$data) # then use isolated
     }
 
-    if(input$transformPanel == 'Replace'){
+    if (input$transformPanel == "Replace") {
       data_rv$data <- res_replace() # reactive
       inputData(data_rv$data) # then use isolated
     }
 
-    if(input$transformPanel == 'Binarize'){
+    if (input$transformPanel == "Binarize") {
       data_rv$data <- res_binary() # reactive
       inputData(data_rv$data) # then use isolated
     }
 
-    if(input$transformPanel == 'Etc'){
+    if (input$transformPanel == "Etc") {
       data_rv$data <- res_trans() # reactive
       inputData(data_rv$data) # then use isolated
     }
-
-
   })
 
   ## Split Module
 
   res_split <- mod_splitModule_server(
-    id = 'splitModule_1',
+    id = "splitModule_1",
     inputData = reactive(data_rv$data)
   )
 
@@ -426,7 +421,7 @@ app_server <- function(input, output, session) {
   ## reorder Module
 
   res_reorder <- mod_reorderModule_server(
-    id = 'reorderModule_1',
+    id = "reorderModule_1",
     inputData = reactive(data_rv$data)
   )
 
@@ -513,7 +508,7 @@ app_server <- function(input, output, session) {
 
   ### split
   splitresult <- mod_ttSplitModule_server(
-    id = 'ttSplitModule_1',
+    id = "ttSplitModule_1",
     inputData = reactive(data_rv$data)
   )
 
@@ -529,13 +524,13 @@ app_server <- function(input, output, session) {
 
   ### preprocess
   processresult <- mod_preprocessModule_server(
-    id = 'preprocessModule_1',
+    id = "preprocessModule_1",
     splitresult = splitresult
   )
 
   ### model
   models_list <- mod_modelingModule_server(
-    id = 'modelingModule_1',
+    id = "modelingModule_1",
     splitresult = splitresult,
     processresult = processresult,
     models_list = models_list
@@ -551,30 +546,28 @@ app_server <- function(input, output, session) {
 
   output$downloadReport <- downloadHandler(
     filename = function() {
-      paste('my-report', sep = '.',
-            switch(
-              input$format,
-              PDF = 'pdf',
-              HTML = 'html',
-              Word = 'docx'
-            )
+      paste("my-report",
+        sep = ".",
+        switch(input$format,
+          PDF = "pdf",
+          HTML = "html",
+          Word = "docx"
+        )
       )
     },
-
     content = function(file) {
 
-      #src <- normalizePath('report.Rmd')
-      #owd <- setwd(tempdir())
+      # src <- normalizePath('report.Rmd')
+      # owd <- setwd(tempdir())
 
-      #on.exit(setwd(owd))
-      #file.copy(src, 'report.Rmd', overwrite = TRUE)
+      # on.exit(setwd(owd))
+      # file.copy(src, 'report.Rmd', overwrite = TRUE)
       setwd(app_sys())
 
       out <- rmarkdown::render(
         params = isolate(reactiveValuesToList(rmarkdownParams)),
-        input = 'report.Rmd',
-        output_format = switch(
-          input$format,
+        input = "report.Rmd",
+        output_format = switch(input$format,
           PDF = pdf_document(),
           HTML = html_document(),
           Word = word_document()
@@ -678,5 +671,3 @@ modal_settings <- function(aesthetics = NULL, session = shiny::getDefaultReactiv
     footer = NULL
   )
 }
-
-

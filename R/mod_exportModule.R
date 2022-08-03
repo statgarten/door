@@ -24,7 +24,7 @@ mod_exportModule_ui <- function(id) {
     downloadButton(
       outputId = ns("exportButton"),
       label = "export",
-      style = 'width: 100%'
+      style = "width: 100%"
     )
   )
 }
