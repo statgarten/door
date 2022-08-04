@@ -782,7 +782,9 @@ mod_modelingModule_ui <- function(id) {
               )
             )
           )
-        )
+        ),
+        plotOutput(outputId = ns('ClusterPlot')),
+        plotOutput(outputId = ns('optimalK'))
       )
     )
   )
@@ -1126,9 +1128,12 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
       }
 
       if (input$algo == "KMC") {
+
+        data = rbind(splitresult()$train, splitresult()$test)
+
         modelObj <- reactive({
           Obj <- goophi::kMeansClustering(
-            data = rbind(splitresult()$train, splitresult()$test),
+            data = data,
             maxK = input$maxK,
             nStart = input$nStart,
             iterMax = input$iterMax,
@@ -1138,12 +1143,27 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             seed_num = input$seedNum # CHECK
           )
 
+          vis_result <- goophi::clusteringVis(
+            data = data,
+            model = Obj,  # pass
+            maxK = input$maxK, # pass
+            nStart = input$nStart, # pass
+            nBoot = input$nBoot, # pass
+            selectOptimal = input$selectOptimal # pass
+          )
+
+
+          output$ClusterPlot <- renderPlot(vis_result$clustVis)
+          output$optimalK <- renderPlot(vis_result$optimalK)
+
           Obj
         })
 
         models_list(
           append(models_list, list("KmeansClustering" = modelObj()))
         )
+
+
       }
       # name <- isolate(paste0(input$algo, "_", input$engine))
 
@@ -1219,6 +1239,8 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         )
       }
     })
+
+
 
 
     return(models_list)
