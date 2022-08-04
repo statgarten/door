@@ -48,19 +48,17 @@ app_server <- function(input, output, session) {
 
 
   # EDA Plot
-  ggobj <- reactiveVal(NULL) # relation scatter chart
+  # ggobj <- reactiveVal(NULL) # relation scatter chart # RELATION NOT USED
+
+
   distobj <- reactiveVal(NULL) # variable histogram
   distobj2 <- reactiveVal(NULL) # variable pie chart
   uiobj <- reactiveVal(NULL) # variable quantitle box
 
-  output$corplot2 <- renderPlot(ggobj())
+  # output$corplot2 <- renderPlot(ggobj()) # NOT USED?
   output$distplot <- renderPlot(distobj())
   output$distplot2 <- renderPlot(distobj2())
   output$distBox <- renderUI(uiobj())
-
-
-
-
 
   # Vis
   plotlyobj <- reactiveVal(NULL)
@@ -180,11 +178,13 @@ app_server <- function(input, output, session) {
     hide(id = "updateModule")
   })
 
-  observeEvent(input$`visModule_e-settings`, {
-    showModal(modal_settings(aesthetics = input$aesthetics))
-  })
+  # observeEvent(input$`visModule_e-settings`, {
+  #   showModal(modal_settings(aesthetics = input$aesthetics))
+  # })
 
   observeEvent(data_rv$data, { # Data loaded
+
+    inputData(data_rv$data)
 
     # Box -> Sidebar
     # Module -> Body
@@ -225,12 +225,8 @@ app_server <- function(input, output, session) {
 
     rmarkdownParams <<- do.call("reactiveValues", obj)
 
-    # no needs to make named params in Rmarkdown
-
-
     # print(isolate(reactiveValuesToList(rmarkdownParams)))
     # work checked
-
 
     EDAres <- data.frame(
       Name = obj$names,
@@ -500,7 +496,7 @@ app_server <- function(input, output, session) {
 
   # mod_briefModule_server("briefModule_1", inputData, opened)
   #
-  mod_relationModule_server("relationModule_1", inputData, ggobj, opened)
+  # mod_relationModule_server("relationModule_1", inputData, ggobj, opened) # NOT USE
 
   mod_variableModule_server("variableModule_1", inputData, opened, distobj, distobj2, uiobj)
 
@@ -536,13 +532,21 @@ app_server <- function(input, output, session) {
     models_list = models_list
   )
 
-  ## Report
+  ### ML Report
+  mod_mlReportModule_server(
+    id = 'mlReportModule_1',
+    models_list = models_list,
+    splitresult = splitresult,
+    params = isolate(
+      list(
 
-  observeEvent(input$report, {
-    print(isolate(reactiveValuesToList(
-      rmarkdownParams
-    )))
-  })
+      )
+    )
+
+  )
+
+
+  ## Report
 
   output$downloadReport <- downloadHandler(
     filename = function() {
@@ -562,10 +566,13 @@ app_server <- function(input, output, session) {
 
       # on.exit(setwd(owd))
       # file.copy(src, 'report.Rmd', overwrite = TRUE)
+
       setwd(app_sys())
 
       out <- rmarkdown::render(
-        params = isolate(reactiveValuesToList(rmarkdownParams)),
+        params = list(
+          inputData = data_rv$data
+        ),
         input = "report.Rmd",
         output_format = switch(input$format,
           PDF = pdf_document(),

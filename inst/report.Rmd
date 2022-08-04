@@ -1,62 +1,41 @@
-
-
-
-<!-- 
-no needs to declare
 ---
 params:
-  names: NA
-  desc: NA
-  cards: NA
-  cors: NA
-  miss: NA
-  zeros: NA
-  unif: NA
-  uniq: NA
+  inputData: NA
 ---
--->
 
-<!-- parameter is given as obj-->
+<!-- load_all will recognize change -->
 
-## data dimension
-
-```{r, echo=FALSE }
-
-paste0(obj$desc$nrow, " X ", obj$desc$ncol)
-
-```
-
-
-
-## missing Data
+<!-- params = list(obj = ~~~) -->
+<!-- obj <- params$obj -->
 
 ```{r, echo = FALSE}
-paste0(obj$desc$missingCellCount, "(", obj$desc$missingCellRatio, "%)")
+inputData <- params$inputData
 ```
 
-## data table
+## Data information
 
-```{r, echo=FALSE}
-EDAres <- data.frame(
-      Name = obj$names,
-      UniqueValues = obj$cards,
-      Zero = obj$zeros,
-      Missing = obj$miss,
-      isUniform = obj$unif,
-      isUnique = obj$uniq
-    )
+Number of Row with given data is `r nrow(inputData)` 
 
-reactable::reactable(
-        EDAres,
-        bordered = TRUE,
-        compact = TRUE,
-        striped = TRUE
-      )
-```
+Number of Column with given data is `r ncol(inputData)` 
 
-## correlation
+Total Count of missing data is `r length(which(is.na(inputData)))`
+
+## Preview of data set
+
+top 5 data is below
 
 ```{r, echo = FALSE}
-GGally::ggcorr(obj$cors)
+head(inputData, 5)
 ```
+
+last 5 data is below
+
+```{r, echo = FALSE}
+tail(inputData, 5)
+```
+
+
+## Report information
+
+this report is generated with [Statgarten](https://github.com/statgarten) @ `r Sys.time()`
 

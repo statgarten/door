@@ -621,7 +621,26 @@ app_ui <- function(request) {
                   #   ),
                   #   width = "100%"
                   # )
-                )
+                ),
+                shinydashboardPlus::box(
+                  style = "height:400px; overflow-y: scroll;",
+                  title = "ML Report",
+                  collapsible = TRUE,
+                  collapsed = FALSE,
+                  solidHeader = TRUE,
+                  status = "purple",
+                  width = 12,
+                  mod_mlReportModule_ui("mlReportModule_1") # ,
+                  # footer = actionButton(
+                  #   inputId = ("applyML"),
+                  #   label = tagList(
+                  #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+                  #     i18n("Apply changes")
+                  #   ),
+                  #   width = "100%"
+                  # )
+                ),
+
               )
             ),
           ),
