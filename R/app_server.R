@@ -16,6 +16,21 @@
 #' @import rmarkdown
 #' @noRd
 app_server <- function(input, output, session) {
+
+  # calling the translator sent as a golem option
+  i18n <- golem::get_golem_options(which = "translator")
+  i18n$set_translation_language("en")
+
+  i18n_r <- reactive({
+    i18n
+  })
+
+  # change language
+  observeEvent(input$lang, {
+    shiny.i18n::update_lang(session, input$lang)
+    i18n_r()$set_translation_language(input$lang)
+  })
+
   src <- "www/statgarten.png"
   output$Logo <- renderText({
     c('<img width = "100" src="', src, '">')

@@ -9,18 +9,23 @@
 #' @importFrom DT DTOutput
 #' @import shinyWidgets
 #' @import esquisse
+#' @import shiny.i18n
 #' @importFrom shinydashboard dashboardBody
 #' @importFrom shinydashboardPlus box dashboardHeader dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput
 #' @importFrom shinyBS bsTooltip bsPopover bsButton
 #' @noRd
 app_ui <- function(request) {
+  i18n <- golem::get_golem_options(which = "translator")
+  i18n$set_translation_language("en")
   tagList(
+
+    usei18n(i18n),
     golem_add_external_resources(),
     dashboardPage(
       skin = "black",
       header = dashboardHeader(
-        title = "Statgarten",
+        title = i18n$t("Statgarten"),
         titleWidth = NULL,
         # title = tagList(
         #   span(class = "logo-lg", "statgarten"),
@@ -34,7 +39,14 @@ app_ui <- function(request) {
               inputId = "module",
               label = NULL,
               # status = 'warning',
-              choices = c("Import", "Vis", "EDA", "Stat", "ML", "Report"),
+              choices = c(
+                "Import",
+                "Vis",
+                "EDA",
+                "Stat",
+                "ML",
+                "Report"
+              ),
               selected = "Import",
               individual = TRUE,
               checkIcon = list(
@@ -61,6 +73,14 @@ app_ui <- function(request) {
               label = "Guide",
               style = "margin: auto; width: 100%; background: #C70A80; color: #FFF",
               icon = icon("question", style = "font-size: 1.3em;")
+            )
+          ),
+          div(
+            radioButtons(
+              inputId = "lang",
+              label = "Select language",
+              inline = TRUE,
+              choices = i18n$get_languages()
             )
           )
         )
@@ -194,7 +214,7 @@ app_ui <- function(request) {
               # style = "margin-bottom : 1em; padding-right: 15px; padding-left: 15px;",
               # h3("Data View"),
               shinydashboardPlus::box(
-                title = "Uploaded Data",
+                title = i18n$t("Uploaded Data"),
                 collapsible = TRUE,
                 collapsed = FALSE,
                 options = list(

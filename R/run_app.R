@@ -21,6 +21,12 @@ run_app <- function(onStart = NULL,
       enableBookmarking = enableBookmarking,
       uiPattern = uiPattern
     ),
-    golem_opts = list(...)
+
+    golem_opts = list(
+      translator = shiny.i18n::Translator$new(
+        translation_json_path = "inst/app/www/translations/translation.json"
+      )
+    )
+
   )
 }
