@@ -786,7 +786,8 @@ mod_modelingModule_ui <- function(id) {
 
         # Cluster
         plotOutput(outputId = ns('ClusterPlot')),
-        plotOutput(outputId = ns('optimalK'))
+        plotOutput(outputId = ns('optimalK')),
+        verbatimTextOutput(outputId = ns('ClusterResult'))
         # Regression
 
         # Classify
@@ -1167,7 +1168,9 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
 
           output$ClusterPlot <- renderPlot(vis_result$clustVis)
           output$optimalK <- renderPlot(vis_result$optimalK)
-
+          output$ClusterResult <- renderPrint({
+            Obj
+          })
           Obj
         })
 
