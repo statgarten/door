@@ -783,8 +783,13 @@ mod_modelingModule_ui <- function(id) {
             )
           )
         ),
+
+        # Cluster
         plotOutput(outputId = ns('ClusterPlot')),
         plotOutput(outputId = ns('optimalK'))
+        # Regression
+
+        # Classify
       )
     )
   )
@@ -823,6 +828,8 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
 
       shinyjs::show(id = "models")
       ## loader
+
+      ## Debug
       print('model_list Before: ')
       print(
         names(models_list())
@@ -1172,6 +1179,8 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
       }
       # name <- isolate(paste0(input$algo, "_", input$engine))
 
+
+      ## Debug
       print('model_list After: ')
       print(
         names(models_list())
@@ -1249,8 +1258,79 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
       }
     })
 
-
-
+    observeEvent(input$algo, {
+      req(input$mode)
+      if(input$algo == 'LogisticR'){
+       updateSelectInput(
+         inputId = "engine",
+         label = "engine 지정",
+         choices = "glmnet" # logitistic Regression, Linera Regression
+       )
+      }
+      if(input$algo == 'LinearR'){
+        updateSelectInput(
+          inputId = "engine",
+          label = "engine 지정",
+          choices = "glmnet" # logitistic Regression, Linera Regression
+        )
+      }
+      if(input$algo == 'KNN'){
+        updateSelectInput(
+          inputId = "engine",
+          label = "engine 지정",
+          choices = "kknn" # KNN
+        )
+      }
+      if(input$algo == 'NB'){
+        updateSelectInput(
+          inputId = "engine",
+          label = "engine 지정",
+          choices = "kiaR" # NB
+        )
+      }
+      if(input$algo == 'MLP'){
+        updateSelectInput(
+          inputId = "engine",
+          label = "engine 지정",
+          choices = "nnet", # MLP
+        )
+      }
+      if(input$algo == 'DT'){
+        updateSelectInput(
+          inputId = "engine",
+          label = "engine 지정",
+          choices = "rpart" # DT
+        )
+      }
+      if(input$algo == 'RF'){
+        updateSelectInput(
+          inputId = "engine",
+          label = "engine 지정",
+          choices = "ranger" # RF
+        )
+      }
+      if(input$algo == 'XGBoost'){
+        updateSelectInput(
+          inputId = "engine",
+          label = "engine 지정",
+          choices = "xgboost" # XGBoost
+        )
+      }
+      if(input$algo == 'lightGBM'){
+        updateSelectInput(
+          inputId = "engine",
+          label = "engine 지정",
+          choices = "lightgbm" # Light GBM,
+        )
+      }
+      if(input$algo == 'KMC'){
+        updateSelectInput(
+          inputId = "engine",
+          label = "engine 지정",
+          choices = "-" # KMC
+        )
+      }
+    })
 
     return(models_list)
   })
