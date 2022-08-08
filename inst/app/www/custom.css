@@ -108,3 +108,10 @@ shinydashboard sidebar position fix
   position:fixed;
 }
 */
+
+/*
+left ui
+*/
+.navbar-custom-menu{
+  margin-bottom: -1em;
+}

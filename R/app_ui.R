@@ -35,6 +35,7 @@ app_ui <- function(request) {
         controlbarIcon = icon("gear", verify_fa = FALSE), # to hide error
         leftUi = tagList(
           div(
+            id='moduleSelector',
             shinyWidgets::radioGroupButtons(
               inputId = "module",
               label = NULL,
@@ -53,10 +54,8 @@ app_ui <- function(request) {
                 yes = tags$i(class = "fa fa-circle", style = "color: #37E2D5"),
                 # no = tags$i(class = "fa fa-circle-o", style = "color: gold") : empty
                 no = tags$i(class = "fa fa-circle", style = "color: #FBCB0A")
-              ) # ,
-              # width = "10em"
-            ),
-            style = "margin-bottom: -11.5px; text-align: center; font-weight: bold;"
+              )
+            )
           ),
           div(
             actionButton(
@@ -76,11 +75,12 @@ app_ui <- function(request) {
             )
           ),
           div(
-            radioButtons(
+            radioGroupButtons(
               inputId = "lang",
-              label = "Select language",
-              inline = TRUE,
-              choices = i18n$get_languages()
+              label = NULL,
+              choiceNames = lapply(seq_along(countries), function(i) tagList(tags$img(src = flags[i], width = 30, height = 20))),
+              choiceValues = i18n$get_languages(),
+              individual = TRUE
             )
           )
         )
@@ -641,16 +641,19 @@ app_ui <- function(request) {
                   #   ),
                   #   width = "100%"
                   # )
-                ),
-                shinydashboardPlus::box(
-                  style = "height:400px; overflow-y: scroll;",
-                  title = "ML Report",
-                  collapsible = TRUE,
-                  collapsed = FALSE,
-                  solidHeader = TRUE,
-                  status = "purple",
-                  width = 12,
-                  mod_mlReportModule_ui("mlReportModule_1") # ,
+                )
+
+                # TEMPORARY NOT USE
+                  # shinydashboardPlus::box(
+                  #   style = "height:400px; overflow-y: scroll;",
+                  #   title = "ML Report",
+                  #   collapsible = TRUE,
+                  #   collapsed = FALSE,
+                  #   solidHeader = TRUE,
+                  #   status = "purple",
+                  #   width = 12 # ,
+                  #
+                  # mod_mlReportModule_ui("mlReportModule_1") #
                   # footer = actionButton(
                   #   inputId = ("applyML"),
                   #   label = tagList(
@@ -659,7 +662,7 @@ app_ui <- function(request) {
                   #   ),
                   #   width = "100%"
                   # )
-                ),
+                  #)
 
               )
             ),
@@ -733,3 +736,12 @@ ui2 <- function(id, title = TRUE) {
     tags$br()
   )
 }
+
+
+##
+countries <- c("en", "kr")
+
+flags <- c(
+  "https://cdn.rawgit.com/lipis/flag-icon-css/master/flags/4x3/us.svg",
+  "https://cdn.rawgit.com/lipis/flag-icon-css/master/flags/4x3/kr.svg"
+)
