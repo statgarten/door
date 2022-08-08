@@ -819,9 +819,14 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
     #
 
     observeEvent(input$applyModel, {
+
+
       shinyjs::show(id = "models")
       ## loader
-
+      print('model_list Before: ')
+      print(
+        names(models_list())
+      )
 
       if (input$algo == "LogisticR") {
         modelObj <- reactive({
@@ -848,7 +853,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
           Obj
         })
         models_list(
-          append(models_list, list("LogisticR_glmnet" = modelObj()))
+          append(models_list(), list("LogisticR_glmnet" = modelObj()))
         )
       }
 
@@ -876,7 +881,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
           Obj
         })
         models_list(
-          append(models_list, list("LinearR_glmnet" = modelObj()))
+          append(models_list(), list("LinearR_glmnet" = modelObj()))
         )
       }
 
@@ -906,7 +911,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         })
 
         models_list(
-          append(models_list, list("KNN_kknn" = modelObj()))
+          append(models_list(), list("KNN_kknn" = modelObj()))
         )
       }
 
@@ -936,7 +941,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         })
 
         models_list(
-          append(models_list, list("NB_klaR" = modelObj()))
+          append(models_list(), list("NB_klaR" = modelObj()))
         )
       }
 
@@ -969,7 +974,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         })
 
         models_list(
-          append(models_list, list("MLP_nnet" = modelObj()))
+          append(models_list(), list("MLP_nnet" = modelObj()))
         )
       }
 
@@ -1002,7 +1007,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         })
 
         models_list(
-          append(models_list, list("DT_rpart" = modelObj()))
+          append(models_list(), list("DT_rpart" = modelObj()))
         )
       }
 
@@ -1035,7 +1040,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         })
 
         models_list(
-          append(models_list, list("RF_ranger" = modelObj()))
+          append(models_list(), list("RF_ranger" = modelObj()))
         )
       }
 
@@ -1081,7 +1086,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         })
 
         models_list(
-          append(models_list, list("XGBoost_xgboost" = modelObj()))
+          append(models_list(), list("XGBoost_xgboost" = modelObj()))
         )
       }
 
@@ -1123,7 +1128,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         })
 
         models_list(
-          append(models_list, list("lightGBM_lightgbm" = modelObj()))
+          append(models_list(), list("lightGBM_lightgbm" = modelObj()))
         )
       }
 
@@ -1160,13 +1165,17 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         })
 
         models_list(
-          append(models_list, list("KmeansClustering" = modelObj()))
+          append(models_list(), list("KmeansClustering" = modelObj()))
         )
 
 
       }
       # name <- isolate(paste0(input$algo, "_", input$engine))
 
+      print('model_list After: ')
+      print(
+        names(models_list())
+      )
       output$obj <- renderPrint({
         setdiff(names(models_list()), "")
       })
