@@ -25,10 +25,24 @@ app_server <- function(input, output, session) {
     i18n
   })
 
+  output$datamods_import_url <- renderUI({
+    datamods::import_url_ui(id = 'importModule_2')
+  })
+
   # change language
   observeEvent(input$lang, {
+    ## Custom
     shiny.i18n::update_lang(session, input$lang)
     i18n_r()$set_translation_language(input$lang)
+
+    ## Datamods
+    datamods::set_i18n(paste0('inst/app/www/translations/', input$lang, '.csv'))
+    output$datamods_import_url <- renderUI({
+      datamods::import_url_ui(id = 'importModule_2')
+    })
+
+    ## Esquisse
+
   })
 
   src <- "www/statgarten.png"

@@ -16,16 +16,15 @@
 #' @importFrom shinyBS bsTooltip bsPopover bsButton
 #' @noRd
 app_ui <- function(request) {
-  i18n <- golem::get_golem_options(which = "translator")
-  i18n$set_translation_language("en")
+  i18n_shiny <- golem::get_golem_options(which = "translator")
+  i18n_shiny$set_translation_language("en")
   tagList(
-
-    usei18n(i18n),
+    usei18n(i18n_shiny),
     golem_add_external_resources(),
     dashboardPage(
       skin = "black",
       header = dashboardHeader(
-        title = i18n$t("Statgarten"),
+        title = i18n_shiny$t("Statgarten"),
         titleWidth = NULL,
         # title = tagList(
         #   span(class = "logo-lg", "statgarten"),
@@ -79,7 +78,7 @@ app_ui <- function(request) {
               inputId = "lang",
               label = NULL,
               choiceNames = lapply(seq_along(countries), function(i) tagList(tags$img(src = flags[i], width = 30, height = 20))),
-              choiceValues = i18n$get_languages(),
+              choiceValues = i18n_shiny$get_languages(),
               individual = TRUE
             )
           )
@@ -214,7 +213,7 @@ app_ui <- function(request) {
               # style = "margin-bottom : 1em; padding-right: 15px; padding-left: 15px;",
               # h3("Data View"),
               shinydashboardPlus::box(
-                title = i18n$t("Uploaded Data"),
+                title = i18n_shiny$t("Uploaded Data"),
                 collapsible = TRUE,
                 collapsed = FALSE,
                 options = list(
@@ -266,9 +265,12 @@ app_ui <- function(request) {
                     # 'default' # White - Blue
                     # "primary" # Blue - White
                   ),
-                  datamods::import_url_ui(
-                    id = "importModule_2"
+                  uiOutput(
+                    outputId = 'datamods_import_url'
                   )
+                  # datamods::import_url_ui(
+                  #   id = "importModule_2"
+                  # )
                 ),
                 tabPanel( # Google Sheet
                   "Google Sheet",
@@ -501,7 +503,7 @@ app_ui <- function(request) {
                   esquisse_ui(
                     id = "visModule_e",
                     header = FALSE,
-                    controls = c("labs", "parameters", "appearance")
+                    controls = c("labs", "parameters", "appearance", "code")
                   )
                 )
               )
