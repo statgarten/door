@@ -71,10 +71,16 @@ mod_preprocessModule_server <- function(id, splitresult) {
         output$imputeBlock <- renderUI(
           tagList(
             selectInput(
-              inputId = ns("imputeType"),
+              inputId = ns("numericImputeType"),
               label = NULL, # "imputationType 지정",
-              choices = c("bag", "knn", "linear", "lower", "mean", "median"),
+              choices = c("mean",  "bag", "knn", "linear", "lower", "median", "roll"),
               selected = "mean"
+            ),
+            selectInput(
+              inputId = ns("nominalImputeType"),
+              label = NULL, # "imputationType 지정",
+              choices = c("mode", "bag", "knn"),
+              selected = "mode"
             )
           )
         )
@@ -114,7 +120,8 @@ mod_preprocessModule_server <- function(id, splitresult) {
         data = data,
         formula = formula(),
         imputation = input$impute,
-        imputationType = ifelse(is.null(input$imputeType), "", input$imputeType),
+        nominalImputationType = input$nominalImputeType,
+        numericImputationType = input$numericImputeType,
         normalization = input$norm,
         normalizationType = ifelse(is.null(input$normType), "", input$normType),
         seed = input$seed
