@@ -1054,7 +1054,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
 
       if (input$algo == "XGBoost") {
         modelObj <- reactive({
-          Obj <- goophi::xgboost(
+          Obj <- goophi::xgBoost(
             algo = input$algo,
             engine = input$engine,
             mode = input$mode,
@@ -1153,7 +1153,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             nBoot = input$nBoot,
             algorithm = input$algorithm,
             selectOptimal = input$selectOptimal,
-            seed_num = input$seedNum # CHECK
+            seedNum = input$seedNum # CHECK
           )
 
           vis_result <- goophi::clusteringVis(
