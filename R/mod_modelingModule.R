@@ -769,6 +769,7 @@ mod_modelingModule_ui <- function(id) {
             )
           )
         ),
+
         actionButton(
           inputId = ns("applyModel"),
           label = "모델 생성 버튼"
@@ -783,23 +784,34 @@ mod_modelingModule_ui <- function(id) {
             )
           )
         ),
-        selectInput(inputId = ns("reportML"), label = "생성된 모델", choices = NULL, selected = NULL),
-        actionButton(
-          inputId = ns("generateReport"),
-          label = "report 생성"
-        ),
 
+        fluidRow(
+          selectInput(
+            inputId = ns("reportML"),
+            label = "생성된 모델",
+            choices = NULL,
+            selected = NULL
+          ),
+          actionButton(
+            inputId = ns("generateReport"),
+            label = "report 생성"
+          ),
 
-        # Cluster
-        plotOutput(outputId = ns("ClusterPlot")),
-        plotOutput(outputId = ns("optimalK")),
-        verbatimTextOutput(outputId = ns("ClusterResult")),
+          # Cluster
+          plotOutput(outputId = ns("ClusterPlot")),
+          plotOutput(outputId = ns("optimalK")),
+          verbatimTextOutput(outputId = ns("ClusterResult")),
 
-        # Regression
-        plotOutput(outputId = ns("RegressionPlot")),
-        verbatimTextOutput(outputId = ns("EvalMatrix"))
+          # Regression
+          plotOutput(outputId = ns("RegressionPlot")),
 
-        # Classify
+          # Classification
+          plotOutput(outputId = ns('confusionMatrix')),
+          plotOutput(outputId = ns('rocCurve')),
+
+          # Regression & Classification both
+          verbatimTextOutput(outputId = ns("EvalMatrix"))
+        )
       )
     )
   )
@@ -1166,9 +1178,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
       }
       # name <- isolate(paste0(input$algo, "_", input$engine))
 
-
-      ## Debug
-
       output$obj <- renderPrint({
         setdiff(names(models_list()), "")
       })
@@ -1218,6 +1227,32 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             targetVar = splitresult()$target
           )
         })
+      }
+
+      if(input$reportML == 'LogisticR_glmnet'){
+        Obj <- models_list()$LogisticR_glmnet
+
+        rc <- goophi::rocCurve(
+          modelsList = models_list(),
+          targetVar = splitresult()$target
+        )
+        output$rocCurve <- renderPlot(rc)
+
+        cm <- goophi::confusionMatrix(
+          modelName = 'LogisticR_glmnet',
+          modelsList = models_list(),
+          targetVar = splitresult()$target
+        )
+
+        output$confusionMatrix <- renderPlot(cm)
+
+        output$EvalMatrix <- renderPrint({
+          goophi::evalMetricsC(
+            modelsList = models_list(),
+            targetVar = splitresult()$target
+          )
+        })
+
       }
     })
 

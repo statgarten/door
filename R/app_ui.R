@@ -627,7 +627,7 @@ app_ui <- function(request) {
                   # )
                 ),
                 shinydashboardPlus::box(
-                  style = "height:400px; overflow-y: scroll;",
+                  style = "height:400px;",
                   title = "Modeling",
                   collapsible = TRUE,
                   collapsed = FALSE,
