@@ -34,7 +34,7 @@ app_ui <- function(request) {
         controlbarIcon = icon("gear", verify_fa = FALSE), # to hide error
         leftUi = tagList(
           div(
-            id='moduleSelector',
+            id = "moduleSelector",
             shinyWidgets::radioGroupButtons(
               inputId = "module",
               label = NULL,
@@ -266,7 +266,7 @@ app_ui <- function(request) {
                     # "primary" # Blue - White
                   ),
                   uiOutput(
-                    outputId = 'datamods_import_url'
+                    outputId = "datamods_import_url"
                   )
                   # datamods::import_url_ui(
                   #   id = "importModule_2"
@@ -578,16 +578,16 @@ app_ui <- function(request) {
               div(
                 id = "StatModule",
                 selectInput(
-                  inputId = 'tableOneStrata',
-                  label = 'Group by',
+                  inputId = "tableOneStrata",
+                  label = "Group by",
                   choices = NULL,
                   selected = NULL
                 ),
                 actionButton(
-                  inputId = 'generateTable',
-                  label = 'generate Table'
+                  inputId = "generateTable",
+                  label = "generate Table"
                 ),
-                reactableOutput(outputId = 'tableOne')
+                reactableOutput(outputId = "tableOne")
               )
             )
           ),
@@ -656,26 +656,25 @@ app_ui <- function(request) {
                 )
 
                 # TEMPORARY NOT USE
-                  # shinydashboardPlus::box(
-                  #   style = "height:400px; overflow-y: scroll;",
-                  #   title = "ML Report",
-                  #   collapsible = TRUE,
-                  #   collapsed = FALSE,
-                  #   solidHeader = TRUE,
-                  #   status = "purple",
-                  #   width = 12 # ,
-                  #
-                  # mod_mlReportModule_ui("mlReportModule_1") #
-                  # footer = actionButton(
-                  #   inputId = ("applyML"),
-                  #   label = tagList(
-                  #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                  #     i18n("Apply changes")
-                  #   ),
-                  #   width = "100%"
-                  # )
-                  #)
-
+                # shinydashboardPlus::box(
+                #   style = "height:400px; overflow-y: scroll;",
+                #   title = "ML Report",
+                #   collapsible = TRUE,
+                #   collapsed = FALSE,
+                #   solidHeader = TRUE,
+                #   status = "purple",
+                #   width = 12 # ,
+                #
+                # mod_mlReportModule_ui("mlReportModule_1") #
+                # footer = actionButton(
+                #   inputId = ("applyML"),
+                #   label = tagList(
+                #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+                #     i18n("Apply changes")
+                #   ),
+                #   width = "100%"
+                # )
+                # )
               )
             ),
           ),

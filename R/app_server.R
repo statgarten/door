@@ -26,7 +26,7 @@ app_server <- function(input, output, session) {
   })
 
   output$datamods_import_url <- renderUI({
-    datamods::import_url_ui(id = 'importModule_2')
+    datamods::import_url_ui(id = "importModule_2")
   })
 
   # change language
@@ -36,13 +36,12 @@ app_server <- function(input, output, session) {
     i18n_r()$set_translation_language(input$lang)
 
     ## Datamods
-    datamods::set_i18n(paste0('inst/app/www/translations/', input$lang, '.csv'))
+    datamods::set_i18n(paste0("inst/app/www/translations/", input$lang, ".csv"))
     output$datamods_import_url <- renderUI({
-      datamods::import_url_ui(id = 'importModule_2')
+      datamods::import_url_ui(id = "importModule_2")
     })
 
     ## Esquisse
-
   })
 
   src <- "www/statgarten.png"
@@ -233,8 +232,8 @@ app_server <- function(input, output, session) {
 
     inputData(data_rv$data)
     updateSelectInput(
-      inputId = 'tableOneStrata',
-      label = 'Group by',
+      inputId = "tableOneStrata",
+      label = "Group by",
       choices = colnames(data_rv$data),
       selected = NULL
     )
@@ -589,15 +588,12 @@ app_server <- function(input, output, session) {
 
   ### ML Report
   mod_mlReportModule_server(
-    id = 'mlReportModule_1',
+    id = "mlReportModule_1",
     models_list = models_list,
     splitresult = splitresult,
     params = isolate(
-      list(
-
-      )
+      list()
     )
-
   )
 
 
