@@ -783,22 +783,21 @@ mod_modelingModule_ui <- function(id) {
             )
           )
         ),
-
-        selectInput(inputId = ns('reportML'),label = '생성된 모델', choices = NULL,selected = NULL),
+        selectInput(inputId = ns("reportML"), label = "생성된 모델", choices = NULL, selected = NULL),
         actionButton(
-          inputId = ns('generateReport'),
-          label = 'report 생성'
+          inputId = ns("generateReport"),
+          label = "report 생성"
         ),
 
 
         # Cluster
-        plotOutput(outputId = ns('ClusterPlot')),
-        plotOutput(outputId = ns('optimalK')),
-        verbatimTextOutput(outputId = ns('ClusterResult')),
+        plotOutput(outputId = ns("ClusterPlot")),
+        plotOutput(outputId = ns("optimalK")),
+        verbatimTextOutput(outputId = ns("ClusterResult")),
 
         # Regression
-        plotOutput(outputId = ns('RegressionPlot')),
-        verbatimTextOutput(outputId = ns('EvalMatrix'))
+        plotOutput(outputId = ns("RegressionPlot")),
+        verbatimTextOutput(outputId = ns("EvalMatrix"))
 
         # Classify
       )
@@ -835,8 +834,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
     #
 
     observeEvent(input$applyModel, {
-
-
       shinyjs::show(id = "models")
       ## loader
 
@@ -1145,8 +1142,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
       }
 
       if (input$algo == "KMC") {
-
-        data = rbind(splitresult()$train, splitresult()$test)
+        data <- rbind(splitresult()$train, splitresult()$test)
 
         modelObj <- reactive({
           Obj <- goophi::kMeansClustering(
@@ -1167,8 +1163,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         models_list(
           append(models_list(), list("KmeansClustering" = modelObj()))
         )
-
-
       }
       # name <- isolate(paste0(input$algo, "_", input$engine))
 
@@ -1180,22 +1174,21 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
       })
 
       updateSelectInput(
-        inputId = 'reportML',
-        label = '생성된 모델',
+        inputId = "reportML",
+        label = "생성된 모델",
         choices = names(models_list()),
         selected = NULL
       )
-
     })
 
-    observeEvent(input$generateReport,{
+    observeEvent(input$generateReport, {
       req(input$reportML)
-      if(input$reportML == 'KmeansClustering'){
+      if (input$reportML == "KmeansClustering") {
         Obj <- models_list()$KmeansClustering
 
         vis_result <- goophi::clusteringVis(
           data = data,
-          model = Obj,  # pass
+          model = Obj, # pass
           maxK = input$maxK, # pass
           nStart = input$nStart, # pass
           nBoot = input$nBoot, # pass
@@ -1209,11 +1202,11 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         })
       }
 
-      if(input$reportML == 'LinearR_glmnet'){
+      if (input$reportML == "LinearR_glmnet") {
         Obj <- models_list()$LinearR_glmnet
 
         vis_result <- goophi::regressionPlot(
-          modelName = 'LinearR_glmnet',
+          modelName = "LinearR_glmnet",
           modelsList = models_list(),
           targetVar = splitresult()$target
         )
@@ -1226,7 +1219,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
           )
         })
       }
-
     })
 
     observeEvent(input$mode, {
@@ -1299,70 +1291,70 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
 
     observeEvent(input$algo, {
       req(input$mode)
-      if(input$algo == 'LogisticR'){
-       updateSelectInput(
-         inputId = "engine",
-         label = "engine 지정",
-         choices = "glmnet" # logitistic Regression, Linera Regression
-       )
-      }
-      if(input$algo == 'LinearR'){
+      if (input$algo == "LogisticR") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
           choices = "glmnet" # logitistic Regression, Linera Regression
         )
       }
-      if(input$algo == 'KNN'){
+      if (input$algo == "LinearR") {
+        updateSelectInput(
+          inputId = "engine",
+          label = "engine 지정",
+          choices = "glmnet" # logitistic Regression, Linera Regression
+        )
+      }
+      if (input$algo == "KNN") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
           choices = "kknn" # KNN
         )
       }
-      if(input$algo == 'NB'){
+      if (input$algo == "NB") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
           choices = "kiaR" # NB
         )
       }
-      if(input$algo == 'MLP'){
+      if (input$algo == "MLP") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
           choices = "nnet", # MLP
         )
       }
-      if(input$algo == 'DT'){
+      if (input$algo == "DT") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
           choices = "rpart" # DT
         )
       }
-      if(input$algo == 'RF'){
+      if (input$algo == "RF") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
           choices = "ranger" # RF
         )
       }
-      if(input$algo == 'XGBoost'){
+      if (input$algo == "XGBoost") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
           choices = "xgboost" # XGBoost
         )
       }
-      if(input$algo == 'lightGBM'){
+      if (input$algo == "lightGBM") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
           choices = "lightgbm" # Light GBM,
         )
       }
-      if(input$algo == 'KMC'){
+      if (input$algo == "KMC") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
