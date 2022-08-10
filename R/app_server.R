@@ -63,6 +63,9 @@ app_server <- function(input, output, session) {
 
   models_list <- reactiveVal(list())
 
+  # Stats
+  # tableOne <- reactiveVal(NULL)
+
   # Reports
   rmarkdownParams <- reactiveVal(NULL)
 
@@ -211,9 +214,32 @@ app_server <- function(input, output, session) {
   #   showModal(modal_settings(aesthetics = input$aesthetics))
   # })
 
+  observeEvent(input$generateTable, {
+    req(input$generateTable)
+
+    output$tableOne <- renderReactable({
+      data <- inputData()
+      reactable::reactable(
+        jstable::CreateTableOneJS(
+          vars = colnames(data),
+          data = data,
+          strata = input$tableOneStrata
+        )$table
+      )
+    })
+  })
+
   observeEvent(data_rv$data, { # Data loaded
 
     inputData(data_rv$data)
+    updateSelectInput(
+      inputId = 'tableOneStrata',
+      label = 'Group by',
+      choices = colnames(data_rv$data),
+      selected = NULL
+    )
+
+
 
     # Box -> Sidebar
     # Module -> Body

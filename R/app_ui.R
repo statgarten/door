@@ -577,7 +577,17 @@ app_ui <- function(request) {
             shinyjs::hidden(
               div(
                 id = "StatModule",
-                h1("Not Implemented")
+                selectInput(
+                  inputId = 'tableOneStrata',
+                  label = 'Group by',
+                  choices = NULL,
+                  selected = NULL
+                ),
+                actionButton(
+                  inputId = 'generateTable',
+                  label = 'generate Table'
+                ),
+                reactableOutput(outputId = 'tableOne')
               )
             )
           ),
