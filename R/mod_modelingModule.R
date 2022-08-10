@@ -784,11 +784,21 @@ mod_modelingModule_ui <- function(id) {
           )
         ),
 
+        selectInput(inputId = ns('reportML'),label = '생성된 모델', choices = NULL,selected = NULL),
+        actionButton(
+          inputId = ns('generateReport'),
+          label = 'report 생성'
+        ),
+
+
         # Cluster
         plotOutput(outputId = ns('ClusterPlot')),
         plotOutput(outputId = ns('optimalK')),
-        verbatimTextOutput(outputId = ns('ClusterResult'))
+        verbatimTextOutput(outputId = ns('ClusterResult')),
+
         # Regression
+        plotOutput(outputId = ns('RegressionPlot')),
+        verbatimTextOutput(outputId = ns('EvalMatrix'))
 
         # Classify
       )
@@ -808,7 +818,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
     # splitresult$test
     # splitresult$dataSplit
     # splitresult$target
-    # splitresult$formula
+
 
     # processresult <- prepForCV Result
 
@@ -829,12 +839,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
 
       shinyjs::show(id = "models")
       ## loader
-
-      ## Debug
-      print('model_list Before: ')
-      print(
-        names(models_list())
-      )
 
       if (input$algo == "LogisticR") {
         modelObj <- reactive({
@@ -1156,21 +1160,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             seedNum = input$seedNum # CHECK
           )
 
-          vis_result <- goophi::clusteringVis(
-            data = data,
-            model = Obj,  # pass
-            maxK = input$maxK, # pass
-            nStart = input$nStart, # pass
-            nBoot = input$nBoot, # pass
-            selectOptimal = input$selectOptimal # pass
-          )
 
-
-          output$ClusterPlot <- renderPlot(vis_result$clustVis)
-          output$optimalK <- renderPlot(vis_result$optimalK)
-          output$ClusterResult <- renderPrint({
-            Obj
-          })
           Obj
         })
 
@@ -1184,13 +1174,59 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
 
 
       ## Debug
-      print('model_list After: ')
-      print(
-        names(models_list())
-      )
+
       output$obj <- renderPrint({
         setdiff(names(models_list()), "")
       })
+
+      updateSelectInput(
+        inputId = 'reportML',
+        label = '생성된 모델',
+        choices = names(models_list()),
+        selected = NULL
+      )
+
+    })
+
+    observeEvent(input$generateReport,{
+      req(input$reportML)
+      if(input$reportML == 'KmeansClustering'){
+        Obj <- models_list()$KmeansClustering
+
+        vis_result <- goophi::clusteringVis(
+          data = data,
+          model = Obj,  # pass
+          maxK = input$maxK, # pass
+          nStart = input$nStart, # pass
+          nBoot = input$nBoot, # pass
+          selectOptimal = input$selectOptimal # pass
+        )
+
+        output$ClusterPlot <- renderPlot(vis_result$clustVis)
+        output$optimalK <- renderPlot(vis_result$optimalK)
+        output$ClusterResult <- renderPrint({
+          Obj
+        })
+      }
+
+      if(input$reportML == 'LinearR_glmnet'){
+        Obj <- models_list()$LinearR_glmnet
+
+        vis_result <- goophi::regressionPlot(
+          modelName = 'LinearR_glmnet',
+          modelsList = models_list(),
+          targetVar = splitresult()$target
+        )
+
+        output$RegressionPlot <- renderPlot(vis_result)
+        output$EvalMatrix <- renderPrint({
+          goophi::evalMetricsR(
+            modelsList = models_list(),
+            targetVar = splitresult()$target
+          )
+        })
+      }
+
     })
 
     observeEvent(input$mode, {
