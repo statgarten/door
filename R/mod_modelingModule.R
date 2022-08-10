@@ -769,7 +769,6 @@ mod_modelingModule_ui <- function(id) {
             )
           )
         ),
-
         actionButton(
           inputId = ns("applyModel"),
           label = "모델 생성 버튼"
@@ -784,7 +783,6 @@ mod_modelingModule_ui <- function(id) {
             )
           )
         ),
-
         fluidRow(
           selectInput(
             inputId = ns("reportML"),
@@ -806,8 +804,8 @@ mod_modelingModule_ui <- function(id) {
           plotOutput(outputId = ns("RegressionPlot")),
 
           # Classification
-          plotOutput(outputId = ns('confusionMatrix')),
-          plotOutput(outputId = ns('rocCurve')),
+          plotOutput(outputId = ns("confusionMatrix")),
+          plotOutput(outputId = ns("rocCurve")),
 
           # Regression & Classification both
           verbatimTextOutput(outputId = ns("EvalMatrix"))
@@ -1229,7 +1227,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         })
       }
 
-      if(input$reportML == 'LogisticR_glmnet'){
+      if (input$reportML == "LogisticR_glmnet") {
         Obj <- models_list()$LogisticR_glmnet
 
         rc <- goophi::rocCurve(
@@ -1239,7 +1237,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
         output$rocCurve <- renderPlot(rc)
 
         cm <- goophi::confusionMatrix(
-          modelName = 'LogisticR_glmnet',
+          modelName = "LogisticR_glmnet",
           modelsList = models_list(),
           targetVar = splitresult()$target
         )
@@ -1252,7 +1250,6 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             targetVar = splitresult()$target
           )
         })
-
       }
     })
 
