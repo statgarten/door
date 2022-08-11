@@ -796,19 +796,36 @@ mod_modelingModule_ui <- function(id) {
           ),
 
           # Cluster
-          plotOutput(outputId = ns("ClusterPlot")),
-          plotOutput(outputId = ns("optimalK")),
-          verbatimTextOutput(outputId = ns("ClusterResult")),
+          conditionalPanel(
+            "input.mode == 'clustering'",
+            ns = ns,
+            plotOutput(outputId = ns("ClusterPlot")),
+            plotOutput(outputId = ns("optimalK")),
+            verbatimTextOutput(outputId = ns("ClusterResult")),
+          ),
 
           # Regression
-          plotOutput(outputId = ns("RegressionPlot")),
+          conditionalPanel(
+            "input.mode == 'regression'",
+            ns = ns,
+            plotOutput(outputId = ns("RegressionPlot"))
+          ),
 
           # Classification
-          plotOutput(outputId = ns("confusionMatrix")),
-          plotOutput(outputId = ns("rocCurve")),
+          conditionalPanel(
+            "input.mode == 'classification'",
+            ns = ns,
+            plotOutput(outputId = ns("confusionMatrix")),
+            plotOutput(outputId = ns("rocCurve"))
+          ),
 
           # Regression & Classification both
-          verbatimTextOutput(outputId = ns("EvalMatrix"))
+          conditionalPanel(
+            "input.mode == 'classification' || input.mode == 'regression'",
+            ns = ns,
+            verbatimTextOutput(outputId = ns("EvalMatrix"))
+          )
+
         )
       )
     )
@@ -1197,7 +1214,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
           data = data,
           model = Obj, # pass
           maxK = input$maxK, # pass
-          nStart = input$nStart, # pass
+          # nStart = input$nStart, # pass
           nBoot = input$nBoot, # pass
           selectOptimal = input$selectOptimal # pass
         )
