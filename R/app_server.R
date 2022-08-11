@@ -16,7 +16,7 @@
 #' @import rmarkdown
 #' @noRd
 app_server <- function(input, output, session) {
-
+  options(shiny.maxRequestSize=30*1024^2) # file upload size 30mb
   # calling the translator sent as a golem option
   i18n_shiny <- golem::get_golem_options(which = "translator")
   i18n_shiny$set_translation_language("en")
@@ -233,7 +233,7 @@ app_server <- function(input, output, session) {
       data <- inputData()
       reactable::reactable(
         jstable::CreateTableOneJS(
-          vars = colnames(data),
+          vars = setdiff(colnames(data), input$tableOneStrata),
           data = data,
           strata = input$tableOneStrata
         )$table
@@ -275,7 +275,8 @@ app_server <- function(input, output, session) {
 
     # getexc
 
-    exc <- which(!columnTypes() %in% c("numeric"))
+    exc <- which(!columnTypes() %in% c("numeric", "integer"))
+
     if (length(exc) == 0) {
       exc <- NULL
     }
@@ -285,10 +286,8 @@ app_server <- function(input, output, session) {
       exc = exc
     )
 
-
     obj$unif <- ifelse(obj$unif, "True", NA)
     obj$uniq <- ifelse(obj$uniq, "True", NA)
-
 
     rmarkdownParams <<- do.call("reactiveValues", obj)
 
@@ -342,7 +341,12 @@ app_server <- function(input, output, session) {
       )
     )
 
-    esquisse_server(id = "visModule_e", data_rv = data_rv, default_aes = reactive(input$aes), import_from = NULL)
+    esquisse_server(
+      id = "visModule_e",
+      data_rv = data_rv,
+      default_aes = reactive(input$aes),
+      import_from = NULL
+    )
   })
 
 
@@ -600,15 +604,14 @@ app_server <- function(input, output, session) {
   )
 
   ### ML Report
-  mod_mlReportModule_server(
-    id = "mlReportModule_1",
-    models_list = models_list,
-    splitresult = splitresult,
-    params = isolate(
-      list()
-    )
-  )
-
+  # mod_mlReportModule_server(
+  #   id = "mlReportModule_1",
+  #   models_list = models_list,
+  #   splitresult = splitresult,
+  #   params = isolate(
+  #     list()
+  #   )
+  # )
 
   ## Report
 
