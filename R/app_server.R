@@ -40,13 +40,20 @@ app_server <- function(input, output, session) {
 
     ## Datamods
 
-    datamods::set_i18n(paste0("inst/app/www/translations/", input$lang, ".csv"))
+    # app/www/translation/ ERROR
+    # www/translation/ error
+    # inst/app/www/translation FINE with ctrl shift 0
+
+    app_dir <- system.file(package = 'door')
+
+    datamods::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
     output$datamods_import_url <- renderUI({
       datamods::import_url_ui(id = "importModule_2")
     })
 
+
     ## Esquisse
-    esquisse::set_i18n(paste0("inst/app/www/translations/", input$lang, ".csv"))
+    esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
 
   })
 
