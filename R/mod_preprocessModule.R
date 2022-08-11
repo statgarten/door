@@ -73,7 +73,7 @@ mod_preprocessModule_server <- function(id, splitresult) {
             selectInput(
               inputId = ns("numericImputeType"),
               label = NULL, # "imputationType 지정",
-              choices = c("mean",  "bag", "knn", "linear", "lower", "median", "roll"),
+              choices = c("mean", "bag", "knn", "linear", "lower", "median", "roll"),
               selected = "mean"
             ),
             selectInput(
