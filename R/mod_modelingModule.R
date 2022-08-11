@@ -825,7 +825,6 @@ mod_modelingModule_ui <- function(id) {
             ns = ns,
             verbatimTextOutput(outputId = ns("EvalMatrix"))
           )
-
         )
       )
     )
@@ -1208,6 +1207,8 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
     observeEvent(input$generateReport, {
       req(input$reportML)
       if (input$reportML == "KmeansClustering") {
+        data <- rbind(splitresult()$train, splitresult()$test)
+
         Obj <- models_list()$KmeansClustering
 
         vis_result <- goophi::clusteringVis(
