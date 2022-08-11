@@ -1,7 +1,6 @@
 {
   "languages":["en", "ko"],
   "translation":[
-    {"en": "Statgarten", "ko": "애옹"},
-    {"en": "Uploaded Data", "ko": "업로드 데이터"}
+    {"en": "Statgarten", "ko": "애옹"}
   ]
 }
