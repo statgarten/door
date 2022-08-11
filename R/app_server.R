@@ -18,11 +18,11 @@
 app_server <- function(input, output, session) {
 
   # calling the translator sent as a golem option
-  i18n <- golem::get_golem_options(which = "translator")
-  i18n$set_translation_language("en")
+  i18n_shiny <- golem::get_golem_options(which = "translator")
+  i18n_shiny$set_translation_language("en")
 
   i18n_r <- reactive({
-    i18n
+    i18n_shiny
   })
 
   output$datamods_import_url <- renderUI({
@@ -31,17 +31,23 @@ app_server <- function(input, output, session) {
 
   # change language
   observeEvent(input$lang, {
+
+    req(input$lang)
+
     ## Custom
     shiny.i18n::update_lang(session, input$lang)
     i18n_r()$set_translation_language(input$lang)
 
     ## Datamods
+
     datamods::set_i18n(paste0("inst/app/www/translations/", input$lang, ".csv"))
     output$datamods_import_url <- renderUI({
       datamods::import_url_ui(id = "importModule_2")
     })
 
     ## Esquisse
+    esquisse::set_i18n(paste0("inst/app/www/translations/", input$lang, ".csv"))
+
   })
 
   src <- "www/statgarten.png"
@@ -686,40 +692,40 @@ modal_settings <- function(aesthetics = NULL, session = shiny::getDefaultReactiv
   ns <- session$ns
   modalDialog(
     title = tagList(
-      i18n("Visualization settings"),
+      i18n_shiny$t("Visualization settings"),
       tags$button(
         ph("x"),
-        title = i18n("Close"),
+        title = i18n_shiny$t("Close"),
         class = "btn btn-default pull-right",
         style = "border: 0 none;",
         `data-dismiss` = "modal"
       )
     ),
     tags$label(
-      i18n("Select aesthetics to be used to build a graph:"),
+      i18n_shiny$t("Select aesthetics to be used to build a graph:"),
       `for` = ns("aesthetics"),
       class = "control-label"
     ),
     shinyWidgets::alert(
       ph("info"),
-      i18n("Aesthetic mappings describe how variables in the data are mapped to visual properties (aesthetics) of geoms."),
+      i18n_shiny$t("Aesthetic mappings describe how variables in the data are mapped to visual properties (aesthetics) of geoms."),
       status = "info"
     ),
     prettyCheckboxGroup(
       inputId = ns("aesthetics"),
       label = NULL,
       choiceNames = list(
-        tagList(tags$b("fill:"), i18n("fill color for shapes")),
-        tagList(tags$b("color:"), i18n("color points and lines")),
-        tagList(tags$b("size:"), i18n("size of the points")),
-        tagList(tags$b("shape:"), i18n("shape of the points")),
-        tagList(tags$b("weight:"), i18n("frequency weights")),
-        tagList(tags$b("group:"), i18n("identifies series of points with a grouping variable")),
-        tagList(tags$b("ymin:"), i18n("used in ribbons charts with ymax to display an interval between two lines")),
-        tagList(tags$b("ymax:"), i18n("used in ribbons charts with ymin to display an interval between two lines")),
-        tagList(tags$b("facet:"), i18n("create small multiples")),
-        tagList(tags$b("facet row:"), i18n("create small multiples by rows")),
-        tagList(tags$b("facet col:"), i18n("create small multiples by columns"))
+        tagList(tags$b("fill:"), i18n_shiny$t("fill color for shapes")),
+        tagList(tags$b("color:"), i18n_shiny$t("color points and lines")),
+        tagList(tags$b("size:"), i18n_shiny$t("size of the points")),
+        tagList(tags$b("shape:"), i18n_shiny$t("shape of the points")),
+        tagList(tags$b("weight:"), i18n_shiny$t("frequency weights")),
+        tagList(tags$b("group:"), i18n_shiny$t("identifies series of points with a grouping variable")),
+        tagList(tags$b("ymin:"), i18n_shiny$t("used in ribbons charts with ymax to display an interval between two lines")),
+        tagList(tags$b("ymax:"), i18n_shiny$t("used in ribbons charts with ymin to display an interval between two lines")),
+        tagList(tags$b("facet:"), i18n_shiny$t("create small multiples")),
+        tagList(tags$b("facet row:"), i18n_shiny$t("create small multiples by rows")),
+        tagList(tags$b("facet col:"), i18n_shiny$t("create small multiples by columns"))
       ),
       choiceValues = c("fill", "color", "size", "shape", "weight", "group", "ymin", "ymax", "facet", "facet_row", "facet_col"),
       selected = aesthetics %||% c("fill", "color", "size", "facet"),

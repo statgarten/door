@@ -18,8 +18,9 @@
 app_ui <- function(request) {
   i18n_shiny <- golem::get_golem_options(which = "translator")
   i18n_shiny$set_translation_language("en")
+
   tagList(
-    usei18n(i18n_shiny),
+    shiny.i18n::usei18n(i18n_shiny),
     golem_add_external_resources(),
     dashboardPage(
       skin = "black",
@@ -73,13 +74,16 @@ app_ui <- function(request) {
               icon = icon("question", style = "font-size: 1.3em;")
             )
           ),
-          div(
-            radioGroupButtons(
-              inputId = "lang",
-              label = NULL,
-              choiceNames = lapply(seq_along(countries), function(i) tagList(tags$img(src = flags[i], width = 30, height = 20))),
-              choiceValues = i18n_shiny$get_languages(),
-              individual = TRUE
+          #### LANGUAGES
+          shinyjs::hidden(
+            div(
+              radioGroupButtons(
+                inputId = "lang",
+                label = NULL,
+                choiceNames = lapply(seq_along(countries), function(i) tagList(tags$img(src = flags[i], width = 30, height = 20))),
+                choiceValues = i18n_shiny$get_languages(),
+                individual = TRUE
+              )
             )
           )
         )
@@ -300,8 +304,8 @@ app_ui <- function(request) {
                   footer = actionButton(
                     inputId = "updateModule_1-validate",
                     label = tagList(
-                      phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                      i18n("Apply changes")
+                      phosphoricons::ph("arrow-circle-right", title = i18n_shiny$t("Apply changes")),
+                      i18n_shiny$t("Apply changes")
                     ),
                     width = "100%"
                   )
@@ -326,8 +330,8 @@ app_ui <- function(request) {
                   footer = actionButton(
                     inputId = "applyFilter",
                     label = tagList(
-                      phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                      i18n("Apply changes")
+                      phosphoricons::ph("arrow-circle-right", title = i18n_shiny$t("Apply changes")),
+                      i18n_shiny$t("Apply changes")
                     ),
                     width = "100%"
                   )
@@ -379,8 +383,8 @@ app_ui <- function(request) {
                   footer = actionButton(
                     inputId = ("applyRound"),
                     label = tagList(
-                      phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                      i18n("Apply changes")
+                      phosphoricons::ph("arrow-circle-right", title = i18n_shiny$t("Apply changes")),
+                      i18n_shiny$t("Apply changes")
                     ),
                     width = "100%"
                   )
@@ -405,8 +409,8 @@ app_ui <- function(request) {
                   footer = actionButton(
                     inputId = ("applySplit"),
                     label = tagList(
-                      phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                      i18n("Apply changes")
+                      phosphoricons::ph("arrow-circle-right", title = i18n_shiny$t("Apply changes")),
+                      i18n_shiny$t("Apply changes")
                     ),
                     width = "100%"
                   )
@@ -431,8 +435,8 @@ app_ui <- function(request) {
                   footer = actionButton(
                     inputId = ("applyReorder"),
                     label = tagList(
-                      phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                      i18n("Apply changes")
+                      phosphoricons::ph("arrow-circle-right", title = i18n_shiny$t("Apply changes")),
+                      i18n_shiny$t("Apply changes")
                     ),
                     width = "100%"
                   )
@@ -731,7 +735,7 @@ golem_add_external_resources <- function() {
 ui2 <- function(id, title = TRUE) {
   ns <- NS(id)
   if (isTRUE(title)) {
-    title <- tags$h4(i18n("Update & select variables"),
+    title <- tags$h4(i18n_shiny$t("Update & select variables"),
       class = "datamods-title"
     )
   }
