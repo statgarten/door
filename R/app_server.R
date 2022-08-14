@@ -280,7 +280,8 @@ app_server <- function(input, output, session) {
     if (length(exc) == 0) {
       exc <- NULL
     }
-
+    print('exc: ')
+    print(exc)
     obj <- board::brief(
       inputData = inputData(),
       exc = exc
@@ -303,7 +304,9 @@ app_server <- function(input, output, session) {
       isUnique = obj$uniq
     )
 
-    output$corplot <- renderPlot(ggcorr(obj$cors))
+    if(!is.null(obj$cors)){
+      output$corplot <- renderPlot(ggcorr(obj$cors))
+    }
 
     output$dataDimension <- renderUI(
       descriptionBlock(
@@ -554,12 +557,12 @@ app_server <- function(input, output, session) {
 
   ## Vis
 
-  mod_visModule_server(
-    id = "visModule_1",
-    inputData = inputData,
-    opened = opened,
-    plotlyobj = plotlyobj
-  )
+  # mod_visModule_server(
+  #   id = "visModule_1",
+  #   inputData = inputData,
+  #   opened = opened,
+  #   plotlyobj = plotlyobj
+  # )
 
 
 
