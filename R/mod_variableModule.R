@@ -25,13 +25,10 @@ mod_variableModule_ui <- function(id) {
 #' variableModule Server Functions
 #'
 #' @noRd
-mod_variableModule_server <- function(id, inputData, opened, distobj, distobj2, uiobj) {
+mod_variableModule_server <- function(id, inputData, distobj, distobj2, uiobj) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observeEvent(inputData(), {
-      # if (opened() != "Variable") {
-      #   return()
-      # }
       updateSelectizeInput(
         session,
         inputId = "variableDescription",
@@ -55,9 +52,9 @@ mod_variableModule_server <- function(id, inputData, opened, distobj, distobj2, 
         distobj(
           board::distribute(inputData()[, input$variableDescription])
         )
-
         des <- board::describe(inputData()[, input$variableDescription])
         out <- board::outlier(inputData()[, input$variableDescription])
+
         uiobj(
           tagList(
             fluidRow(
