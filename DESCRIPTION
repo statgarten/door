@@ -22,7 +22,6 @@ Imports:
     htmlwidgets,
     jstable,
     phosphoricons,
-    plotGen,
     plotly,
     reactable,
     readr,
