@@ -90,10 +90,8 @@ app_server <- function(input, output, session) {
     )
   })
 
-
   # EDA Plot
   # ggobj <- reactiveVal(NULL) # relation scatter chart # RELATION NOT USED
-
 
   distobj <- reactiveVal(NULL) # variable histogram
   distobj2 <- reactiveVal(NULL) # variable pie chart
@@ -280,8 +278,6 @@ app_server <- function(input, output, session) {
     if (length(exc) == 0) {
       exc <- NULL
     }
-    print('exc: ')
-    print(exc)
     obj <- board::brief(
       inputData = inputData(),
       exc = exc
@@ -304,6 +300,7 @@ app_server <- function(input, output, session) {
       isUnique = obj$uniq
     )
 
+
     if(!is.null(obj$cors)){
       output$corplot <- renderPlot(ggcorr(obj$cors))
     }
@@ -325,6 +322,7 @@ app_server <- function(input, output, session) {
         marginBottom = FALSE
       )
     )
+
 
     updateSelectInput(
       inputId = "variableSelect",
@@ -350,6 +348,7 @@ app_server <- function(input, output, session) {
       default_aes = reactive(input$aes),
       import_from = NULL
     )
+
   })
 
 
@@ -572,7 +571,7 @@ app_server <- function(input, output, session) {
   #
   # mod_relationModule_server("relationModule_1", inputData, ggobj, opened) # NOT USE
 
-  mod_variableModule_server("variableModule_1", inputData, opened, distobj, distobj2, uiobj)
+  mod_variableModule_server("variableModule_1", inputData, distobj, distobj2, uiobj)
 
   ## ML
 
@@ -606,53 +605,45 @@ app_server <- function(input, output, session) {
     models_list = models_list
   )
 
-  ### ML Report
-  # mod_mlReportModule_server(
-  #   id = "mlReportModule_1",
-  #   models_list = models_list,
-  #   splitresult = splitresult,
-  #   params = isolate(
-  #     list()
-  #   )
-  # )
-
   ## Report
+#
+#   output$downloadReport <- downloadHandler(
+#     filename = function() {
+#       paste("my-report",
+#         sep = ".",
+#         switch(input$format,
+#           PDF = "pdf",
+#           HTML = "html",
+#           Word = "docx"
+#         )
+#       )
+#     },
+#     content = function(file) {
+#
+#       # src <- normalizePath('report.Rmd')
+#       # owd <- setwd(tempdir())
+#
+#       # on.exit(setwd(owd))
+#       # file.copy(src, 'report.Rmd', overwrite = TRUE)
+#
+#       setwd(app_sys())
+#
+#       out <- rmarkdown::render(
+#         params = list(
+#           inputData = data_rv$data
+#         ),
+#         input = "report.Rmd",
+#         output_format = switch(input$format,
+#           PDF = pdf_document(),
+#           HTML = html_document(),
+#           Word = word_document()
+#         )
+#       )
+#       file.rename(out, file)
+#     }
+#   )
+#
 
-  output$downloadReport <- downloadHandler(
-    filename = function() {
-      paste("my-report",
-        sep = ".",
-        switch(input$format,
-          PDF = "pdf",
-          HTML = "html",
-          Word = "docx"
-        )
-      )
-    },
-    content = function(file) {
-
-      # src <- normalizePath('report.Rmd')
-      # owd <- setwd(tempdir())
-
-      # on.exit(setwd(owd))
-      # file.copy(src, 'report.Rmd', overwrite = TRUE)
-
-      setwd(app_sys())
-
-      out <- rmarkdown::render(
-        params = list(
-          inputData = data_rv$data
-        ),
-        input = "report.Rmd",
-        output_format = switch(input$format,
-          PDF = pdf_document(),
-          HTML = html_document(),
-          Word = word_document()
-        )
-      )
-      file.rename(out, file)
-    }
-  )
 }
 
 genId <- function(bytes = 12) {
