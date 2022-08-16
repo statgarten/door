@@ -39,39 +39,21 @@ app_ui <- function(request) {
             shinyWidgets::radioGroupButtons(
               inputId = "module",
               label = NULL,
-              # status = 'warning',
               choices = c(
                 "Import",
                 "Vis",
                 "EDA",
                 "Stat",
-                "ML",
-                "Report"
+                "Report",
+                "ML"
               ),
               selected = "Import",
               individual = TRUE,
+              justified = TRUE,
               checkIcon = list(
                 yes = tags$i(class = "fa fa-circle", style = "color: #37E2D5"),
-                # no = tags$i(class = "fa fa-circle-o", style = "color: gold") : empty
                 no = tags$i(class = "fa fa-circle", style = "color: #FBCB0A")
               )
-            )
-          ),
-          div(
-            actionButton(
-              inputId = "Outro",
-              label = NULL,
-              style = "margin: auto; width: 100%; background: #590696; color: #FFF",
-              onclick = "window.open('https://github.com/statgarten', '_blank')",
-              icon = icon("github", style = "font-size: 1.3em;")
-            )
-          ),
-          div(
-            actionButton(
-              inputId = "showGuide",
-              label = "Guide",
-              style = "margin: auto; width: 100%; background: #C70A80; color: #FFF",
-              icon = icon("question", style = "font-size: 1.3em;")
             )
           ),
           #### LANGUAGES
@@ -88,129 +70,12 @@ app_ui <- function(request) {
           )
         )
       ),
-
-      # SIDE MODULE
-      sidebar = ,
-      dashboardSidebar(
-        disable = TRUE,
-        minified = FALSE,
-        width = 0
-        # width = 300,
-        # conditionalPanel(
-        #   condition = 'input.module == "Import"',
-        #   shinyjs::hidden(
-        #     div(
-        #       id = "ImportBox",
-        #       style = "text-align:center;",
-        #       shinyWidgets::pickerInput(
-        #         inputId = "ImportFunction",
-        #         label = "Functions",
-        #         choices = c(
-        #           "",
-        #           # "Filter",
-        #           # "Subset",
-        #           # "Mutate",
-        #           # "Clean",
-        #           # "Split",
-        #           "Reshape",
-        #           "Export"
-        #         ),
-        #         choicesOpt = list(
-        #           subtext = c(
-        #             "",
-        #             # "select data with criteria",
-        #             # "delete column",
-        #             # "mut",
-        #             # "cle",
-        #             "spl", "res", "exp"
-        #           ),
-        #           style = rep(c("color: black"), 8)
-        #         ),
-        #         options = list(), # style = "btn-info"
-        #         selected = NULL
-        #       ),
-        #       conditionalPanel(
-        #         condition = 'input.ImportFunction == "Filter"',
-        #         mod_filterModule_ui("filterModule_1")
-        #       ),
-        #       conditionalPanel(
-        #         condition = 'input.ImportFunction == "Subset"',
-        #         mod_subsetModule_ui("subsetModule_1")
-        #       ),
-        #       conditionalPanel(
-        #         condition = 'input.ImportFunction == "Mutate"',
-        #         mod_mutateModule_ui("mutateModule_1"),
-        #       ),
-        #       conditionalPanel(
-        #         condition = 'input.ImportFunction == "Clean"',
-        #         mod_cleanModule_ui("cleanModule_1")
-        #       ),
-        #       # conditionalPanel(
-        #       #   condition = 'input.ImportFunction == "Split"',
-        #       #   mod_splitModule_ui("splitModule_1")
-        #       # ),
-        #       conditionalPanel(
-        #         condition = 'input.ImportFunction == "Reshape"',
-        #         mod_reshapeModule_ui("reshapeModule_1")
-        #       )# ,
-        #       # conditionalPanel(
-        #       #   condition = 'input.ImportFunction == "Export"',
-        #       #   mod_exportModule_ui("exportModule_1")
-        #       # )
-        #     )
-        #   )
-        # )
-
-        # conditionalPanel(
-        #   condition = 'input.module == "EDA"',
-        #   shinyjs::hidden(
-        #     div(
-        #       id = "EDABox",
-        #       style = "text-align:center;",
-        #       shinyWidgets::pickerInput(
-        #         inputId = "EDAFunction",
-        #         label = "EDA Functions",
-        #         choices = c("",
-        #                     # "Brief",
-        #                     #"Relation",
-        #                     "Variable"),
-        #         choicesOpt = list(
-        #           subtext = c("",
-        #                       # "bri",
-        #                       # "rel",
-        #                       "var"),
-        #           style = rep(c("color: black"), 2
-        #                       # 3
-        #                       # 4
-        #                       )
-        #         ),
-        #         options = list(
-        #           style = "btn-info"
-        #         ),
-        #         selected = NULL
-        #       ),
-        #       # conditionalPanel(
-        #       #   condition = 'input.EDAFunction == "Brief"',
-        #       #   mod_briefModule_ui("briefModule_1")
-        #       # ),
-        #       # conditionalPanel(
-        #       #   condition = 'input.EDAFunction == "Relation"',
-        #       #   mod_relationModule_ui("relationModule_1")
-        #       # ),
-        #       # conditionalPanel(
-        #       #   condition = 'input.EDAFunction == "Variable"',
-        #       #   mod_variableModule_ui("variableModule_1")
-        #       # )
-        #     )
-        #   )
-        # ),
-      ),
+      # Sidebar
+      sidebar = dashboardSidebar(disable = TRUE, minified = FALSE, width = 0),
       body = dashboardBody(
         fluidPage(
           useShinyjs(),
-
           ## View
-
           shinyjs::hidden(
             div(
               id = "viewModule",
@@ -697,11 +562,22 @@ app_ui <- function(request) {
           )
         )
       ),
-      controlbar = dashboardControlbar(disable = TRUE) # ,
-      # footer = dashboardFooter(
-      #  left = NULL,
-      #  right =
-      # )
+      controlbar = dashboardControlbar(disable = TRUE),
+      footer = NULL
+       # actionButton(
+       #   inputId = "Outro",
+       #   label = NULL,
+       #   style = "margin: auto; width: 100%; background: #590696; color: #FFF",
+       #   onclick = "window.open('https://github.com/statgarten', '_blank')",
+       #   icon = icon("github", style = "font-size: 1.3em;")
+       # )
+        #  actionButton(
+        #  inputId = "showGuide",
+        #  label = "Guide",
+        #  style = "margin: auto; width: 100%; background: #C70A80; color: #FFF",
+        #  icon = icon("question", style = "font-size: 1.3em;")
+        # )
+
     )
   )
 }
