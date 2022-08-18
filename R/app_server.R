@@ -16,8 +16,9 @@
 #' @import rmarkdown
 #' @noRd
 app_server <- function(input, output, session) {
-  options(shiny.maxRequestSize=30*1024^2) # file upload size 30mb
+  options(shiny.maxRequestSize = 30 * 1024^2) # file upload size 30mb
   # calling the translator sent as a golem option
+
   i18n_shiny <- golem::get_golem_options(which = "translator")
   i18n_shiny$set_translation_language("en")
 
@@ -31,7 +32,6 @@ app_server <- function(input, output, session) {
 
   # change language
   observeEvent(input$lang, {
-
     req(input$lang)
 
     ## Custom
@@ -44,7 +44,7 @@ app_server <- function(input, output, session) {
     # www/translation/ error
     # inst/app/www/translation FINE with ctrl shift 0
 
-    app_dir <- system.file(package = 'door')
+    app_dir <- system.file(package = "door")
 
     datamods::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
     output$datamods_import_url <- renderUI({
@@ -54,7 +54,6 @@ app_server <- function(input, output, session) {
 
     ## Esquisse
     esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
-
   })
 
   src <- "www/statgarten.png"
@@ -240,7 +239,6 @@ app_server <- function(input, output, session) {
   })
 
   observeEvent(data_rv$data, { # Data loaded
-
     inputData(data_rv$data)
     updateSelectInput(
       inputId = "tableOneStrata",
@@ -248,8 +246,6 @@ app_server <- function(input, output, session) {
       choices = colnames(data_rv$data),
       selected = NULL
     )
-
-
 
     # Box -> Sidebar
     # Module -> Body
@@ -278,6 +274,7 @@ app_server <- function(input, output, session) {
     if (length(exc) == 0) {
       exc <- NULL
     }
+
     obj <- board::brief(
       inputData = inputData(),
       exc = exc
@@ -300,11 +297,9 @@ app_server <- function(input, output, session) {
       isUnique = obj$uniq
     )
 
-
-    if(!is.null(obj$cors)){
+    if (!is.null(obj$cors)) {
       output$corplot <- renderPlot(ggcorr(obj$cors))
     }
-
     output$dataDimension <- renderUI(
       descriptionBlock(
         header = paste0(obj$desc$nrow, " X ", obj$desc$ncol),
@@ -313,7 +308,6 @@ app_server <- function(input, output, session) {
         marginBottom = FALSE
       )
     )
-
     output$missingData <- renderUI(
       descriptionBlock(
         header = paste0(obj$desc$missingCellCount, "(", obj$desc$missingCellRatio, "%)"),
@@ -322,8 +316,6 @@ app_server <- function(input, output, session) {
         marginBottom = FALSE
       )
     )
-
-
     updateSelectInput(
       inputId = "variableSelect",
       label = "variable",
@@ -341,30 +333,22 @@ app_server <- function(input, output, session) {
         striped = TRUE
       )
     )
-
     esquisse_server(
       id = "visModule_e",
       data_rv = data_rv,
       default_aes = reactive(input$aes),
       import_from = NULL
     )
-
   })
 
 
-  ## Main table
-
-  # need to check compatiblity with getDT
-
-  # output$DT <-
-  #   imported$data() |>
-  #   #inputData() |>
-  #   getDT(all = TRUE, columnGroups = columnTypes()) |>
-  #   reactable::renderReactable()
-
+  ## Main table (View)
 
   output$DT <- reactable::renderReactable({
     data <- req(data_rv$data)
+    if (nrow(data) > 1000) {
+      data <- rbind(head(data, 500), tail(data, 500))
+    }
     reactable::reactable(
       data,
       defaultColDef = reactable::colDef(header = function(value) {
@@ -377,6 +361,7 @@ app_server <- function(input, output, session) {
       striped = TRUE
     )
   })
+
 
   # table on import (realtime updates)
   output$table <- reactable::renderReactable({
@@ -395,7 +380,6 @@ app_server <- function(input, output, session) {
     data_rv$data <- updated_data() # reactive
     inputData(data_rv$data) # then use isolated
   })
-
 
   ## filter module
 
@@ -642,8 +626,6 @@ app_server <- function(input, output, session) {
       file.rename(out, file)
     }
   )
-
-
 }
 
 genId <- function(bytes = 12) {
