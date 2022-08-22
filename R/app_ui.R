@@ -47,34 +47,28 @@ app_ui <- function(request) {
       body = dashboardBody(
         fluidPage(
           useShinyjs(),
-          ## View
-          div(
-            id = "moduleSelector",
-            shinyWidgets::radioGroupButtons(
-              inputId = "module",
-              label = NULL,
-              choices = c(
-                "Import",
-                "Vis",
-                "EDA",
-                "Stat",
-                "Report",
-                "ML"
-              ),
-              selected = "Import",
-              individual = TRUE,
-              justified = TRUE,
-              checkIcon = list(
-                yes = tags$i(class = "fa fa-circle", style = "color: #37E2D5"),
-                no = tags$i(class = "fa fa-circle", style = "color: #FBCB0A")
+          ## Module Selector
+          shinyjs::disabled(
+            div(
+              id = "moduleSelector", # used to enable after file upload
+              shinyWidgets::radioGroupButtons(
+                inputId = "module",
+                label = NULL,
+                choices = c("Import","Vis","EDA","Stat","Report","ML"),
+                selected = "Import",
+                individual = TRUE,
+                justified = TRUE,
+                checkIcon = list(
+                  yes = tags$i(class = "fa fa-circle", style = "color: #37E2D5"),
+                  no = tags$i(class = "fa fa-circle", style = "color: #FBCB0A")
+                )
               )
             )
           ),
+          # Table View
           shinyjs::hidden(
             div(
               id = "viewModule",
-              # style = "margin-bottom : 1em; padding-right: 15px; padding-left: 15px;",
-              # h3("Data View"),
               shinydashboardPlus::box(
                 title = i18n_shiny$t("Uploaded Data"),
                 collapsible = TRUE,
@@ -92,228 +86,74 @@ app_ui <- function(request) {
           ### Import panel
           conditionalPanel(
             condition = 'input.module == "Import"',
-            # h3(
-            #  id = "desc",
-            #  "Statgarten supports Data Wrangling / Visualize / EDA and Export results"
-            # ),
             div(
               id = "importModule",
               tabsetPanel(
                 tabPanel( # File (Default)
-                  title = "File",
+                  title = i18n_shiny$t("Files"),
                   uiOutput(
                     outputId = 'datamods_import_file'
                   )
                 ),
                 tabPanel( # URL
-                  title = "URL",
+                  title = i18n_shiny$t("URL"),
                   br(),
                   shinyWidgets::actionBttn( # example data load
                     inputId = "exampleURL",
-                    label = "load example data",
+                    label = i18n_shiny$t("Load Example data"),
                     style = "material-flat",
                     size = "sm",
                     block = TRUE,
-                    color = "royal" # Purple - White
-                    # 'default' # White - Blue
-                    # "primary" # Blue - White
+                    color = "royal"
                   ),
                   uiOutput(
                     outputId = "datamods_import_url"
                   )
                 ),
                 tabPanel(# Google Sheet
-                  title = "Google Sheet",
+                  title = i18n_shiny$t("Google Sheet"),
                   uiOutput(
                     outputId = 'datamods_import_googlesheets'
                   )
                 )
               )
             ),
-
             ## Update
             shinyjs::hidden(
-              div(
-                id = "updateModule",
-                shinydashboardPlus::box(
-                  style = "height:400px;",
-                  title = "Select / Rename / Convert data",
-                  collapsible = TRUE,
-                  collapsed = FALSE,
-                  solidHeader = TRUE,
-                  status = "purple",
-                  width = 6,
-                  ui2(
-                    id = "updateModule_1",
-                    title = FALSE
-                  ),
-                  footer = actionButton(
-                    inputId = "updateModule_1-validate",
-                    label = tagList(
-                      phosphoricons::ph("arrow-circle-right", title = i18n_shiny$t("Apply changes")),
-                      i18n_shiny$t("Apply changes")
-                    ),
-                    width = "100%"
-                  )
-                )
+              actionButton(
+                inputId = 'showUpdateModule',
+                label = i18n_shiny$t("Update Data")
               )
             ),
-
             ## Filter
-
             shinyjs::hidden(
-              div(
-                id = "filterModule",
-                shinydashboardPlus::box(
-                  style = "height:400px;overflow-y: scroll;",
-                  title = "Filter data",
-                  collapsible = TRUE,
-                  collapsed = FALSE,
-                  solidHeader = TRUE,
-                  status = "purple",
-                  width = 6,
-                  datamods::filter_data_ui(id = "filterModule_2", show_nrow = FALSE),
-                  footer = actionButton(
-                    inputId = "applyFilter",
-                    label = tagList(
-                      phosphoricons::ph("arrow-circle-right", title = i18n_shiny$t("Apply changes")),
-                      i18n_shiny$t("Apply changes")
-                    ),
-                    width = "100%"
-                  )
-                )
+              actionButton(
+                inputId = 'showFilterModule',
+                label = i18n_shiny$t("Filter Data")
               )
             ),
-
             ## Transform
-
             shinyjs::hidden(
-              div(
-                id = "transformModule",
-                shinydashboardPlus::box(
-                  style = "height:400px;overflow-y: scroll;",
-                  title = "Transform data",
-                  collapsible = TRUE,
-                  collapsed = FALSE,
-                  solidHeader = TRUE,
-                  status = "purple",
-                  width = 6,
-                  tabsetPanel(
-                    id = "transformPanel",
-                    tabPanel(
-                      title = "Round",
-                      icon = icon("scissors"),
-                      mod_roundModule_ui("roundModule_1")
-                    ),
-                    tabPanel( # Log2 / Log / Log10
-                      title = "Log",
-                      icon = icon("ruler"),
-                      mod_logModule_ui("logModule_1")
-                    ),
-                    tabPanel(
-                      title = "Replace",
-                      icon = icon("font"),
-                      mod_replaceModule_ui("replaceModule_1")
-                    ),
-                    tabPanel(
-                      title = "Etc",
-                      icon = icon("minus"),
-                      mod_etcModlue_ui("etcModule_1")
-                    ),
-                    tabPanel(
-                      title = "Binarize",
-                      icon = icon("slash"),
-                      mod_binarizeModule_ui("binModule_1")
-                    )
-                  ),
-                  footer = actionButton(
-                    inputId = ("applyRound"),
-                    label = tagList(
-                      phosphoricons::ph("arrow-circle-right", title = i18n_shiny$t("Apply changes")),
-                      i18n_shiny$t("Apply changes")
-                    ),
-                    width = "100%"
-                  )
-                )
+              actionButton(
+                inputId = 'showTransformModule',
+                label = i18n_shiny$t("Transform Data")
               )
             ),
-
-            ## Split
-
-            shinyjs::hidden(
-              div(
-                id = "splitModule",
-                shinydashboardPlus::box(
-                  style = "height:400px; overflow-y: scroll;",
-                  title = "Split data",
-                  collapsible = TRUE,
-                  collapsed = FALSE,
-                  solidHeader = TRUE,
-                  status = "purple",
-                  width = 6,
-                  mod_splitModule_ui(id = "splitModule_1"),
-                  footer = actionButton(
-                    inputId = ("applySplit"),
-                    label = tagList(
-                      phosphoricons::ph("arrow-circle-right", title = i18n_shiny$t("Apply changes")),
-                      i18n_shiny$t("Apply changes")
-                    ),
-                    width = "100%"
-                  )
-                )
-              )
-            ),
-
             ## Reorder
-
             shinyjs::hidden(
-              div(
-                id = "reorderModule",
-                shinydashboardPlus::box(
-                  style = "height:400px; overflow-y: scroll;",
-                  title = "Reorder Column",
-                  collapsible = TRUE,
-                  collapsed = FALSE,
-                  solidHeader = TRUE,
-                  status = "purple",
-                  width = 6,
-                  mod_reorderModule_ui(id = "reorderModule_1"),
-                  footer = actionButton(
-                    inputId = ("applyReorder"),
-                    label = tagList(
-                      phosphoricons::ph("arrow-circle-right", title = i18n_shiny$t("Apply changes")),
-                      i18n_shiny$t("Apply changes")
-                    ),
-                    width = "100%"
-                  )
-                )
+              actionButton(
+                inputId = 'showReorderModule',
+                label = i18n_shiny$t("Reorder Data")
               )
             ),
+            ## Export
             shinyjs::hidden(
-              div(
-                id = "exportModule",
-                shinydashboardPlus::box(
-                  style = "height:400px; overflow-y: scroll;",
-                  title = "Export Data",
-                  collapsible = TRUE,
-                  collapsed = FALSE,
-                  solidHeader = TRUE,
-                  status = "purple",
-                  width = 6,
-                  mod_exportModule_ui(id = "exportModule_1") # ,
-                  # footer = actionButton(
-                  #   inputId = ("applyExport"),
-                  #   label = tagList(
-                  #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                  #     i18n("Export Data")
-                  #   ),
-                  #   width = "100%"
-                  # )
-                )
+              actionButton(
+                inputId = 'showExportModule',
+                label = i18n_shiny$t("Export Data")
               )
             )
           ),
-
 
           ### Vis panel
           conditionalPanel(
@@ -588,26 +428,6 @@ golem_add_external_resources <- function() {
   )
 }
 
-#' @import datamods
-ui2 <- function(id, title = TRUE) {
-  ns <- NS(id)
-  if (isTRUE(title)) {
-    title <- tags$h4(i18n_shiny$t("Update & select variables"),
-      class = "datamods-title"
-    )
-  }
-  tags$div(
-    class = "datamods-update",
-    html_dependency_pretty(),
-    tags$div(
-      style = "min-height: 25px;",
-      reactable::reactableOutput(
-        outputId = ns("table")
-      )
-    ),
-    tags$br()
-  )
-}
 
 
 ## language

@@ -26,8 +26,116 @@ app_server <- function(input, output, session) {
     i18n_shiny
   })
 
-  output$datamods_import_url <- renderUI({
-    datamods::import_url_ui(id = "importModule_2")
+  observeEvent(input$showUpdateModule, {
+    showModal(modalDialog(
+      h3(i18n_shiny$t("Update data")),
+      ui2(
+        id = "updateModule_1" # removed unneccessary part
+      ),
+      actionButton(
+        inputId = "updateModule_1-validate",
+        label = tagList(
+          phosphoricons::ph("arrow-circle-right"),
+          i18n_shiny$t("Apply changes")
+        ),
+        width = "100%"
+      ),
+      easyClose = TRUE,
+      footer = NULL
+    ))
+  })
+
+  observeEvent(input$showExportModule, {
+    showModal(modalDialog(
+        h3(i18n_shiny$t("Export data")),
+        mod_exportModule_ui(id = 'exportModule_1'),
+        easyClose = TRUE,
+        footer = NULL
+    ))
+  })
+
+  observeEvent(input$showFilterModule, {
+    showModal(modalDialog(
+      h3(i18n_shiny$t("Filter data")),
+      datamods::filter_data_ui(id = "filterModule_2", show_nrow = FALSE),
+      actionButton(
+        inputId = "applyFilter",
+        label = tagList(
+          phosphoricons::ph("arrow-circle-right"),
+          i18n_shiny$t("Apply changes")
+        ),
+        width = "100%"
+      ),
+      easyClose = TRUE,
+      footer = NULL
+    ))
+  })
+
+  observeEvent(input$showTransformModule, {
+    showModal(modalDialog(
+      h3(i18n_shiny$t("Transform data")),
+      tabsetPanel(
+        id = "transformPanel",
+        tabPanel(
+          title = i18n_shiny$t("Round"),
+          icon = icon("scissors"),
+          mod_roundModule_ui("roundModule_1")
+        ),
+        tabPanel( # Log2 / Log / Log10
+          title = i18n_shiny$t("Log"),
+          icon = icon("ruler"),
+          mod_logModule_ui("logModule_1")
+        ),
+        tabPanel(
+          title = i18n_shiny$t("Replace"),
+          icon = icon("font"),
+          mod_replaceModule_ui("replaceModule_1")
+        ),
+        tabPanel(
+          title = i18n_shiny$t("ETC"),
+          icon = icon("minus"),
+          mod_etcModlue_ui("etcModule_1")
+        ),
+        tabPanel(
+          title = i18n_shiny$t("Binarize"),
+          icon = icon("slash"),
+          mod_binarizeModule_ui("binModule_1")
+        ),
+        tabPanel(
+          title = i18n_shiny$t("Split"),
+          icon = icon("arrows-left-right"),
+          mod_splitModule_ui(id = "splitModule_1")
+        )
+      ),
+      actionButton(
+        inputId = "applyTransform",
+        label = tagList(
+          phosphoricons::ph("arrow-circle-right"),
+          i18n_shiny$t("Apply changes")
+        ),
+        width = "100%"
+      ),
+      easyClose = TRUE,
+      footer = NULL
+    ))
+  })
+
+
+  observeEvent(input$showReorderModule, {
+    showModal(modalDialog(
+      h3(i18n_shiny$t("Reorder data")),
+      mod_reorderModule_ui(id = "reorderModule_1"),
+      actionButton(
+        inputId = "applyReorder",
+        label = tagList(
+          phosphoricons::ph("arrow-circle-right"),
+          i18n_shiny$t("Apply changes")
+        ),
+        width = "100%"
+      ),
+      easyClose = TRUE,
+      footer = NULL
+    ))
   })
 
   # change language
@@ -47,7 +155,11 @@ app_server <- function(input, output, session) {
     app_dir <- system.file(package = "door")
 
 
+    # Datamods
     datamods::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
+
+    ## Esquisse
+    esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
 
     # re-render file module
     output$datamods_import_file <- renderUI({
@@ -70,15 +182,8 @@ app_server <- function(input, output, session) {
       datamods::import_googlesheets_ui(id = "importModule_3")
     })
 
-
-    ## Esquisse
-    esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
   })
 
-  src <- "www/statgarten.png"
-  output$Logo <- renderText({
-    c('<img width = "100" src="', src, '">')
-  })
   require(tibble)
 
   # import
@@ -158,10 +263,8 @@ app_server <- function(input, output, session) {
     hide(id = "importModule")
     show(id = "updateModule")
     show(id = "filterModule")
-    show(id = "transformModule")
     show(id = "splitModule")
     show(id = "reorderModule")
-    show(id = "exportModule")
 
     ## Vis
     show(id = "visModule")
@@ -188,10 +291,8 @@ app_server <- function(input, output, session) {
     hide(id = "importModule")
     show(id = "updateModule")
     show(id = "filterModule")
-    show(id = "transformModule")
     show(id = "splitModule")
     show(id = "reorderModule")
-    show(id = "exportModule")
 
     ## Vis
     show(id = "visModule")
@@ -218,10 +319,8 @@ app_server <- function(input, output, session) {
     hide(id = "importModule")
     show(id = "updateModule")
     show(id = "filterModule")
-    show(id = "transformModule")
     show(id = "splitModule")
     show(id = "reorderModule")
-    show(id = "exportModule")
 
     ## Vis
     show(id = "visModule")
@@ -229,18 +328,6 @@ app_server <- function(input, output, session) {
     ## EDA
     show(id = "edaModule")
   })
-
-  observeEvent(input$hidefilterModule, {
-    hide(id = "filterModule")
-  })
-
-  observeEvent(input$hideupdateModule, {
-    hide(id = "updateModule")
-  })
-
-  # observeEvent(input$`visModule_e-settings`, {
-  #   showModal(modal_settings(aesthetics = input$aesthetics))
-  # })
 
   observeEvent(input$generateTable, {
     req(input$generateTable)
@@ -259,6 +346,7 @@ app_server <- function(input, output, session) {
 
   observeEvent(data_rv$data, { # Data loaded
     inputData(data_rv$data)
+    shinyjs::enable(id = 'moduleSelector')
     updateSelectInput(
       inputId = "tableOneStrata",
       label = "Group by",
@@ -278,6 +366,12 @@ app_server <- function(input, output, session) {
     show(id = "StatModule")
     show(id = "MLModule")
     show(id = "ReportModule")
+    show(id = "showUpdateModule")
+    show(id = "showFilterModule")
+    show(id = 'showReorderModule')
+    show(id = 'showTransformModule')
+    show(id = "showExportModule")
+
 
     # define column types
     columnTypes <- defineColumnTypes(data_rv$data)
@@ -436,6 +530,7 @@ app_server <- function(input, output, session) {
   )
 
   ## binarize Module
+
   res_binary <- mod_binarizeModule_server(
     id = "binModule_1",
     inputData = reactive(data_rv$data)
@@ -448,41 +543,24 @@ app_server <- function(input, output, session) {
     inputData = reactive(data_rv$data)
   )
 
-  ## transform apply
-
-  observeEvent(input$applyRound, {
-    if (input$transformPanel == "Round") {
-      data_rv$data <- res_round() # reactive
-      inputData(data_rv$data) # then use isolated
-    }
-
-    if (input$transformPanel == "Log") {
-      data_rv$data <- res_log() # reactive
-      inputData(data_rv$data) # then use isolated
-    }
-
-    if (input$transformPanel == "Replace") {
-      data_rv$data <- res_replace() # reactive
-      inputData(data_rv$data) # then use isolated
-    }
-
-    if (input$transformPanel == "Binarize") {
-      data_rv$data <- res_binary() # reactive
-      inputData(data_rv$data) # then use isolated
-    }
-
-    if (input$transformPanel == "Etc") {
-      data_rv$data <- res_trans() # reactive
-      inputData(data_rv$data) # then use isolated
-    }
-  })
-
   ## Split Module
 
   res_split <- mod_splitModule_server(
     id = "splitModule_1",
     inputData = reactive(data_rv$data)
   )
+
+  ## transform apply
+
+  observeEvent(input$applyTransform, {
+    if (input$transformPanel == "Round") { data_rv$data <- res_round() }
+    if (input$transformPanel == "Log") { data_rv$data <- res_log() }
+    if (input$transformPanel == "Replace") { data_rv$data <- res_replace() }
+    if (input$transformPanel == "Binarize") { data_rv$data <- res_binary() }
+    if (input$transformPanel == "ETC") { data_rv$data <- res_trans() }
+    inputData(data_rv$data) # then use isolated
+  })
+
 
   observeEvent(input$applySplit, {
     data_rv$data <- res_split() # reactive
@@ -738,5 +816,21 @@ modal_settings <- function(aesthetics = NULL, session = shiny::getDefaultReactiv
     ),
     easyClose = TRUE,
     footer = NULL
+  )
+}
+
+#' @import datamods
+ui2 <- function(id) {
+  ns <- NS(id)
+  tags$div(
+    class = "datamods-update",
+    html_dependency_pretty(),
+    tags$div(
+      style = "min-height: 25px;",
+      reactable::reactableOutput(
+        outputId = ns("table")
+      )
+    ),
+    tags$br()
   )
 }
