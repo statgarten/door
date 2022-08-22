@@ -161,40 +161,8 @@ app_ui <- function(request) {
             shinyjs::hidden(
               div(
                 id = "visModule",
-                shinydashboardPlus::box(
-                  title = "Drag column to visualize",
-                  collapsible = TRUE,
-                  collapsed = FALSE,
-                  solidHeader = TRUE,
-                  status = "purple",
-                  width = 12,
-                  conditionalPanel(
-                    condition = 'input.module == "Vis"',
-                    shinyjs::hidden(
-                      div(
-                        id = "VisBox",
-                        style = "text-align:center;",
-                        shinyWidgets::checkboxGroupButtons(
-                          inputId = "aes",
-                          label = "Graph options",
-                          choices = c(
-                            "fill", "color", "size", "shape", "facet", "facet_row", "facet_col"
-                          ),
-                          selected = c("fill", "color", "size", "facet"),
-                          justified = TRUE,
-                          checkIcon = list(
-                            yes = icon("ok", lib = "glyphicon")
-                          )
-                        )
-                      )
-                    )
-                  ),
-                  hr(),
-                  esquisse_ui(
-                    id = "visModule_e",
-                    header = FALSE,
-                    controls = c("labs", "parameters", "appearance", "code")
-                  )
+                uiOutput(
+                  outputId = 'esquisse_ui'
                 )
               )
             )
@@ -259,8 +227,6 @@ app_ui <- function(request) {
               )
             )
           ),
-
-
           ## Stat Panel
           conditionalPanel(
             condition = 'input.module == "Stat"',

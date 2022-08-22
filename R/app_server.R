@@ -161,11 +161,29 @@ app_server <- function(input, output, session) {
     ## Esquisse
     esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
 
+    output$esquisse_ui <- renderUI({
+      tagList(
+        shinyWidgets::checkboxGroupButtons(
+          inputId = "aes",
+          label = i18n_shiny$t("Aesthetic options"),
+          choices = c("fill", "color", "size", "shape", "facet", "facet_row", "facet_col"),
+          selected = c("fill", "color", "size", "facet"),
+          justified = TRUE,
+          checkIcon = list(yes = icon("ok", lib = "glyphicon"))
+        ),
+        esquisse_ui(
+          id = "visModule_e",
+          header = FALSE,
+          controls = c("labs", "parameters", "appearance", "code")
+        )
+      )
+    })
+
     # re-render file module
     output$datamods_import_file <- renderUI({
       datamods::import_file_ui(
         id = "importModule_1",
-        preview_data = TRUE,
+        preview_data = FALSE,
         file_extensions = c(
         ".csv", ".dta", ".fst", ".rda", ".rds",
         ".rdata", ".sas7bcat", ".sas7bdat",
@@ -354,15 +372,7 @@ app_server <- function(input, output, session) {
       selected = NULL
     )
 
-    # Box -> Sidebar
     # Module -> Body
-    show(id = "ImportBox")
-    show(id = "VisBox")
-    show(id = "EDABox")
-    # show(id = "StatBox")
-    # show(id = "MLBox")
-    # show(id = "ReportBox")
-
     show(id = "StatModule")
     show(id = "MLModule")
     show(id = "ReportModule")
@@ -824,6 +834,7 @@ ui2 <- function(id) {
   ns <- NS(id)
   tags$div(
     class = "datamods-update",
+    style = 'overflow-y: auto; overflow-x: hidden;',
     html_dependency_pretty(),
     tags$div(
       style = "min-height: 25px;",
