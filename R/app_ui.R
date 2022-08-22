@@ -27,19 +27,18 @@ app_ui <- function(request) {
       header = dashboardHeader(
         title = i18n_shiny$t("Statgarten"),
         titleWidth = NULL,
-
         controlbarIcon = icon("gear", verify_fa = FALSE), # to hide error
         leftUi = tagList(
           #### LANGUAGES
-            div(
-              radioGroupButtons(
-                inputId = "lang",
-                label = NULL,
-                choiceNames = lapply(seq_along(c("en", "kr")), function(i) tagList(tags$img(src = flags[i], width = 30, height = 20))),
-                choiceValues = i18n_shiny$get_languages(),
-                individual = TRUE
-              )
+          div(
+            radioGroupButtons(
+              inputId = "lang",
+              label = NULL,
+              choiceNames = lapply(seq_along(c("en", "kr")), function(i) tagList(tags$img(src = flags[i], width = 30, height = 20))),
+              choiceValues = i18n_shiny$get_languages(),
+              individual = TRUE
             )
+          )
         )
       ),
       # Sidebar
@@ -54,7 +53,7 @@ app_ui <- function(request) {
               shinyWidgets::radioGroupButtons(
                 inputId = "module",
                 label = NULL,
-                choices = c("Import","Vis","EDA","Stat","Report","ML"),
+                choices = c("Import", "Vis", "EDA", "Stat", "Report", "ML"),
                 selected = "Import",
                 individual = TRUE,
                 justified = TRUE,
@@ -92,7 +91,7 @@ app_ui <- function(request) {
                 tabPanel( # File (Default)
                   title = i18n_shiny$t("Files"),
                   uiOutput(
-                    outputId = 'datamods_import_file'
+                    outputId = "datamods_import_file"
                   )
                 ),
                 tabPanel( # URL
@@ -110,10 +109,10 @@ app_ui <- function(request) {
                     outputId = "datamods_import_url"
                   )
                 ),
-                tabPanel(# Google Sheet
+                tabPanel( # Google Sheet
                   title = i18n_shiny$t("Google Sheet"),
                   uiOutput(
-                    outputId = 'datamods_import_googlesheets'
+                    outputId = "datamods_import_googlesheets"
                   )
                 )
               )
@@ -121,35 +120,35 @@ app_ui <- function(request) {
             ## Update
             shinyjs::hidden(
               actionButton(
-                inputId = 'showUpdateModule',
+                inputId = "showUpdateModule",
                 label = i18n_shiny$t("Update Data")
               )
             ),
             ## Filter
             shinyjs::hidden(
               actionButton(
-                inputId = 'showFilterModule',
+                inputId = "showFilterModule",
                 label = i18n_shiny$t("Filter Data")
               )
             ),
             ## Transform
             shinyjs::hidden(
               actionButton(
-                inputId = 'showTransformModule',
+                inputId = "showTransformModule",
                 label = i18n_shiny$t("Transform Data")
               )
             ),
             ## Reorder
             shinyjs::hidden(
               actionButton(
-                inputId = 'showReorderModule',
+                inputId = "showReorderModule",
                 label = i18n_shiny$t("Reorder Data")
               )
             ),
             ## Export
             shinyjs::hidden(
               actionButton(
-                inputId = 'showExportModule',
+                inputId = "showExportModule",
                 label = i18n_shiny$t("Export Data")
               )
             )
@@ -162,7 +161,7 @@ app_ui <- function(request) {
               div(
                 id = "visModule",
                 uiOutput(
-                  outputId = 'esquisse_ui'
+                  outputId = "esquisse_ui"
                 )
               )
             )
@@ -351,20 +350,19 @@ app_ui <- function(request) {
       ),
       controlbar = dashboardControlbar(disable = TRUE),
       footer = NULL
-       # actionButton(
-       #   inputId = "Outro",
-       #   label = NULL,
-       #   style = "margin: auto; width: 100%; background: #590696; color: #FFF",
-       #   onclick = "window.open('https://github.com/statgarten', '_blank')",
-       #   icon = icon("github", style = "font-size: 1.3em;")
-       # )
-        #  actionButton(
-        #  inputId = "showGuide",
-        #  label = "Guide",
-        #  style = "margin: auto; width: 100%; background: #C70A80; color: #FFF",
-        #  icon = icon("question", style = "font-size: 1.3em;")
-        # )
-
+      # actionButton(
+      #   inputId = "Outro",
+      #   label = NULL,
+      #   style = "margin: auto; width: 100%; background: #590696; color: #FFF",
+      #   onclick = "window.open('https://github.com/statgarten', '_blank')",
+      #   icon = icon("github", style = "font-size: 1.3em;")
+      # )
+      #  actionButton(
+      #  inputId = "showGuide",
+      #  label = "Guide",
+      #  style = "margin: auto; width: 100%; background: #C70A80; color: #FFF",
+      #  icon = icon("question", style = "font-size: 1.3em;")
+      # )
     )
   )
 }

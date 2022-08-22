@@ -47,10 +47,10 @@ app_server <- function(input, output, session) {
 
   observeEvent(input$showExportModule, {
     showModal(modalDialog(
-        h3(i18n_shiny$t("Export data")),
-        mod_exportModule_ui(id = 'exportModule_1'),
-        easyClose = TRUE,
-        footer = NULL
+      h3(i18n_shiny$t("Export data")),
+      mod_exportModule_ui(id = "exportModule_1"),
+      easyClose = TRUE,
+      footer = NULL
     ))
   })
 
@@ -185,10 +185,11 @@ app_server <- function(input, output, session) {
         id = "importModule_1",
         preview_data = FALSE,
         file_extensions = c(
-        ".csv", ".dta", ".fst", ".rda", ".rds",
-        ".rdata", ".sas7bcat", ".sas7bdat",
-        ".sav", ".tsv", ".txt", ".xls", ".xlsx"
-      ))
+          ".csv", ".dta", ".fst", ".rda", ".rds",
+          ".rdata", ".sas7bcat", ".sas7bdat",
+          ".sav", ".tsv", ".txt", ".xls", ".xlsx"
+        )
+      )
     })
 
     # re-render url module
@@ -199,7 +200,6 @@ app_server <- function(input, output, session) {
     output$datamods_import_googlesheets <- renderUI({
       datamods::import_googlesheets_ui(id = "importModule_3")
     })
-
   })
 
   require(tibble)
@@ -311,7 +311,7 @@ app_server <- function(input, output, session) {
 
   observeEvent(data_rv$data, { # Data loaded
     inputData(data_rv$data)
-    shinyjs::enable(id = 'moduleSelector')
+    shinyjs::enable(id = "moduleSelector")
     updateSelectInput(
       inputId = "tableOneStrata",
       label = "Group by",
@@ -333,8 +333,8 @@ app_server <- function(input, output, session) {
 
     show(id = "showUpdateModule")
     show(id = "showFilterModule")
-    show(id = 'showReorderModule')
-    show(id = 'showTransformModule')
+    show(id = "showReorderModule")
+    show(id = "showTransformModule")
     show(id = "showExportModule")
 
 
@@ -518,11 +518,21 @@ app_server <- function(input, output, session) {
   ## transform apply
 
   observeEvent(input$applyTransform, {
-    if (input$transformPanel == "Round") { data_rv$data <- res_round() }
-    if (input$transformPanel == "Log") { data_rv$data <- res_log() }
-    if (input$transformPanel == "Replace") { data_rv$data <- res_replace() }
-    if (input$transformPanel == "Binarize") { data_rv$data <- res_binary() }
-    if (input$transformPanel == "ETC") { data_rv$data <- res_trans() }
+    if (input$transformPanel == "Round") {
+      data_rv$data <- res_round()
+    }
+    if (input$transformPanel == "Log") {
+      data_rv$data <- res_log()
+    }
+    if (input$transformPanel == "Replace") {
+      data_rv$data <- res_replace()
+    }
+    if (input$transformPanel == "Binarize") {
+      data_rv$data <- res_binary()
+    }
+    if (input$transformPanel == "ETC") {
+      data_rv$data <- res_trans()
+    }
     inputData(data_rv$data) # then use isolated
   })
 
@@ -789,7 +799,7 @@ ui2 <- function(id) {
   ns <- NS(id)
   tags$div(
     class = "datamods-update",
-    style = 'overflow-y: auto; overflow-x: hidden;',
+    style = "overflow-y: auto; overflow-x: hidden;",
     html_dependency_pretty(),
     tags$div(
       style = "min-height: 25px;",

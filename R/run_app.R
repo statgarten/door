@@ -13,7 +13,6 @@ run_app <- function(onStart = NULL,
                     enableBookmarking = NULL,
                     uiPattern = "/",
                     ...) {
-
   with_golem_options(
     app = shinyApp(
       ui = app_ui,
@@ -25,7 +24,7 @@ run_app <- function(onStart = NULL,
     ),
     golem_opts = list(
       translator = shiny.i18n::Translator$new(
-        translation_json_path = paste0(system.file(package = 'door') , "/app/www/translations/translation.json")
+        translation_json_path = paste0(system.file(package = "door"), "/app/www/translations/translation.json")
       )
     )
   )
