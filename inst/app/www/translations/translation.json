@@ -17,13 +17,17 @@
     {"en": "Binarize", "ko": "이진변환"},
     {"en": "Split", "ko": "분리"},
     {"en": "Reorder Column", "ko": "열 순서 변경"},
+    {"en": "Transform Data", "ko": "데이터 변환"},
     {"en": "Transform data", "ko": "데이터 변환"},
     {"en": "Filter data", "ko": "데이터 필터"},
     {"en": "Filter Data", "ko": "데이터 필터"},
     {"en": "Export data", "ko": "데이터 저장"},
     {"en": "Export Data", "ko": "데이터 저장"},
     {"en": "Update Data", "ko": "데이터 업데이트"},
+    {"en": "Update data", "ko": "데이터 업데이트"},
     {"en": "Reorder Data", "ko": "열 순서 변경"},
-    {"en": "Reorder data", "ko": "열 순서 변경"}
+    {"en": "Reorder data", "ko": "열 순서 변경"},
+    {"en": "Imported data", "ko": "준비 된 데이터"},
+    {"en": "Aesthetic options", "ko": "그래프 요소 설정"}    
   ]
 }
