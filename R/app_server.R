@@ -46,9 +46,28 @@ app_server <- function(input, output, session) {
 
     app_dir <- system.file(package = "door")
 
+
     datamods::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
+
+    # re-render file module
+    output$datamods_import_file <- renderUI({
+      datamods::import_file_ui(
+        id = "importModule_1",
+        preview_data = TRUE,
+        file_extensions = c(
+        ".csv", ".dta", ".fst", ".rda", ".rds",
+        ".rdata", ".sas7bcat", ".sas7bdat",
+        ".sav", ".tsv", ".txt", ".xls", ".xlsx"
+      ))
+    })
+
+    # re-render url module
     output$datamods_import_url <- renderUI({
       datamods::import_url_ui(id = "importModule_2")
+    })
+    # re-render googlesheet module
+    output$datamods_import_googlesheets <- renderUI({
+      datamods::import_googlesheets_ui(id = "importModule_3")
     })
 
 

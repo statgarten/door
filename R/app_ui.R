@@ -27,13 +27,27 @@ app_ui <- function(request) {
       header = dashboardHeader(
         title = i18n_shiny$t("Statgarten"),
         titleWidth = NULL,
-        # title = tagList(
-        #   span(class = "logo-lg", "statgarten"),
-        #   img(src = "www/statgarten.png", style = "width :150%")
-        # ),
-        # titleWidth = 300,
+
         controlbarIcon = icon("gear", verify_fa = FALSE), # to hide error
         leftUi = tagList(
+          #### LANGUAGES
+            div(
+              radioGroupButtons(
+                inputId = "lang",
+                label = NULL,
+                choiceNames = lapply(seq_along(c("en", "kr")), function(i) tagList(tags$img(src = flags[i], width = 30, height = 20))),
+                choiceValues = i18n_shiny$get_languages(),
+                individual = TRUE
+              )
+            )
+        )
+      ),
+      # Sidebar
+      sidebar = dashboardSidebar(disable = TRUE, minified = FALSE, width = 0),
+      body = dashboardBody(
+        fluidPage(
+          useShinyjs(),
+          ## View
           div(
             id = "moduleSelector",
             shinyWidgets::radioGroupButtons(
@@ -56,26 +70,6 @@ app_ui <- function(request) {
               )
             )
           ),
-          #### LANGUAGES
-          shinyjs::hidden(
-            div(
-              radioGroupButtons(
-                inputId = "lang",
-                label = NULL,
-                choiceNames = lapply(seq_along(countries), function(i) tagList(tags$img(src = flags[i], width = 30, height = 20))),
-                choiceValues = i18n_shiny$get_languages(),
-                individual = TRUE
-              )
-            )
-          )
-        )
-      ),
-      # Sidebar
-      sidebar = dashboardSidebar(disable = TRUE, minified = FALSE, width = 0),
-      body = dashboardBody(
-        fluidPage(
-          useShinyjs(),
-          ## View
           shinyjs::hidden(
             div(
               id = "viewModule",
@@ -106,25 +100,15 @@ app_ui <- function(request) {
               id = "importModule",
               tabsetPanel(
                 tabPanel( # File (Default)
-                  "File",
-                  datamods::import_file_ui(
-                    id = "importModule_1",
-                    preview_data = TRUE,
-                    file_extensions = c(
-                      ".csv", ".dta", ".fst", ".rda", ".rds",
-                      ".rdata", ".sas7bcat", ".sas7bdat",
-                      ".sav", ".tsv", ".txt", ".xls", ".xlsx"
-                    )
+                  title = "File",
+                  uiOutput(
+                    outputId = 'datamods_import_file'
                   )
                 ),
                 tabPanel( # URL
-                  "URL",
-                  # actionButton(
-                  #   inputId = 'exampleURL',
-                  #   label = 'load example data'
-                  # ),
+                  title = "URL",
                   br(),
-                  shinyWidgets::actionBttn(
+                  shinyWidgets::actionBttn( # example data load
                     inputId = "exampleURL",
                     label = "load example data",
                     style = "material-flat",
@@ -137,14 +121,11 @@ app_ui <- function(request) {
                   uiOutput(
                     outputId = "datamods_import_url"
                   )
-                  # datamods::import_url_ui(
-                  #   id = "importModule_2"
-                  # )
                 ),
-                tabPanel( # Google Sheet
-                  "Google Sheet",
-                  datamods::import_googlesheets_ui(
-                    id = "importModule_3"
+                tabPanel(# Google Sheet
+                  title = "Google Sheet",
+                  uiOutput(
+                    outputId = 'datamods_import_googlesheets'
                   )
                 )
               )
@@ -629,8 +610,7 @@ ui2 <- function(id, title = TRUE) {
 }
 
 
-##
-countries <- c("en", "kr")
+## language
 
 flags <- c(
   "https://cdn.rawgit.com/lipis/flag-icon-css/master/flags/4x3/us.svg",
