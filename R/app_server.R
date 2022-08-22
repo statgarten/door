@@ -272,25 +272,7 @@ app_server <- function(input, output, session) {
     data_rv$data <- from_file$data()
     data_rv$name <- from_file$name()
     inputData(data_rv$data)
-
-    hide(id = "desc")
-
-    show(id = "viewModule")
-
-    ## Import
-    hide(id = "importModule")
-    show(id = "updateModule")
-    show(id = "filterModule")
-    show(id = "splitModule")
-    show(id = "reorderModule")
-
-    ## Vis
-    show(id = "visModule")
-
-    ## EDA
-    show(id = "edaModule")
   })
-
 
   from_url <- import_url_server(
     id = "importModule_2"
@@ -300,25 +282,7 @@ app_server <- function(input, output, session) {
     data_rv$data <- from_url$data()
     data_rv$name <- from_url$name()
     inputData(data_rv$data)
-
-    hide(id = "desc")
-
-    show(id = "viewModule")
-
-    ## Import
-    hide(id = "importModule")
-    show(id = "updateModule")
-    show(id = "filterModule")
-    show(id = "splitModule")
-    show(id = "reorderModule")
-
-    ## Vis
-    show(id = "visModule")
-
-    ## EDA
-    show(id = "edaModule")
   })
-
 
   from_gs <- import_googlesheets_server(
     id = "importModule_3"
@@ -328,23 +292,6 @@ app_server <- function(input, output, session) {
     data_rv$data <- from_gs$data()
     data_rv$name <- from_gs$name()
     inputData(data_rv$data)
-
-    hide(id = "desc")
-
-    show(id = "viewModule")
-
-    ## Import
-    hide(id = "importModule")
-    show(id = "updateModule")
-    show(id = "filterModule")
-    show(id = "splitModule")
-    show(id = "reorderModule")
-
-    ## Vis
-    show(id = "visModule")
-
-    ## EDA
-    show(id = "edaModule")
   })
 
   observeEvent(input$generateTable, {
@@ -372,10 +319,18 @@ app_server <- function(input, output, session) {
       selected = NULL
     )
 
+    show(id = "viewModule")
+    hide(id = "importModule")
+
+    show(id = "visModule")
+
+    show(id = "edaModule")
+
     # Module -> Body
     show(id = "StatModule")
     show(id = "MLModule")
     show(id = "ReportModule")
+
     show(id = "showUpdateModule")
     show(id = "showFilterModule")
     show(id = 'showReorderModule')
