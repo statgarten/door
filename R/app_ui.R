@@ -30,26 +30,24 @@ app_ui <- function(request) {
         controlbarIcon = icon("gear", verify_fa = FALSE), # to hide error
         leftUi = tagList(
           #### LANGUAGES
-          div(
-            radioGroupButtons(
-              inputId = "lang",
-              label = NULL,
-              choiceNames = lapply(seq_along(c("en", "kr")), function(i) tagList(tags$img(src = flags[i], width = 30, height = 20))),
-              choiceValues = i18n_shiny$get_languages(),
-              individual = TRUE
-            )
+          radioGroupButtons(
+            inputId = "lang",
+            label = NULL,
+            choiceNames = lapply(seq_along(c("en", "kr")), function(i) tagList(tags$img(src = flags[i], width = 30, height = 20))),
+            choiceValues = i18n_shiny$get_languages(),
+            individual = TRUE
           )
         )
       ),
       # Sidebar
       sidebar = dashboardSidebar(disable = TRUE, minified = FALSE, width = 0),
       body = dashboardBody(
+        useShinyjs(),
         fluidPage(
-          useShinyjs(),
           ## Module Selector
-          shinyjs::disabled(
+          shinyjs::disabled( # used to enable after file upload
             div(
-              id = "moduleSelector", # used to enable after file upload
+              id = "moduleSelector",
               shinyWidgets::radioGroupButtons(
                 inputId = "module",
                 label = NULL,
@@ -64,7 +62,7 @@ app_ui <- function(request) {
               )
             )
           ),
-          # Table View
+          # Data View
           shinyjs::hidden(
             div(
               id = "viewModule",
@@ -72,9 +70,7 @@ app_ui <- function(request) {
                 title = i18n_shiny$t("Uploaded Data"),
                 collapsible = TRUE,
                 collapsed = FALSE,
-                options = list(
-                  background = "#FFFDEE"
-                ),
+                options = list(background = "#FFFDEE"),
                 solidHeader = TRUE,
                 status = "purple",
                 width = 12,
@@ -90,9 +86,9 @@ app_ui <- function(request) {
               tabsetPanel(
                 tabPanel( # File (Default)
                   title = i18n_shiny$t("Files"),
-                  uiOutput(
-                    outputId = "datamods_import_file"
-                  )
+                  uiOutput(outputId = "datamods_import_file"),
+                  h4(HTML(paste0("Example Dataset from ", tags$a('datatoys', href = 'https://statgarten.github.io/datatoys/')))),
+                  uiOutput(outputId = 'exampleDataset')
                 ),
                 tabPanel( # URL
                   title = i18n_shiny$t("URL"),
@@ -105,51 +101,22 @@ app_ui <- function(request) {
                     block = TRUE,
                     color = "royal"
                   ),
-                  uiOutput(
-                    outputId = "datamods_import_url"
-                  )
+                  uiOutput(outputId = "datamods_import_url")
                 ),
                 tabPanel( # Google Sheet
                   title = i18n_shiny$t("Google Sheet"),
-                  uiOutput(
-                    outputId = "datamods_import_googlesheets"
-                  )
+                  uiOutput(outputId = "datamods_import_googlesheets")
                 )
               )
             ),
-            ## Update
             shinyjs::hidden(
-              actionButton(
-                inputId = "showUpdateModule",
-                label = i18n_shiny$t("Update Data")
-              )
-            ),
-            ## Filter
-            shinyjs::hidden(
-              actionButton(
-                inputId = "showFilterModule",
-                label = i18n_shiny$t("Filter Data")
-              )
-            ),
-            ## Transform
-            shinyjs::hidden(
-              actionButton(
-                inputId = "showTransformModule",
-                label = i18n_shiny$t("Transform Data")
-              )
-            ),
-            ## Reorder
-            shinyjs::hidden(
-              actionButton(
-                inputId = "showReorderModule",
-                label = i18n_shiny$t("Reorder Data")
-              )
-            ),
-            ## Export
-            shinyjs::hidden(
-              actionButton(
-                inputId = "showExportModule",
-                label = i18n_shiny$t("Export Data")
+              div(
+                id = "importModuleActionButtons",
+                actionButton(inputId = "showUpdateModule", label = i18n_shiny$t("Update Data")), ## Update
+                actionButton(inputId = "showFilterModule", label = i18n_shiny$t("Filter Data")), ## Filter
+                actionButton(inputId = "showTransformModule", label = i18n_shiny$t("Transform Data")), ## Transform
+                actionButton(inputId = "showReorderModule", label = i18n_shiny$t("Reorder Data")), ## Reorder
+                actionButton(inputId = "showExportModule", label = i18n_shiny$t("Export Data")) ## Export
               )
             )
           ),
@@ -160,9 +127,7 @@ app_ui <- function(request) {
             shinyjs::hidden(
               div(
                 id = "visModule",
-                uiOutput(
-                  outputId = "esquisse_ui"
-                )
+                uiOutput(outputId = "esquisse_ui")
               )
             )
           ),
@@ -180,15 +145,8 @@ app_ui <- function(request) {
                   solidHeader = TRUE,
                   width = 12,
                   fluidRow(
-                    column(
-                      width = 6,
-                      uiOutput("dataDimension")
-                    ),
-                    column(
-                      width = 6,
-                      uiOutput("missingData")
-                    )
-                    # zero
+                    column(width = 6, uiOutput(outputId = "dataDimension")),
+                    column(width = 6, uiOutput(outputId = "missingData"))
                   )
                 ),
                 shinydashboardPlus::box(
@@ -197,7 +155,7 @@ app_ui <- function(request) {
                   collapsible = TRUE,
                   solidHeader = TRUE,
                   width = 6,
-                  plotOutput("corplot")
+                  plotOutput(outputId = "corplot")
                 ),
                 shinydashboardPlus::box(
                   title = "Variables",
@@ -205,7 +163,7 @@ app_ui <- function(request) {
                   collapsible = TRUE,
                   solidHeader = TRUE,
                   width = 6,
-                  reactableOutput("reactOutput")
+                  reactableOutput(outputId = "reactOutput")
                 ),
                 shinydashboardPlus::box(
                   title = "Distribution",
@@ -213,10 +171,7 @@ app_ui <- function(request) {
                   solidHeader = TRUE,
                   collapsible = TRUE,
                   width = 12,
-                  # conditionalPanel(
-                  #  condition = 'input.EDAFunction == "Variable"',
                   mod_variableModule_ui("variableModule_1"),
-                  # ),
                   fluidRow(
                     column(width = 4, plotOutput("distplot")),
                     column(width = 4, plotOutput("distplot2")),
@@ -309,27 +264,6 @@ app_ui <- function(request) {
                   #   width = "100%"
                   # )
                 )
-
-                # TEMPORARY NOT USE
-                # shinydashboardPlus::box(
-                #   style = "height:400px; overflow-y: scroll;",
-                #   title = "ML Report",
-                #   collapsible = TRUE,
-                #   collapsed = FALSE,
-                #   solidHeader = TRUE,
-                #   status = "purple",
-                #   width = 12 # ,
-                #
-                # mod_mlReportModule_ui("mlReportModule_1") #
-                # footer = actionButton(
-                #   inputId = ("applyML"),
-                #   label = tagList(
-                #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                #     i18n("Apply changes")
-                #   ),
-                #   width = "100%"
-                # )
-                # )
               )
             ),
           ),
@@ -342,7 +276,6 @@ app_ui <- function(request) {
                 id = "ReportModule",
                 radioButtons("format", "Document format", c("PDF", "HTML", "Word"), inline = TRUE),
                 downloadButton(outputId = "downloadReport")
-                # h1("Not Implemented")
               )
             )
           )

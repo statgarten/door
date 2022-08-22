@@ -12,6 +12,7 @@ Imports:
     config (>= 0.3.1),
     data.table,
     datamods,
+    datatoys,
     dplyr,
     DT,
     esquisse,

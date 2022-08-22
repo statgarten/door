@@ -3,7 +3,6 @@
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
 #' @import shiny
-#' @importFrom DT renderDT
 #' @importFrom haven read_sas read_sav read_dta
 #' @importFrom readxl read_xls read_xlsx
 #' @importFrom readr read_rds
@@ -14,6 +13,7 @@
 #' @importFrom tibble as_tibble
 #' @import datamods
 #' @import rmarkdown
+
 #' @noRd
 app_server <- function(input, output, session) {
   options(shiny.maxRequestSize = 30 * 1024^2) # file upload size 30mb
@@ -22,9 +22,47 @@ app_server <- function(input, output, session) {
   i18n_shiny <- golem::get_golem_options(which = "translator")
   i18n_shiny$set_translation_language("en")
 
-  i18n_r <- reactive({
-    i18n_shiny
+  i18n_r <- reactive({ i18n_shiny })
+
+
+
+  output$exampleDataset <- renderUI({
+    require(datatoys)
+    Choices <- c(
+      'accident', 'airport','bloodTest','busStation','carInspection',
+      'childAbuse','crime','crimePlace','elevator','fire',
+      'fireStation','foodBank','foodNutrients','gasStation','globalBusiness',
+      'gyeonggiER','hospitalInfo','housingPrice','karaoke','legalDong',
+      'medicalCheckup','medicine','nationalPension','necessariesPrice','odaIndex',
+      'odaKR','odaNews','openData','petNames','pharmacyInfo',
+      'pollution','postOffice','restaurant','scholarship','seoulER',
+      'tuition'
+    )
+
+    tagList(
+      shinyWidgets::pickerInput(
+        inputId = "datatoy",
+        label = NULL,
+        choices = Choices,
+        choicesOpt = list(
+          subtext = sapply(Choices, function(i){
+          eval(parse(
+            text = paste0('paste0( nrow(datatoys::', i,'), " x ", ncol(datatoys::', i, ') )')
+          ))
+        })),
+        selected = NULL
+      ),
+      actionButton(inputId = 'loadExample', label = i18n_shiny$t("Load Example data")),
+    )
   })
+
+  observeEvent(input$loadExample, {
+    eval(parse(text = paste0('data_rv$data <- datatoys::', input$datatoy)))
+    data_rv$data <- datatoys::scholarship
+    data_rv$name <- input$datatoy
+    inputData(data_rv$data)
+  })
+
 
   observeEvent(input$showUpdateModule, {
     showModal(modalDialog(
@@ -120,7 +158,6 @@ app_server <- function(input, output, session) {
     ))
   })
 
-
   observeEvent(input$showReorderModule, {
     showModal(modalDialog(
       h3(i18n_shiny$t("Reorder data")),
@@ -137,6 +174,7 @@ app_server <- function(input, output, session) {
       footer = NULL
     ))
   })
+
 
   # change language
   observeEvent(input$lang, {
@@ -319,39 +357,25 @@ app_server <- function(input, output, session) {
       selected = NULL
     )
 
+    # Module -> Body
     show(id = "viewModule")
     hide(id = "importModule")
-
     show(id = "visModule")
-
     show(id = "edaModule")
-
-    # Module -> Body
     show(id = "StatModule")
     show(id = "MLModule")
     show(id = "ReportModule")
 
-    show(id = "showUpdateModule")
-    show(id = "showFilterModule")
-    show(id = "showReorderModule")
-    show(id = "showTransformModule")
-    show(id = "showExportModule")
-
+    show(id = 'importModuleActionButtons')
 
     # define column types
     columnTypes <- defineColumnTypes(data_rv$data)
 
-    # print(columnTypes()) Confirmed
-
     ## EDA
-
-    # getexc
 
     exc <- which(!columnTypes() %in% c("numeric", "integer"))
 
-    if (length(exc) == 0) {
-      exc <- NULL
-    }
+    if (length(exc) == 0) { exc <- NULL }
 
     obj <- board::brief(
       inputData = inputData(),
@@ -363,9 +387,6 @@ app_server <- function(input, output, session) {
 
     rmarkdownParams <<- do.call("reactiveValues", obj)
 
-    # print(isolate(reactiveValuesToList(rmarkdownParams)))
-    # work checked
-
     EDAres <- data.frame(
       Name = obj$names,
       UniqueValues = obj$cards,
@@ -375,9 +396,7 @@ app_server <- function(input, output, session) {
       isUnique = obj$uniq
     )
 
-    if (!is.null(obj$cors)) {
-      output$corplot <- renderPlot(ggcorr(obj$cors))
-    }
+    if (!is.null(obj$cors)) { output$corplot <- renderPlot(GGally::ggcorr(obj$cors)) } # if is not null, draw correlation plot
     output$dataDimension <- renderUI(
       descriptionBlock(
         header = paste0(obj$desc$nrow, " X ", obj$desc$ncol),
