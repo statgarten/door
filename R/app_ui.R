@@ -87,8 +87,8 @@ app_ui <- function(request) {
                 tabPanel( # File (Default)
                   title = i18n_shiny$t("Files"),
                   uiOutput(outputId = "datamods_import_file"),
-                  h4(HTML(paste0("Example Dataset from ", tags$a('datatoys', href = 'https://statgarten.github.io/datatoys/')))),
-                  uiOutput(outputId = 'exampleDataset')
+                  h4(HTML(paste0("Example Dataset from ", tags$a("datatoys", href = "https://statgarten.github.io/datatoys/")))),
+                  uiOutput(outputId = "exampleDataset")
                 ),
                 tabPanel( # URL
                   title = i18n_shiny$t("URL"),
@@ -127,7 +127,8 @@ app_ui <- function(request) {
             shinyjs::hidden(
               div(
                 id = "visModule",
-                uiOutput(outputId = "esquisse_ui")
+                uiOutput(outputId = "esquisse_ui"),
+                mod_mapVisModule_ui("mapVisModule_1")
               )
             )
           ),

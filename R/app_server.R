@@ -22,21 +22,23 @@ app_server <- function(input, output, session) {
   i18n_shiny <- golem::get_golem_options(which = "translator")
   i18n_shiny$set_translation_language("en")
 
-  i18n_r <- reactive({ i18n_shiny })
+  i18n_r <- reactive({
+    i18n_shiny
+  })
 
 
 
   output$exampleDataset <- renderUI({
     require(datatoys)
     Choices <- c(
-      'accident', 'airport','bloodTest','busStation','carInspection',
-      'childAbuse','crime','crimePlace','elevator','fire',
-      'fireStation','foodBank','foodNutrients','gasStation','globalBusiness',
-      'gyeonggiER','hospitalInfo','housingPrice','karaoke','legalDong',
-      'medicalCheckup','medicine','nationalPension','necessariesPrice','odaIndex',
-      'odaKR','odaNews','openData','petNames','pharmacyInfo',
-      'pollution','postOffice','restaurant','scholarship','seoulER',
-      'tuition'
+      "accident", "airport", "bloodTest", "busStation", "carInspection",
+      "childAbuse", "crime", "crimePlace", "elevator", "fire",
+      "fireStation", "foodBank", "foodNutrients", "gasStation", "globalBusiness",
+      "gyeonggiER", "hospitalInfo", "housingPrice", "karaoke", "legalDong",
+      "medicalCheckup", "medicine", "nationalPension", "necessariesPrice", "odaIndex",
+      "odaKR", "odaNews", "openData", "petNames", "pharmacyInfo",
+      "pollution", "postOffice", "restaurant", "scholarship", "seoulER",
+      "tuition"
     )
 
     tagList(
@@ -45,20 +47,20 @@ app_server <- function(input, output, session) {
         label = NULL,
         choices = Choices,
         choicesOpt = list(
-          subtext = sapply(Choices, function(i){
-          eval(parse(
-            text = paste0('paste0( nrow(datatoys::', i,'), " x ", ncol(datatoys::', i, ') )')
-          ))
-        })),
+          subtext = sapply(Choices, function(i) {
+            eval(parse(
+              text = paste0("paste0( nrow(datatoys::", i, '), " x ", ncol(datatoys::', i, ") )")
+            ))
+          })
+        ),
         selected = NULL
       ),
-      actionButton(inputId = 'loadExample', label = i18n_shiny$t("Load Example data")),
+      actionButton(inputId = "loadExample", label = i18n_shiny$t("Load Example data")),
     )
   })
 
   observeEvent(input$loadExample, {
-    eval(parse(text = paste0('data_rv$data <- datatoys::', input$datatoy)))
-    data_rv$data <- datatoys::scholarship
+    eval(parse(text = paste0("data_rv$data <- datatoys::", input$datatoy)))
     data_rv$name <- input$datatoy
     inputData(data_rv$data)
   })
@@ -285,6 +287,8 @@ app_server <- function(input, output, session) {
   plotlyobj <- reactiveVal(NULL)
   output$plot <- renderPlotly(plotlyobj())
 
+  mod_mapVisModule_server("mapVisModule_1", inputData)
+
   from_file <- import_file_server(
     id = "importModule_1",
     read_fns = list(
@@ -366,7 +370,7 @@ app_server <- function(input, output, session) {
     show(id = "MLModule")
     show(id = "ReportModule")
 
-    show(id = 'importModuleActionButtons')
+    show(id = "importModuleActionButtons")
 
     # define column types
     columnTypes <- defineColumnTypes(data_rv$data)
@@ -375,7 +379,9 @@ app_server <- function(input, output, session) {
 
     exc <- which(!columnTypes() %in% c("numeric", "integer"))
 
-    if (length(exc) == 0) { exc <- NULL }
+    if (length(exc) == 0) {
+      exc <- NULL
+    }
 
     obj <- board::brief(
       inputData = inputData(),
@@ -396,7 +402,9 @@ app_server <- function(input, output, session) {
       isUnique = obj$uniq
     )
 
-    if (!is.null(obj$cors)) { output$corplot <- renderPlot(GGally::ggcorr(obj$cors)) } # if is not null, draw correlation plot
+    if (!is.null(obj$cors)) {
+      output$corplot <- renderPlot(GGally::ggcorr(obj$cors))
+    } # if is not null, draw correlation plot
     output$dataDimension <- renderUI(
       descriptionBlock(
         header = paste0(obj$desc$nrow, " X ", obj$desc$ncol),
