@@ -1,6 +1,6 @@
 Package: door
 Title: Shiny module for statgarten
-Version: 0.1.2
+Version: 0.1.3
 Authors@R: 
     person("Jinhwan", "Kim", , "hwanistic@gmail.com", role = c("cre", "aut"))
 Description: PKG_DESC.
@@ -17,11 +17,13 @@ Imports:
     DT,
     esquisse,
     GGally,
+    ggbiplot,
     golem (>= 0.3.2),
     goophi,
     haven,
     htmlwidgets,
     jstable,
+    leaflet,
     phosphoricons,
     plotly,
     reactable,
@@ -38,6 +40,7 @@ Imports:
     shinydashboardPlus,
     shinyjs,
     shinyWidgets,
+    showtext,
     sortable,
     tibble,
     tidyr,

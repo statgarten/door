@@ -289,6 +289,11 @@ app_server <- function(input, output, session) {
 
   mod_mapVisModule_server("mapVisModule_1", inputData)
 
+  # Stat
+  mod_pcaModule_server("pcaModule_1", inputData)
+
+
+
   from_file <- import_file_server(
     id = "importModule_1",
     read_fns = list(
