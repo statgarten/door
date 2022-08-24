@@ -26,8 +26,6 @@ app_server <- function(input, output, session) {
     i18n_shiny
   })
 
-
-
   output$exampleDataset <- renderUI({
     require(datatoys)
     Choices <- c(
@@ -64,7 +62,6 @@ app_server <- function(input, output, session) {
     data_rv$name <- input$datatoy
     inputData(data_rv$data)
   })
-
 
   observeEvent(input$showUpdateModule, {
     showModal(modalDialog(
@@ -177,6 +174,23 @@ app_server <- function(input, output, session) {
     ))
   })
 
+  observeEvent(input$showesquisse, {
+    output$esquisse_ui2 <- renderUI({
+      esquisse_ui(
+        id = "visModule_e",
+        header = FALSE,
+        controls = c("labs", "parameters", "appearance", "code")
+      )
+    })
+
+    esquisse_server( # must have
+      id = "visModule_e",
+      data_rv = data_rv,
+      default_aes = reactive(input$aes),
+      import_from = NULL
+    )
+  })
+
 
   # change language
   observeEvent(input$lang, {
@@ -210,17 +224,17 @@ app_server <- function(input, output, session) {
       )
     })
 
-    # Esquisse
-    esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang,".csv"))
 
     if(!is.null(data_rv$data)){ # not to show when starts
+
+      # Esquisse
+      esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang,".csv"))
+
       output$esquisse_ui2 <- renderUI({
-        tagList(
-          esquisse_ui(
-            id = "visModule_e",
-            header = FALSE,
-            controls = c("labs", "parameters", "appearance", "code")
-          )
+        esquisse_ui(
+          id = "visModule_e",
+          header = FALSE,
+          controls = c("labs", "parameters", "appearance", "code")
         )
       })
 
@@ -368,16 +382,11 @@ app_server <- function(input, output, session) {
       selected = NULL
     )
 
-    ## Esquisse - Korean
-    # ui2
-    # esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang,".csv"))
     output$esquisse_ui2 <- renderUI({
-      tagList(
-        esquisse_ui(
-          id = "visModule_e",
-          header = FALSE,
-          controls = c("labs", "parameters", "appearance", "code")
-        )
+      esquisse_ui(
+        id = "visModule_e",
+        header = FALSE,
+        controls = c("labs", "parameters", "appearance", "code")
       )
     })
 
@@ -387,6 +396,11 @@ app_server <- function(input, output, session) {
       default_aes = reactive(input$aes),
       import_from = NULL
     )
+
+    ## double ui2 declare not work
+
+
+
 
     # Module -> Body
     show(id = "viewModule")

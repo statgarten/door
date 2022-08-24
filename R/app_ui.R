@@ -124,25 +124,22 @@ app_ui <- function(request) {
           ### Vis panel
           conditionalPanel(
             condition = 'input.module == "Vis"',
-            shinyjs::hidden(
+
               div(
                 id = "visModule",
-                div(
-                  id = 'esquisse_kr',
-                  p('ui2'),
-                  shinyWidgets::checkboxGroupButtons(
-                    inputId = "aes",
-                    label = i18n_shiny$t("Aesthetic options"),
-                    choices = c("fill", "color", "size", "shape", "facet", "facet_row", "facet_col"),
-                    selected = c("fill", "color", "size", "facet"),
-                    justified = TRUE,
-                    checkIcon = list(yes = icon("ok", lib = "glyphicon"))
-                  ),
-                  uiOutput(outputId = "esquisse_ui2")
+                actionButton('showesquisse', 'Initiate visualize'),
+                shinyWidgets::checkboxGroupButtons(
+                  inputId = "aes",
+                  label = i18n_shiny$t("Aesthetic options"),
+                  choices = c("fill", "color", "size", "shape", "facet", "facet_row", "facet_col"),
+                  selected = c("fill", "color", "size", "facet"),
+                  justified = TRUE,
+                  checkIcon = list(yes = icon("ok", lib = "glyphicon"))
                 ),
+                uiOutput(outputId = "esquisse_ui2"),
                 mod_mapVisModule_ui("mapVisModule_1")
               )
-            )
+
           ),
 
           ### EDA panel
