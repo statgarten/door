@@ -292,6 +292,7 @@ app_server <- function(input, output, session) {
   # Stat
   mod_pcaModule_server("pcaModule_1", inputData)
 
+  mod_groupStatModule_server("groupStatModule_1", inputData)
 
 
   from_file <- import_file_server(

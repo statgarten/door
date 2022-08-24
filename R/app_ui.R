@@ -199,7 +199,8 @@ app_ui <- function(request) {
                   label = "generate Table"
                 ),
                 reactableOutput(outputId = "tableOne"),
-                mod_pcaModule_ui("pcaModule_1")
+                mod_pcaModule_ui("pcaModule_1"),
+                mod_groupStatModule_ui("groupStatModule_1")
               )
             )
           ),
