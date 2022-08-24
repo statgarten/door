@@ -174,22 +174,22 @@ app_server <- function(input, output, session) {
     ))
   })
 
-  observeEvent(input$showesquisse, {
-    output$esquisse_ui2 <- renderUI({
-      esquisse_ui(
-        id = "visModule_e",
-        header = FALSE,
-        controls = c("labs", "parameters", "appearance", "code")
-      )
-    })
-
-    esquisse_server( # must have
-      id = "visModule_e",
-      data_rv = data_rv,
-      default_aes = reactive(input$aes),
-      import_from = NULL
-    )
-  })
+  # observeEvent(input$showesquisse, {
+  #   output$esquisse_ui2 <- renderUI({
+  #     esquisse_ui(
+  #       id = "visModule_e",
+  #       header = FALSE,
+  #       controls = c("labs", "parameters", "appearance", "code")
+  #     )
+  #   })
+  #
+  #   esquisse_server( # must have
+  #     id = "visModule_e",
+  #     data_rv = data_rv,
+  #     default_aes = reactive(input$aes),
+  #     import_from = NULL
+  #   )
+  # })
 
 
   # change language
@@ -224,27 +224,28 @@ app_server <- function(input, output, session) {
       )
     })
 
-
-    if(!is.null(data_rv$data)){ # not to show when starts
-
-      # Esquisse
-      esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang,".csv"))
-
-      output$esquisse_ui2 <- renderUI({
-        esquisse_ui(
-          id = "visModule_e",
-          header = FALSE,
-          controls = c("labs", "parameters", "appearance", "code")
-        )
-      })
-
-      esquisse_server(
+    output$esquisse_ui2 <- renderUI({
+      esquisse_ui(
         id = "visModule_e",
-        data_rv = data_rv,
-        default_aes = reactive(input$aes),
-        import_from = NULL
+        header = FALSE,
+        controls = c("labs", "parameters", "appearance", "code")
       )
-    }
+    })
+
+    # if(!is.null(data_rv$data)){ # not to show when starts
+    #
+    #   # Esquisse
+    #
+    #   # esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang,".csv"))
+    #   # solved with datamods
+    #
+    #   esquisse_server(
+    #     id = "visModule_e",
+    #     data_rv = data_rv,
+    #     default_aes = reactive(input$aes),
+    #     import_from = NULL
+    #   )
+    # }
 
     # re-render url module
     output$datamods_import_url <- renderUI({
@@ -405,7 +406,7 @@ app_server <- function(input, output, session) {
     # Module -> Body
     show(id = "viewModule")
     hide(id = "importModule")
-    show(id = "visModule")
+    # show(id = "visModule")
     show(id = "edaModule")
     show(id = "StatModule")
     show(id = "MLModule")

@@ -35,6 +35,7 @@ app_ui <- function(request) {
             label = NULL,
             choiceNames = lapply(seq_along(c("en", "kr")), function(i) tagList(tags$img(src = flags[i], width = 30, height = 20))),
             choiceValues = i18n_shiny$get_languages(),
+            selected = NULL,
             individual = TRUE
           )
         )
@@ -124,10 +125,9 @@ app_ui <- function(request) {
           ### Vis panel
           conditionalPanel(
             condition = 'input.module == "Vis"',
-
               div(
                 id = "visModule",
-                actionButton('showesquisse', 'Initiate visualize'),
+                # actionButton('showesquisse', 'Initiate visualize'),
                 shinyWidgets::checkboxGroupButtons(
                   inputId = "aes",
                   label = i18n_shiny$t("Aesthetic options"),
@@ -139,7 +139,6 @@ app_ui <- function(request) {
                 uiOutput(outputId = "esquisse_ui2"),
                 mod_mapVisModule_ui("mapVisModule_1")
               )
-
           ),
 
           ### EDA panel
