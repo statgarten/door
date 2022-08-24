@@ -194,30 +194,8 @@ app_server <- function(input, output, session) {
 
     app_dir <- system.file(package = "door")
 
-
     # Datamods
     datamods::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
-
-    ## Esquisse
-    esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
-
-    output$esquisse_ui <- renderUI({
-      tagList(
-        shinyWidgets::checkboxGroupButtons(
-          inputId = "aes",
-          label = i18n_shiny$t("Aesthetic options"),
-          choices = c("fill", "color", "size", "shape", "facet", "facet_row", "facet_col"),
-          selected = c("fill", "color", "size", "facet"),
-          justified = TRUE,
-          checkIcon = list(yes = icon("ok", lib = "glyphicon"))
-        ),
-        esquisse_ui(
-          id = "visModule_e",
-          header = FALSE,
-          controls = c("labs", "parameters", "appearance", "code")
-        )
-      )
-    })
 
     # re-render file module
     output$datamods_import_file <- renderUI({
@@ -232,6 +210,28 @@ app_server <- function(input, output, session) {
       )
     })
 
+    # Esquisse
+    esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang,".csv"))
+
+    if(!is.null(data_rv$data)){ # not to show when starts
+      output$esquisse_ui2 <- renderUI({
+        tagList(
+          esquisse_ui(
+            id = "visModule_e",
+            header = FALSE,
+            controls = c("labs", "parameters", "appearance", "code")
+          )
+        )
+      })
+
+      esquisse_server(
+        id = "visModule_e",
+        data_rv = data_rv,
+        default_aes = reactive(input$aes),
+        import_from = NULL
+      )
+    }
+
     # re-render url module
     output$datamods_import_url <- renderUI({
       datamods::import_url_ui(id = "importModule_2")
@@ -240,6 +240,7 @@ app_server <- function(input, output, session) {
     output$datamods_import_googlesheets <- renderUI({
       datamods::import_googlesheets_ui(id = "importModule_3")
     })
+
   })
 
   require(tibble)
@@ -367,6 +368,26 @@ app_server <- function(input, output, session) {
       selected = NULL
     )
 
+    ## Esquisse - Korean
+    # ui2
+    # esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang,".csv"))
+    output$esquisse_ui2 <- renderUI({
+      tagList(
+        esquisse_ui(
+          id = "visModule_e",
+          header = FALSE,
+          controls = c("labs", "parameters", "appearance", "code")
+        )
+      )
+    })
+
+    esquisse_server(
+      id = "visModule_e",
+      data_rv = data_rv,
+      default_aes = reactive(input$aes),
+      import_from = NULL
+    )
+
     # Module -> Body
     show(id = "viewModule")
     hide(id = "importModule")
@@ -444,13 +465,9 @@ app_server <- function(input, output, session) {
         striped = TRUE
       )
     )
-    esquisse_server(
-      id = "visModule_e",
-      data_rv = data_rv,
-      default_aes = reactive(input$aes),
-      import_from = NULL
-    )
+
   })
+
 
 
   ## Main table (View)
