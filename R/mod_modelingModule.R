@@ -1190,14 +1190,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
         Obj <- models_list()$KmeansClustering
 
-        vis_result <- goophi::clusteringVis(
-          data = data,
-          model = Obj, # pass
-          maxK = input$maxK, # pass
-          # nStart = input$nStart, # pass
-          nBoot = input$nBoot, # pass
-          selectOptimal = input$selectOptimal # pass
-        )
+        vis_result <- Obj
 
         output$ClusterPlot <- renderPlot(vis_result$clustVis)
         output$optimalK <- renderPlot(vis_result$optimalK)
