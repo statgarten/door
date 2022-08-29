@@ -8,7 +8,7 @@ params:
 <!-- params = list(obj = ~~~) -->
 <!-- obj <- params$obj -->
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 inputData <- params$inputData
 test <- params$obj
 library(ggplot2)
@@ -31,13 +31,13 @@ Total Count of missing data is `r length(which(is.na(inputData)))`
 
 top 5 data is below
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 head(inputData, 5)
 ```
 
 last 5 data is below
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 tail(inputData, 5)
 ```
 ### Column Attributes
@@ -99,7 +99,7 @@ ggcorr(inputData)
 ### Scatterplot
 ```{r, results='asis', echo = FALSE, warning = FALSE, message = FALSE}
 
-for(i in 1:(ncol(inputData)%/%5)+1) {
+for(i in 1:(ncol(inputData)%/%5+1)) {
   start <- i*5-4
   if(i == (ncol(inputData)%/%5)+1){
     end <- ncol(inputData)
@@ -107,7 +107,11 @@ for(i in 1:(ncol(inputData)%/%5)+1) {
     end <- i*5
   }
   
-  plot(inputData[,c(start:end)])
+  print(start)
+  print(end)
+  if(start<=end) {
+    plot(inputData[,c(start:end)])
+  }
 }
 ```
 
