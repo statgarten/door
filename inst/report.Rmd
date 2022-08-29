@@ -68,12 +68,16 @@ for(i in 1:ncol(inputData)){
     print(kable(count,align="cccc"))
   } else {
     data <- data.frame()
-    summ <- c(min(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE), mean(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE), median(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE), max(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE), sd(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE))
+    summ <- c(min(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE),
+              mean(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE),
+              median(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE),
+              max(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE),
+              sd(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE) %>% as.Date(origin = .Date(0)))
     data <- rbind(data, summ)
     names(data) <- c("Min", "Mean", "Median", "Max", "SD")
     print(kable(data,align="ccccc"))
 
-  }
+  } 
   cat('---')
   cat('\n\n\n\n')
   cat('\n\n<!-- -->\n\n')
