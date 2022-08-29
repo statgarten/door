@@ -221,7 +221,7 @@ app_ui <- function(request) {
                 ## split
                 shinydashboardPlus::box(
                   style = "height:50vh; overflow-y: scroll;",
-                  title = "TrainTestSplit",
+                  title = "Data Setup",
                   collapsible = TRUE,
                   collapsed = FALSE,
                   solidHeader = TRUE,
@@ -239,24 +239,25 @@ app_ui <- function(request) {
                   # )
                 ),
                 ## preprocess
-                shinydashboardPlus::box(
-                  style = "height:400px; overflow-y: scroll;",
-                  title = "Preprocess",
-                  collapsible = TRUE,
-                  collapsed = FALSE,
-                  solidHeader = TRUE,
-                  status = "purple",
-                  width = 12,
-                  mod_preprocessModule_ui("preprocessModule_1") # ,
-                  # footer = actionButton(
-                  #   inputId = ("applyML"),
-                  #   label = tagList(
-                  #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                  #     i18n("Apply changes")
-                  #   ),
-                  #   width = "100%"
-                  # )
-                ),
+
+                # shinydashboardPlus::box(
+                #   style = "height:400px; overflow-y: scroll;",
+                #   title = "Preprocess",
+                #   collapsible = TRUE,
+                #   collapsed = FALSE,
+                #   solidHeader = TRUE,
+                #   status = "purple",
+                #   width = 12
+                #   # mod_preprocessModule_ui("preprocessModule_1") # ,
+                #   # footer = actionButton(
+                #   #   inputId = ("applyML"),
+                #   #   label = tagList(
+                #   #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
+                #   #     i18n("Apply changes")
+                #   #   ),
+                #   #   width = "100%"
+                #   # )
+                # ),
                 shinydashboardPlus::box(
                   style = "height:400px;",
                   title = "Modeling",

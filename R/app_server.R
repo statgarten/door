@@ -713,16 +713,16 @@ app_server <- function(input, output, session) {
 
 
   ### preprocess
-  processresult <- mod_preprocessModule_server(
-    id = "preprocessModule_1",
-    splitresult = splitresult
-  )
+  # processresult <- mod_preprocessModule_server(
+  #   id = "preprocessModule_1",
+  #   splitresult = reactive(splitresult)
+  # )
 
   ### model
   models_list <- mod_modelingModule_server(
     id = "modelingModule_1",
     splitresult = splitresult,
-    processresult = processresult,
+    # processresult = processresult,
     models_list = models_list
   )
 

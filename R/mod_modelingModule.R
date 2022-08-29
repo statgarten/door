@@ -834,34 +834,13 @@ mod_modelingModule_ui <- function(id) {
 #' modelingModule Server Functions
 #'
 #' @noRd
-mod_modelingModule_server <- function(id, splitresult, processresult, models_list) {
+mod_modelingModule_server <- function(id, splitresult, models_list) {
+# mod_modelingModule_server <- function(id, splitresult, processresult, models_list) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # splitData <- trainTestSplit Result
-    # splitresult$train
-    # splitresult$test
-    # splitresult$dataSplit
-    # splitresult$target
-
-
-    # processresult <- prepForCV Result
-
-    #
-    # "K Nearest Neighbor" = "KNN",
-    # "Naive Bayes" = "NB",
-    # "MLP",
-    # "Decision Tree" = "DT",
-    # "Random Forest" = "RF",
-    # "XGBoost",
-    # "lightGBM"
-    # "Linear Regression" = "LinearR",
-    # "KMC"
-    #
-
     observeEvent(input$applyModel, {
       shinyjs::show(id = "models")
-      ## loader
 
       if (input$algo == "LogisticR") {
         modelObj <- reactive({
@@ -872,7 +851,7 @@ mod_modelingModule_server <- function(id, splitresult, processresult, models_lis
             trainingData = splitresult()$train,
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula, ## Confirmed
-            rec = processresult(),
+            rec = splitresult()$rec,
             v = input$fold,
             penaltyRangeMin = input$penaltyRangeMin,
             penaltyRangeMax = input$penaltyRangeMax,

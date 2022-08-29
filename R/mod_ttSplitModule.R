@@ -22,7 +22,8 @@ mod_ttSplitModule_ui <- function(id) {
           min = 0,
           max = 1,
           value = 0.7
-        )
+        ),
+        actionButton(inputId = ns('split'),label = 'Split')
       ),
       column(
         width = 8,
@@ -48,43 +49,68 @@ mod_ttSplitModule_ui <- function(id) {
 mod_ttSplitModule_server <- function(id, inputData) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    output$target <- renderUI({
-      selectInput(
-        inputId = ns("cols"),
-        label = "targetVar 지정",
-        choices = colnames(inputData()),
-        multiple = FALSE
-      )
+
+    observeEvent(inputData(), {
+      data <- inputData()
+      factors <- names(Filter(is.factor, data))
+      numerics <- names(Filter(is.numeric, data))
+      choices <- sort(unique(c(factors, numerics)))
+
+      output$target <- renderUI({
+        selectInput(
+          inputId = ns("cols"),
+          label = "targetVar 지정",
+          choices = choices, # use only factor (classification) or numeric (regression)
+          multiple = FALSE
+        )
+      })
+
     })
 
-    # output$description <- renderText({
-    #   paste0('DESCRIPTION WILL BE HERE')
-    # })
+    observeEvent(input$split, {
 
-    output$train <- DT::renderDataTable({
-      datatable(splitresult()$train)
-    })
-
-    output$str <- renderPrint(utils::str(splitresult()$train))
-
-    splitresult <- reactive({
-      req(inputData())
       data <- inputData()
       result <- goophi::trainTestSplit(
         data = data,
         target = input$cols,
         prop = input$ratio
       )
-      list(
-        train = result$train,
-        test = result$test,
-        dataSplit = result$dataSplit,
-        target = isolate(input$cols),
-        formula = isolate(paste0(input$cols, " ~ ."))
-      )
+
+      output$train <- DT::renderDataTable(datatable(result$train[1:50,]) )
+      output$str <- renderPrint(utils::str(result$train))
     })
 
+    splitresult <-
+      reactive({
+
+        data <- inputData()
+
+        result <- goophi::trainTestSplit(
+          data = data,
+          target = input$cols,
+          prop = input$ratio
+        )
+
+        formula <- paste0(input$cols, " ~ .")
+
+        rec <- goophi::prepForCV(
+          data = result$train,
+          formula = formula,
+          seed = '1234'
+        )
+
+        list(
+          train = result$train,
+          test = result$test,
+          dataSplit = result$dataSplit,
+          rec = rec,
+          target = isolate(input$cols),
+          formula = formula
+        )
+      })
+
     return(splitresult)
+
   })
 }
 
