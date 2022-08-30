@@ -8,7 +8,6 @@
 #' @importFrom htmlwidgets JS
 #' @importFrom reactable reactable colGroup
 #' @noRd
-#' @export
 
 getDT <- function(inputData, all = FALSE, columnGroups = NULL) {
   if (!is.null(columnGroups)) {
