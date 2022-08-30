@@ -42,7 +42,7 @@ mod_modelingModule_ui <- function(id) {
           choices = c(
             "glmnet", # logitistic Regression, Linera Regression
             "kknn", # KNN
-            "kiaR", # NB
+            "klaR", # NB
             "nnet", # MLP
             "rpart", # DT
             "ranger", # RF
@@ -1339,7 +1339,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
-          choices = "kiaR" # NB
+          choices = "klaR" # NB
         )
       }
       if (input$algo == "MLP") {
