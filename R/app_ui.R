@@ -94,13 +94,40 @@ app_ui <- function(request) {
                 tabPanel( # URL
                   title = i18n_shiny$t("URL"),
                   br(),
-                  shinyWidgets::actionBttn( # example data load
-                    inputId = "exampleURL",
-                    label = i18n_shiny$t("Load Example data"),
-                    style = "material-flat",
-                    size = "sm",
-                    block = TRUE,
-                    color = "royal"
+                  fluidRow(
+                    column(
+                      width = 4,
+                      shinyWidgets::actionBttn( # example data load
+                        inputId = "exampleURL",
+                        label = i18n_shiny$t("Load Example data"),
+                        style = "material-flat",
+                        size = "sm",
+                        block = TRUE,
+                        color = "royal"
+                      )
+                    ),
+                    column(
+                      width = 4,
+                      shinyWidgets::actionBttn( # example data load
+                        inputId = "exampleR",
+                        label = i18n_shiny$t("Load Boston: Regression"),
+                        style = "material-flat",
+                        size = "sm",
+                        block = TRUE,
+                        color = "royal"
+                      )
+                    ),
+                    column(
+                      width = 4,
+                      shinyWidgets::actionBttn( # example data load
+                        inputId = "exampleC",
+                        label = i18n_shiny$t("Load Boston: Classification"),
+                        style = "material-flat",
+                        size = "sm",
+                        block = TRUE,
+                        color = "royal"
+                      )
+                    )
                   ),
                   uiOutput(outputId = "datamods_import_url")
                 ),

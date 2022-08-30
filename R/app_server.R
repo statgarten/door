@@ -286,6 +286,22 @@ app_server <- function(input, output, session) {
     )
   })
 
+  observeEvent(input$exampleR, {
+    updateTextInputIcon(
+      session = session,
+      inputId = "importModule_2-link",
+      value = "https://github.com/statgarten/goophi/raw/main/data/boston_r.csv"
+    )
+  })
+  observeEvent(input$exampleC, {
+    updateTextInputIcon(
+      session = session,
+      inputId = "importModule_2-link",
+      value = "https://github.com/statgarten/goophi/raw/main/data/boston_c.csv"
+    )
+  })
+
+
   # EDA Plot
   # ggobj <- reactiveVal(NULL) # relation scatter chart # RELATION NOT USED
 
