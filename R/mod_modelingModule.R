@@ -542,7 +542,7 @@ mod_modelingModule_ui <- function(id) {
             column(
               width = 4,
               numericInput(
-                inputId = ns("treesRangeLeels"),
+                inputId = ns("treesRangeLevels"),
                 label = "treesRangeLevels",
                 value = 3,
                 min = 1,
@@ -915,7 +915,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             neighborsRangeMin = input$neighborsRangeMin,
             neighborsRangeMax = input$neighborsRangeMax,
             neighborsRangeLevels = input$neighborsRangeLevels,
-            metric = "roc_auc"
+            metric = input$metric
           )
 
 
@@ -946,7 +946,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             LaplaceRangeMin = input$LaplaceRangeMin,
             LaplaceRangeMax = input$LaplaceRangeMax,
             LaplaceRangeLevels = input$LaplaceRangeLevels,
-            metric = "roc_auc"
+            metric = input$metric
           )
 
           Obj <- Obj$finalFittedModel
@@ -979,7 +979,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             epochsRangeMin = input$epochsRangeMin,
             epochsRangeMax = input$epochsRangeMax,
             epochsRangeLevels = input$epochsRangeLevels,
-            metric = "roc_auc"
+            metric = input$metric
           )
 
           Obj <- Obj$finalFittedModel
@@ -994,7 +994,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
       if (input$algo == "DT") {
         modelObj <- reactive({
-          Obj <- goophi::decision_tree(
+          Obj <- goophi::decisionTree(
             algo = input$algo,
             engine = input$engine,
             mode = input$mode,
@@ -1012,7 +1012,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             costComplexityRangeMin = input$costComplexityRangeMin,
             costComplexityRangeMax = input$costComplexityRangeMax,
             costComplexityRangeLevels = input$costComplexityRangeLevels,
-            metric = "roc_auc"
+            metric = input$metric
           )
 
           Obj <- Obj$finalFittedModel
@@ -1027,6 +1027,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
       if (input$algo == "RF") {
         modelObj <- reactive({
+
           Obj <- goophi::randomForest(
             algo = input$algo,
             engine = input$engine,
@@ -1045,7 +1046,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             minNRangeMin = input$minNRangeMin,
             minNRangeMax = input$minNRangeMax,
             minNRangeLevels = input$minNRangeLevels,
-            metric = "roc_auc"
+            metric = input$metric
           )
 
           Obj <- Obj$finalFittedModel
@@ -1091,7 +1092,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             sampleSizeRangeMax = input$sampleSizeRangeMax,
             sampleSizeRangeLevels = input$sampleSizeRangeLevels,
             stopIter = input$stopIter,
-            metric = "roc_auc"
+            metric = input$metric
           )
 
           Obj <- Obj$finalFittedModel
@@ -1133,7 +1134,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             lossReductionRangeMin = input$lossReductionRangeMin,
             lossReductionRangeMax = input$lossReductionRangeMax,
             lossReductionRangeLevels = input$lossReductionRangeLevels,
-            metric = "roc_auc"
+            metric = input$metric
           )
 
           Obj <- Obj$finalFittedModel
