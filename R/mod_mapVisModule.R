@@ -12,13 +12,38 @@ mod_mapVisModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     leafletOutput(outputId = ns("mymap")),
-    selectInput(ns("x"), "x", choices = NULL),
-    selectInput(ns("y"), "y", choices = NULL),
-    selectInput(ns("color"), "color", choices = NULL),
-    numericInput(ns("opacity"), "alpha", min = 0, max = 1, value = 0.5, step = 0.1),
-    numericInput(ns("radius"), "size", min = 1, max = 10, value = 5, step = 1),
-    checkboxInput(ns("cluster"), "cluster"),
-    actionButton(ns("draw"), "draw")
+    fluidRow(
+      column(
+        width = 4,
+        selectInput(ns("x"), label = "", choices = NULL)
+      ),
+      column(
+        width = 4,
+        selectInput(ns("y"), label = "", choices = NULL)
+      ),
+      column(
+        width = 4,
+        sliderInput(ns("radius"), label = "marker size", min = 1, max = 10, value = 5, step = 1, ticks = FALSE),
+      )
+    ),
+    fluidRow(
+      column(
+        width = 4,
+        checkboxInput(ns("cluster"), label = "Group marker")
+      ),
+      div(
+        id = ns("div"),
+        column(
+          width = 4,
+          selectInput(ns("color"), "", choices = NULL)
+        ),
+        column(
+          width = 4,
+          sliderInput(ns("opacity"), label = "alpha", min = 0, max = 1, value = 0.5, step = 0.1, ticks = FALSE)
+        )
+      )
+    ),
+    actionButton(ns("draw"), label = "Draw")
   )
 }
 
@@ -30,14 +55,21 @@ mod_mapVisModule_server <- function(id, inputData) {
     ns <- session$ns
     req(inputData)
 
+    observeEvent(input$cluster, {
+      if (input$cluster) {
+        shinyjs::hide(id = "div")
+      } else {
+        shinyjs::show(id = "div")
+      }
+    })
 
     observeEvent(inputData(), {
       data <- inputData()
       updateSelectizeInput(
         session,
         inputId = "x",
-        label = "x",
-        choices = c(colnames(data)),
+        label = "longitude column (X)",
+        choices = names(Filter(is.numeric, data)), # Numeric only
         server = TRUE,
         selected = NULL
       )
@@ -45,8 +77,8 @@ mod_mapVisModule_server <- function(id, inputData) {
       updateSelectizeInput(
         session,
         inputId = "y",
-        label = "y",
-        choices = c(colnames(data)),
+        label = "latitude column (Y)",
+        choices = names(Filter(is.numeric, data)), # Numeric only
         server = TRUE,
         selected = NULL
       )
@@ -54,8 +86,8 @@ mod_mapVisModule_server <- function(id, inputData) {
       updateSelectizeInput(
         session,
         inputId = "color",
-        label = "color",
-        choices = c(colnames(data)),
+        label = "color column",
+        choices = union(names(Filter(is.numeric, data)), names(Filter(is.factor, data))),
         server = TRUE,
         selected = NULL
       )
@@ -66,7 +98,7 @@ mod_mapVisModule_server <- function(id, inputData) {
       m <- generateMap(
         x <- data[[input$x]],
         y <- data[[input$y]],
-        colorVariable = as.factor(data[[input$color]]),
+        colorVariable = data[[input$color]],
         fillOpacity = input$opacity,
         radius = input$radius,
         cluster = input$cluster
@@ -91,10 +123,10 @@ generateMap <- function(x, y, colorVariable = NULL, radius = 10, fillOpacity = 0
   if (is.factor(colorVariable)) { # factor
     palettes <- gg_color_hue(length(unique(colorVariable)))
     pal <- colorFactor(palettes, domain = unique(colorVariable))
-  }
-
-  if (is.numeric(colorVariable)) { # numeric
-    pal <- colorNumeric("RdYlBu", domain = NULL)
+  } else {
+    if (is.numeric(colorVariable)) { # numeric
+      pal <- colorNumeric("RdYlBu", domain = NULL)
+    }
   }
 
   if (cluster) {
@@ -122,5 +154,9 @@ generateMap <- function(x, y, colorVariable = NULL, radius = 10, fillOpacity = 0
       stroke = FALSE,
       radius = radius,
       fillOpacity = fillOpacity
+    ) %>%
+    addLegend(
+      pal = pal,
+      values = colorVariable
     )
 }

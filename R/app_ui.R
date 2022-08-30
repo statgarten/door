@@ -155,16 +155,30 @@ app_ui <- function(request) {
               div(
                 id = "visModule",
                 # actionButton('showesquisse', 'Initiate visualize'),
-                shinyWidgets::checkboxGroupButtons(
-                  inputId = "aes",
-                  label = i18n_shiny$t("Aesthetic options"),
-                  choices = c("fill", "color", "size", "shape", "facet", "facet_row", "facet_col"),
-                  selected = c("fill", "color", "size", "facet"),
-                  justified = TRUE,
-                  checkIcon = list(yes = icon("ok", lib = "glyphicon"))
+                shinydashboardPlus::box(
+                  title = "General Visualization",
+                  status = "purple",
+                  collapsible = TRUE,
+                  solidHeader = TRUE,
+                  width = 12,
+                  shinyWidgets::checkboxGroupButtons(
+                    inputId = "aes",
+                    label = i18n_shiny$t("Aesthetic options"),
+                    choices = c("fill", "color", "size", "shape", "facet", "facet_row", "facet_col"),
+                    selected = c("fill", "color", "size", "facet"),
+                    justified = TRUE,
+                    checkIcon = list(yes = icon("ok", lib = "glyphicon"))
+                  ),
+                  uiOutput(outputId = "esquisse_ui2")
                 ),
-                uiOutput(outputId = "esquisse_ui2"),
-                mod_mapVisModule_ui("mapVisModule_1")
+                shinydashboardPlus::box(
+                  title = "Map Visualization",
+                  status = "purple",
+                  collapsible = TRUE,
+                  solidHeader = TRUE,
+                  width = 12,
+                  mod_mapVisModule_ui("mapVisModule_1")
+                )
               )
           ),
 
