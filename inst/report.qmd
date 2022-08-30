@@ -1,0 +1,160 @@
+---
+params:
+  inputData: NA
+---
+
+<!-- load_all will recognize change -->
+
+<!-- params = list(obj = ~~~) -->
+
+<!-- obj <- params$obj -->
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(ggplot2)
+library(ggpie)
+library(GGally)
+library(naniar)
+library(dplyr)
+library(knitr)
+
+inputData <- params$inputData %>% as.data.frame()
+```
+
+## Data information
+
+Number of Row with given data is `r nrow(inputData)`
+
+Number of Column with given data is `r ncol(inputData)`
+
+Total Count of missing data is `r length(which(is.na(inputData)))`
+
+## Preview of data set
+
+top 5 data is below
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+head(inputData, 5)
+```
+
+last 5 data is below
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+tail(inputData, 5)
+```
+
+### Column Attributes
+
+```{r, results='asis', echo = FALSE, warning = FALSE, message = FALSE}
+# inputData <- readxl::read_xlsx("/Users/limcw/Desktop/Github/door/example_g1e.xlsx")
+# tablebk <- vector('list', ncol(inputData))
+# tablebk2 <- vector('list', ncol(inputData))
+
+for(i in 1:ncol(inputData)){
+  # print(inputData[1,i])
+  count <- inputData %>% 
+    group_by(inputData[ ,i]) %>%
+    summarise(n = n())  %>%
+    mutate(com_freq = cumsum(n)) %>%
+    mutate(percent = (n / sum(n))*100)
+  
+  names(count)[1] <- c("cat")
+  
+  colName <- names(inputData)[i]
+  uniqcnt <- c("Unique non-mission value count:", length(count[,1][!is.na(count[,1])]))
+  misscnt <- c("Missing value count:",sum(is.na(count[,1])))
+  table <- data.frame()
+  table <- rbind(table, uniqcnt)
+  table <- rbind(table, misscnt)
+  names(table) <- c(paste(i,"Column name:"), colName)
+  print(kable(table, align="ll"))
+  
+  if(length(count[,1][!is.na(count[,1])]) <= 10){
+    print(kable(count,align="cccc"))
+  } else {
+    data <- data.frame()
+    summ <- c(min(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE),
+              mean(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE),
+              median(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE),
+              max(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE),
+              sd(inputData[,i][!is.na(inputData[,i])], na.rm = TRUE) %>% as.Date(origin = .Date(0)))
+    data <- rbind(data, summ)
+    names(data) <- c("Min", "Mean", "Median", "Max", "SD")
+    print(kable(data,align="ccccc"))
+
+  } 
+  cat('---')
+  cat('\n\n\n\n')
+  cat('\n\n<!-- -->\n\n')
+}
+
+```
+
+### MissingData
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+naniar::gg_miss_var(inputData)
+missingData <- naniar::miss_var_summary(inputData) %>% filter(n_miss > 0)
+knitr::kable(missingData)
+```
+
+### Correlation
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+ggcorr(inputData)
+```
+
+### Scatterplot
+
+```{r, results='asis', echo = FALSE, warning = FALSE, message = FALSE}
+
+for(i in 1:(ncol(inputData)%/%5+1)) {
+  start <- i*5-4
+  if(i == (ncol(inputData)%/%5)+1){
+    end <- ncol(inputData)
+  } else {
+    end <- i*5
+  }
+  
+  print(start)
+  print(end)
+  if(start<=end) {
+    plot(inputData[,c(start:end)])
+  }
+}
+```
+
+<!-- ### Distribution -->
+
+<!-- ```{r, results='asis', echo = FALSE, warning = FALSE, message = FALSE} -->
+
+<!-- output <- vector('list', ncol(inputData)) -->
+
+<!-- for(i in 1:ncol(inputData)) { -->
+
+<!--   output[[i]] <- local({ -->
+
+<!--     i <- i -->
+
+<!--     fig <-ggplot(data=inputData, aes(x=inputData[[i]])) + geom_histogram(fill="skyblue",colour="black") + xlab("value") + theme(legend.position = "none") -->
+
+<!--   }) -->
+
+<!-- } -->
+
+<!-- for(i in 1:ncol(inputData)) { -->
+
+<!-- cat("\n\n ", names(inputData)[i], "\n\n") -->
+
+<!-- x <- output[[i]] -->
+
+<!-- print(x) -->
+
+<!-- cat("\n\n") -->
+
+<!-- } -->
+
+<!-- ``` -->
+
+## Report information
+
+this report is generated with [Statgarten](https://github.com/statgarten) \@ `r Sys.time()`

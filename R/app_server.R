@@ -255,7 +255,6 @@ app_server <- function(input, output, session) {
     output$datamods_import_googlesheets <- renderUI({
       datamods::import_googlesheets_ui(id = "importModule_3")
     })
-
   })
 
   require(tibble)
@@ -480,7 +479,6 @@ app_server <- function(input, output, session) {
         striped = TRUE
       )
     )
-
   })
 
 
@@ -749,18 +747,30 @@ app_server <- function(input, output, session) {
 
       setwd(app_sys())
 
-      out <- rmarkdown::render(
-        params = list(
-          inputData = data_rv$data
+      out <- quarto::quarto_render(
+        execute_params = list(
+          "inputData" = data_rv$data
         ),
-        input = "report.Rmd",
+        input = "report.qmd",
         output_format = switch(input$format,
-          PDF = pdf_document(),
-          HTML = html_document(),
-          Word = word_document()
+          PDF = "pdf",
+          HTML = "html",
+          Word = "docx"
         )
       )
-      file.rename(out, file)
+
+      # out <- rmarkdown::render(
+      #   params = list(
+      #     inputData = data_rv$data
+      #   ),
+      #   input = "report.Rmd",
+      #   output_format = switch(input$format,
+      #     PDF = pdf_document(),
+      #     HTML = html_document(),
+      #     Word = word_document()
+      #   )
+      # )
+      # file.rename(out, file)
     }
   )
 }
