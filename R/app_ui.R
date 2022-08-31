@@ -237,19 +237,48 @@ app_ui <- function(request) {
             shinyjs::hidden(
               div(
                 id = "StatModule",
-                selectInput(
-                  inputId = "tableOneStrata",
-                  label = "Group by",
-                  choices = NULL,
-                  selected = NULL
+                shinydashboardPlus::box(
+                  title = "jsTable",
+                  status = "purple",
+                  collapsible = TRUE,
+                  solidHeader = TRUE,
+                  width = 12,
+                  fluidRow(
+                    column(
+                      width = 6,
+                      selectInput(
+                        inputId = "tableOneStrata",
+                        label = "Group by",
+                        choices = NULL,
+                        selected = NULL
+                      )
+                    ),
+                    column(
+                      width = 6,
+                      actionButton(
+                        inputId = "generateTable",
+                        label = "generate Table"
+                      )
+                    )
+                  ),
+                  reactableOutput(outputId = "tableOne")
                 ),
-                actionButton(
-                  inputId = "generateTable",
-                  label = "generate Table"
+                shinydashboardPlus::box(
+                  title = "PCA",
+                  status = "purple",
+                  collapsible = TRUE,
+                  solidHeader = TRUE,
+                  width = 12,
+                  mod_pcaModule_ui("pcaModule_1")
                 ),
-                reactableOutput(outputId = "tableOne"),
-                mod_pcaModule_ui("pcaModule_1"),
-                mod_groupStatModule_ui("groupStatModule_1")
+                shinydashboardPlus::box(
+                  title = "Aggregate",
+                  status = "purple",
+                  collapsible = TRUE,
+                  solidHeader = TRUE,
+                  width = 12,
+                  mod_groupStatModule_ui("groupStatModule_1")
+                )
               )
             )
           ),

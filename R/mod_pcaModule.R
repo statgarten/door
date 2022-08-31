@@ -14,10 +14,33 @@ mod_pcaModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     uiOutput(outputId = ns("biplotSlot")),
-    sliderInput(inputId = ns("slotSize"), label = "height of plot", min = 400, max = 1000, step = 50, value = 400),
-    selectInput(inputId = ns("columns"), label = "columns", choices = NULL, multiple = TRUE),
-    checkboxInput(inputId = ns("scale"), "scale"),
-    selectInput(inputId = ns("group"), label = "group", choices = NULL),
+    fluidRow(
+      column(
+        width = 4,
+        selectInput(
+          inputId = ns("columns"),
+          label = "",
+          choices = NULL,
+          multiple = TRUE
+        )
+      ),
+      column(
+        width = 4,
+        selectInput(inputId = ns("group"), label = "", choices = NULL)
+      ),
+      column(
+        width = 4,
+        fluidRow(
+          sliderInput(
+            inputId = ns("slotSize"),
+            label = "height of plot",
+            min = 400, max = 1000, step = 50, value = 400,
+            ticks = FALSE
+          ),
+          checkboxInput(inputId = ns("scale"), "variable normalize")
+        )
+      )
+    ),
     actionButton(inputId = ns("pca"), label = "draw")
   )
 }
@@ -28,7 +51,9 @@ mod_pcaModule_ui <- function(id) {
 mod_pcaModule_server <- function(id, inputData) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    showtext_auto()
     req(inputData)
+
     observeEvent(input$slotSize, { # change slot Size
       req(input$slotSize)
       output$biplotSlot <- renderUI({
@@ -42,26 +67,30 @@ mod_pcaModule_server <- function(id, inputData) {
       data <- inputData()
       updateSelectizeInput(
         inputId = "columns",
-        label = "columns",
+        label = "PCA columns (Numeric)",
         choices = names(Filter(is.numeric, data))
       )
 
       updateSelectInput(
         inputId = "group",
-        label = "group",
+        label = "Group columns (Factor)",
         choices = names(Filter(is.factor, data))
       )
     })
 
     observeEvent(input$pca, {
+      req(input$pca)
+
       data <- inputData()
-      showtext_auto()
+
       output$biplot <- renderPlotly({
         groups <- data[[input$group]]
         data <- data %>%
           select(input$columns) %>%
           replace(is.na(.), 0)
+
         pp <- prcomp(data, scale. = input$scale)
+
         ggbiplot(
           pp,
           obs.scale = 1,
@@ -70,7 +99,7 @@ mod_pcaModule_server <- function(id, inputData) {
           circle = TRUE,
           groups = groups
         ) %>%
-          ggplotly()
+        ggplotly()
       })
     })
   })
