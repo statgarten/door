@@ -174,24 +174,6 @@ app_server <- function(input, output, session) {
     ))
   })
 
-  # observeEvent(input$showesquisse, {
-  #   output$esquisse_ui2 <- renderUI({
-  #     esquisse_ui(
-  #       id = "visModule_e",
-  #       header = FALSE,
-  #       controls = c("labs", "parameters", "appearance", "code")
-  #     )
-  #   })
-  #
-  #   esquisse_server( # must have
-  #     id = "visModule_e",
-  #     data_rv = data_rv,
-  #     default_aes = reactive(input$aes),
-  #     import_from = NULL
-  #   )
-  # })
-
-
   # change language
   observeEvent(input$lang, {
     req(input$lang)
