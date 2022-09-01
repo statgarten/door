@@ -15,7 +15,7 @@ Imports:
     datatoys,
     dplyr (>= 1.0.9),
     DT (>= 0.24),
-    esquisse (>= 1.1.1.9000),
+    esquisse (>= 1.1.1),
     GGally (>= 2.1.2),
     ggbiplot (>= 0.55),
     golem (>= 0.3.2),
