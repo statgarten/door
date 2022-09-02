@@ -745,30 +745,18 @@ app_server <- function(input, output, session) {
 
       setwd(app_sys())
 
-      out <- quarto::quarto_render(
-        execute_params = list(
-          "inputData" = data_rv$data
+      out <- rmarkdown::render(
+        params = list(
+          inputData = data_rv$data
         ),
-        input = "report.qmd",
+        input = "report.Rmd",
         output_format = switch(input$format,
-          PDF = "pdf",
-          HTML = "html",
-          Word = "docx"
+          PDF = pdf_document(),
+          HTML = html_document(),
+          Word = word_document()
         )
       )
-
-      # out <- rmarkdown::render(
-      #   params = list(
-      #     inputData = data_rv$data
-      #   ),
-      #   input = "report.Rmd",
-      #   output_format = switch(input$format,
-      #     PDF = pdf_document(),
-      #     HTML = html_document(),
-      #     Word = word_document()
-      #   )
-      # )
-      # file.rename(out, file)
+      file.rename(out, file)
     }
   )
 }
