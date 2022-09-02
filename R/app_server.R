@@ -416,16 +416,7 @@ app_server <- function(input, output, session) {
 
     ## EDA
 
-    exc <- which(!columnTypes() %in% c("numeric", "integer"))
-
-    if (length(exc) == 0) {
-      exc <- NULL
-    }
-
-    obj <- board::brief(
-      inputData = inputData(),
-      exc = exc
-    )
+    obj <- board::brief(inputData = inputData())
 
     obj$unif <- ifelse(obj$unif, "True", NA)
     obj$uniq <- ifelse(obj$uniq, "True", NA)
