@@ -86,10 +86,16 @@ app_ui <- function(request) {
               id = "importModule",
               tabsetPanel(
                 tabPanel( # File (Default)
+
                   title = i18n_shiny$t("Files"),
-                  uiOutput(outputId = "datamods_import_file"),
+                  shinycssloaders::withSpinner(
+                    uiOutput(outputId = "datamods_import_file"),
+                  ),
                   h4(HTML(paste0("Example Dataset from ", tags$a("datatoys", href = "https://statgarten.github.io/datatoys/")))),
-                  uiOutput(outputId = "exampleDataset")
+                  shinycssloaders::withSpinner(
+                    uiOutput(outputId = "exampleDataset")
+                  )
+
                 ),
                 tabPanel( # URL
                   title = i18n_shiny$t("URL"),
