@@ -282,6 +282,14 @@ app_ui <- function(request) {
                   mod_pcaModule_ui("pcaModule_1")
                 ),
                 shinydashboardPlus::box(
+                  title = "tree",
+                  status = "purple",
+                  collapsible = TRUE,
+                  solidHeader = TRUE,
+                  width = 12,
+                  mod_treeModule_ui("treeModule_1")
+                ),
+                shinydashboardPlus::box(
                   title = "Aggregate",
                   status = "purple",
                   collapsible = TRUE,
