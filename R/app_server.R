@@ -26,37 +26,6 @@ app_server <- function(input, output, session) {
     i18n_shiny
   })
 
-  output$exampleDataset <- renderUI({
-    require(datatoys)
-    Choices <- c(
-      "accident", "airport", "bloodTest", "busStation", "carInspection",
-      "childAbuse", "crime", "crimePlace", "elevator", "fire",
-      "fireStation", "foodBank", "foodNutrients", "gasStation", "globalBusiness",
-      "gyeonggiER", "hospitalInfo", "housingPrice", "karaoke", "legalDong",
-      "medicalCheckup", "medicine", "nationalPension", "necessariesPrice", "odaIndex",
-      "odaKR", "odaNews", "openData", "petNames", "pharmacyInfo",
-      "pollution", "postOffice", "restaurant", "scholarship", "seoulER",
-      "tuition"
-    )
-
-    tagList(
-      shinyWidgets::pickerInput(
-        inputId = "datatoy",
-        label = NULL,
-        choices = Choices,
-        choicesOpt = list(
-          subtext = sapply(Choices, function(i) {
-            eval(parse(
-              text = paste0("paste0( nrow(datatoys::", i, '), " x ", ncol(datatoys::', i, ") )")
-            ))
-          })
-        ),
-        selected = NULL
-      ),
-      actionButton(inputId = "loadExample", label = i18n_shiny$t("Load Example data")),
-    )
-  })
-
   observeEvent(input$loadExample, {
     eval(parse(text = paste0("data_rv$data <- datatoys::", input$datatoy)))
     data_rv$name <- input$datatoy
@@ -182,6 +151,129 @@ app_server <- function(input, output, session) {
     shiny.i18n::update_lang(session, input$lang)
     i18n_r()$set_translation_language(input$lang)
 
+
+    if(input$lang == 'en'){
+      output$exampleDataset <- renderUI({
+        require(datatoys)
+        Choices <- c(
+          'accident',
+          "airport",
+          "bloodTest",
+          "busStation",
+          "carInspection",
+          "childAbuse",
+          "crime",
+          "crimePlace",
+          "elevator",
+          "fire",
+          "fireStation",
+          "foodBank",
+          "foodNutrients",
+          "gasStation",
+          "globalBusiness",
+          "gyeonggiER",
+          "hospitalInfo",
+          "housingPrice",
+          "karaoke",
+          "legalDong",
+          "medicalCheckup",
+          "medicine",
+          "nationalPension",
+          "necessariesPrice",
+          "odaIndex",
+          "odaKR",
+          "odaNews",
+          "openData",
+          "petNames",
+          "pharmacyInfo",
+          "pollution",
+          "postOffice",
+          "restaurant",
+          "scholarship",
+          "seoulER",
+          "tuition"
+        )
+
+        tagList(
+          shinyWidgets::pickerInput(
+            inputId = "datatoy",
+            label = NULL,
+            choices = Choices,
+            choicesOpt = list(
+              subtext = sapply(Choices, function(i) {
+                eval(parse(
+                  text = paste0("paste0( nrow(datatoys::", i, '), " x ", ncol(datatoys::', i, ") )")
+                ))
+              })
+            ),
+            selected = NULL
+          ),
+          actionButton(inputId = "loadExample", label = i18n_shiny$t("Load Example data")),
+        )
+      })
+    }
+    if(input$lang == 'ko'){
+      output$exampleDataset <- renderUI({
+        require(datatoys)
+        Choices <- c(
+          "사망교통사고 정보"='accident',
+          "airport",
+          "bloodTest",
+          "busStation",
+          "carInspection",
+          "childAbuse",
+          "crime",
+          "crimePlace",
+          "elevator",
+          "fire",
+          "fireStation",
+          "foodBank",
+          "foodNutrients",
+          "gasStation",
+          "globalBusiness",
+          "gyeonggiER",
+          "hospitalInfo",
+          "housingPrice",
+          "karaoke",
+          "legalDong",
+          "medicalCheckup",
+          "medicine",
+          "nationalPension",
+          "necessariesPrice",
+          "odaIndex",
+          "odaKR",
+          "odaNews",
+          "openData",
+          "petNames",
+          "pharmacyInfo",
+          "pollution",
+          "postOffice",
+          "restaurant",
+          "scholarship",
+          "seoulER",
+          "tuition"
+        )
+
+        tagList(
+          shinyWidgets::pickerInput(
+            inputId = "datatoy",
+            label = NULL,
+            choices = Choices,
+            choicesOpt = list(
+              subtext = sapply(Choices, function(i) {
+                eval(parse(
+                  text = paste0("paste0( nrow(datatoys::", i, '), " x ", ncol(datatoys::', i, ") )")
+                ))
+              })
+            ),
+            selected = NULL
+          ),
+          actionButton(inputId = "loadExample", label = i18n_shiny$t("Load Example data")),
+        )
+      })
+
+
+    }
     ## Datamods
 
     # app/www/translation/ ERROR

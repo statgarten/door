@@ -29,6 +29,7 @@
     {"en": "Reorder data", "ko": "열 순서 변경"},
     {"en": "Imported data", "ko": "준비 된 데이터"},
     {"en": "Aesthetic options", "ko": "그래프 요소 설정"},
-    {"en": "Import data", "ko": "데이터 불러오기"}
+    {"en": "Import data", "ko": "데이터 불러오기"},
+    {"en": "accident", "ko": "사망교통사고 정보"}
   ]
 }
