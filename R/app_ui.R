@@ -54,11 +54,15 @@ app_ui <- function(request) {
                 label = NULL,
                 choices = c("Import", "Vis", "EDA", "Stat", "Report", "ML"),
                 selected = "Import",
-                individual = TRUE,
-                justified = TRUE,
+                individual = FALSE,
+                size = 'xs',
+                width = '100%',
+                # direction = 'vertical', NOPE
+                justified = TRUE, #TRUE,
                 checkIcon = list(
-                  yes = tags$i(class = "fa fa-circle", style = "color: #37E2D5"),
-                  no = tags$i(class = "fa fa-circle", style = "color: #FBCB0A")
+                  # yes = tags$i(class = "fa fa-circle", style = "color: #37E2D5")
+                  #,
+                  #no = tags$i(class = "fa fa-circle", style = "color: #FBCB0A")
                 )
               )
             )
