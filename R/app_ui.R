@@ -95,7 +95,7 @@ app_ui <- function(request) {
                   shinycssloaders::withSpinner(
                     uiOutput(outputId = "datamods_import_file"),
                   ),
-                  h4(HTML(paste0("Example Dataset from ", tags$a("datatoys", href = "https://statgarten.github.io/datatoys/")))),
+                  h4(HTML(paste0(i18n_shiny$t("Example Dataset from"), " ", tags$a("datatoys", href = "https://statgarten.github.io/datatoys/")))),
                   shinycssloaders::withSpinner(
                     uiOutput(outputId = "exampleDataset")
                   )
