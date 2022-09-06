@@ -20,7 +20,6 @@ mod_treeModule_ui <- function(id) {
         selectInput(ns("x"), "x", choices = NULL, multiple = TRUE, width = "100%"),
         selectInput(ns("y"), "y", choices = NULL, width = "100%")
       ),
-
       column(
         width = 4,
         selectInput(ns("nodePlotX"), "nodePlotX", choices = NULL, width = "100%"),
@@ -49,7 +48,7 @@ mod_treeModule_server <- function(id, inputData) {
     ns <- session$ns
     req(inputData)
 
-    observeEvent(inputData(),{
+    observeEvent(inputData(), {
       data <- inputData()
       updateSelectizeInput(
         inputId = "x",
@@ -80,7 +79,6 @@ mod_treeModule_server <- function(id, inputData) {
         label = "nodePlotShape",
         choices = colnames(data)
       )
-
     })
 
     observeEvent(input$openNode, {
@@ -135,10 +133,10 @@ mod_treeModule_server <- function(id, inputData) {
 
       x <- paste0(input$x, collapse = " + ") # 1
       f <- as.formula(paste0(input$y, " ~ ", x)) # 2, 3
-      tr_tree <- lmtree(f, data = inputData())
 
-      output$plot <- renderPlot({
-        ggparty(
+      if (input$y %in% names(Filter(is.numeric, inputData()))) {
+        tr_tree <- lmtree(f, data = inputData())
+        ggtree <- ggparty(
           tr_tree,
           terminal_space = ifelse(is.null(input$terminalSpace), 0.5, input$terminalSpace), # 4
           add_vars = list(p.value = "$node$info$p.value")
@@ -171,7 +169,39 @@ mod_treeModule_server <- function(id, inputData) {
               col = ifelse(is.null(input$predictColor), "grey", input$predictColor),
               size = ifelse(is.null(input$predictSize), 1, input$predictSize)
             )
+          )
+      } # numeric
+      else {
+        tr_tree <- ctree(f, data = inputData())
+
+        ggtree <- ggparty(
+          tr_tree,
+          terminal_space = ifelse(is.null(input$terminalSpace), 0.5, input$terminalSpace), # 4
+          add_vars = list(p.value = "$node$info$p.value")
+        ) +
+          geom_edge(size = ifelse(is.null(input$edgeSize), 1, input$edgeSize)) + # 5
+          geom_edge_label(
+            colour = ifelse(is.null(input$edgeLabelColor), "grey", input$edgeLabelColor), # 11
+            size = ifelse(is.null(input$edgeLabelSize), 1, input$edgeLabelSize) # 6
           ) +
+          geom_node_plot(
+            gglist = list(
+              geom_bar(
+                aes_string(x = "''", fill = input$y),
+                position = position_fill()
+              ),
+              xlab(input$y)
+            ),
+            scales = "fixed",
+            id = "terminal",
+            shared_axis_labels = T,
+            shared_legend = T,
+            legend_separator = T
+          )
+      } # categoric
+
+      output$plot <- renderPlot({
+        ggtree +
           geom_node_label(aes(col = splitvar),
             line_list = list(
               aes(label = splitvar),
