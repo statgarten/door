@@ -298,6 +298,15 @@ app_ui <- function(request) {
                   mod_mlrModule_ui("mlrModule_1")
                 ),
                 shinydashboardPlus::box(
+                  title = "cluster",
+                  status = "purple",
+                  collapsible = TRUE,
+                  solidHeader = TRUE,
+                  width = 12,
+                  mod_kmsModule_ui("kmsModule_1")
+                ),
+
+                shinydashboardPlus::box(
                   title = "Aggregate",
                   status = "purple",
                   collapsible = TRUE,

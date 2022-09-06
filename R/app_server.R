@@ -397,6 +397,7 @@ app_server <- function(input, output, session) {
   # Stat
   mod_pcaModule_server("pcaModule_1", inputData)
   mod_treeModule_server("treeModule_1", inputData)
+  mod_kmsModule_server("kmsModule_1", inputData)
   mod_mlrModule_server("mlrModule_1", inputData)
   mod_groupStatModule_server("groupStatModule_1", inputData)
 
