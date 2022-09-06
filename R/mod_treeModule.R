@@ -6,8 +6,10 @@
 #'
 #' @noRd
 #' @import ggparty
+#' @import ggplot2
 #' @importFrom shiny NS tagList
 #' @importFrom colourpicker colourInput
+#' @importFrom partykit lmtree
 mod_treeModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -15,14 +17,15 @@ mod_treeModule_ui <- function(id) {
     fluidRow(
       column(
         width = 4,
-        selectInput(ns("x"), "x", choices = colnames(TeachingRatings), multiple = TRUE, width = "100%"),
-        selectInput(ns("y"), "y", choices = colnames(TeachingRatings), width = "100%")
+        selectInput(ns("x"), "x", choices = NULL, multiple = TRUE, width = "100%"),
+        selectInput(ns("y"), "y", choices = NULL, width = "100%")
       ),
+
       column(
         width = 4,
-        selectInput(ns("nodePlotX"), "nodePlotX", choices = colnames(TeachingRatings), width = "100%"),
-        selectInput(ns("nodePlotColor"), "nodePlotColor", choices = colnames(TeachingRatings), width = "100%"),
-        selectInput(ns("nodePlotShape"), "nodePlotShape", choices = colnames(TeachingRatings), width = "100%"),
+        selectInput(ns("nodePlotX"), "nodePlotX", choices = NULL, width = "100%"),
+        selectInput(ns("nodePlotColor"), "nodePlotColor", choices = NULL, width = "100%"),
+        selectInput(ns("nodePlotShape"), "nodePlotShape", choices = NULL, width = "100%"),
         sliderInput(ns("nodePlotAlpha"), "nodePlotAlpha", min = 0, max = 1, value = 0.5, step = 0.1, width = "100%")
       ),
       column(
@@ -45,6 +48,41 @@ mod_treeModule_server <- function(id, inputData) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     req(inputData)
+
+    observeEvent(inputData(),{
+      data <- inputData()
+      updateSelectizeInput(
+        inputId = "x",
+        label = "x",
+        choices = colnames(data)
+      )
+
+      updateSelectizeInput(
+        inputId = "y",
+        label = "y",
+        choices = colnames(data)
+      )
+
+      updateSelectizeInput(
+        inputId = "nodePlotX",
+        label = "nodePlotX",
+        choices = colnames(data)
+      )
+
+      updateSelectizeInput(
+        inputId = "nodePlotColor",
+        label = "nodePlotShape",
+        choices = colnames(data)
+      )
+
+      updateSelectizeInput(
+        inputId = "nodePlotShape",
+        label = "nodePlotShape",
+        choices = colnames(data)
+      )
+
+    })
+
     observeEvent(input$openNode, {
       showModal(
         modalDialog(
@@ -89,6 +127,8 @@ mod_treeModule_server <- function(id, inputData) {
         )
       )
     })
+
+    require(ggparty)
 
     observeEvent(input$tree, {
       req(input$tree)
