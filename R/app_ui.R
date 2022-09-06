@@ -290,6 +290,14 @@ app_ui <- function(request) {
                   mod_treeModule_ui("treeModule_1")
                 ),
                 shinydashboardPlus::box(
+                  title = "mlr",
+                  status = "purple",
+                  collapsible = TRUE,
+                  solidHeader = TRUE,
+                  width = 12,
+                  mod_mlrModule_ui("mlrModule_1")
+                ),
+                shinydashboardPlus::box(
                   title = "Aggregate",
                   status = "purple",
                   collapsible = TRUE,
