@@ -55,6 +55,11 @@ Imports:
     writexl (>= 1.4.0)
 Suggests: 
     knitr
+Remotes:
+    github::statgarten/board,
+    github::statgarten/scissor,
+    github::statgarten/datatoys,
+    github::statgarten/stove
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
