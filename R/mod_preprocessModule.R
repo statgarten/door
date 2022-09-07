@@ -116,7 +116,7 @@ mod_preprocessModule_server <- function(id, splitresult) {
       req(splitresult())
       data <- splitresult()$train
 
-      result <- goophi::prepForCV(
+      result <- stove::prepForCV(
         data = data,
         formula = formula(),
         imputation = input$impute,

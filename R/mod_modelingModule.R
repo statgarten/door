@@ -844,7 +844,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
       if (input$algo == "LogisticR") {
         modelObj <- reactive({
-          Obj <- goophi::logisticRegression(
+          Obj <- stove::logisticRegression(
             algo = input$algo,
             engine = input$engine,
             mode = input$mode,
@@ -873,7 +873,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
       if (input$algo == "LinearR") {
         modelObj <- reactive({
-          Obj <- goophi::linearRegression(
+          Obj <- stove::linearRegression(
             algo = input$algo,
             engine = input$engine,
             mode = input$mode,
@@ -903,7 +903,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
       ## CHECK
       if (input$algo == "KNN") {
         modelObj <- reactive({
-          Obj <- goophi::KNN(
+          Obj <- stove::KNN(
             algo = input$algo,
             engine = input$engine,
             mode = input$mode,
@@ -931,7 +931,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
       if (input$algo == "NB") {
         modelObj <- reactive({
-          Obj <- goophi::naiveBayes(
+          Obj <- stove::naiveBayes(
             algo = input$algo,
             engine = input$engine,
             mode = input$mode,
@@ -961,7 +961,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
       if (input$algo == "MLP") {
         modelObj <- reactive({
-          Obj <- goophi::MLP(
+          Obj <- stove::MLP(
             algo = input$algo,
             engine = input$engine,
             mode = input$mode,
@@ -994,7 +994,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
       if (input$algo == "DT") {
         modelObj <- reactive({
-          Obj <- goophi::decisionTree(
+          Obj <- stove::decisionTree(
             algo = input$algo,
             engine = input$engine,
             mode = input$mode,
@@ -1028,7 +1028,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
       if (input$algo == "RF") {
         modelObj <- reactive({
 
-          Obj <- goophi::randomForest(
+          Obj <- stove::randomForest(
             algo = input$algo,
             engine = input$engine,
             mode = input$mode,
@@ -1061,7 +1061,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
       if (input$algo == "XGBoost") {
         modelObj <- reactive({
-          Obj <- goophi::xgBoost(
+          Obj <- stove::xgBoost(
             algo = input$algo,
             engine = input$engine,
             mode = input$mode,
@@ -1107,7 +1107,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
       if (input$algo == "lightGBM") {
         modelObj <- reactive({
-          Obj <- goophi::lightGbm(
+          Obj <- stove::lightGbm(
             algo = input$algo,
             engine = input$engine,
             mode = input$mode,
@@ -1151,7 +1151,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         data <- rbind(splitresult()$train, splitresult()$test)
 
         modelObj <- reactive({
-          Obj <- goophi::kMeansClustering(
+          Obj <- stove::kMeansClustering(
             data = data,
             maxK = input$maxK,
             nStart = input$nStart,
@@ -1203,7 +1203,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
       if (input$reportML == "LinearR_glmnet") {
         Obj <- models_list()$LinearR_glmnet
 
-        vis_result <- goophi::regressionPlot(
+        vis_result <- stove::regressionPlot(
           modelName = "LinearR_glmnet",
           modelsList = models_list(),
           targetVar = splitresult()$target
@@ -1211,7 +1211,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
         output$RegressionPlot <- renderPlot(vis_result)
         output$EvalMatrix <- renderPrint({
-          goophi::evalMetricsR(
+          stove::evalMetricsR(
             modelsList = models_list(),
             targetVar = splitresult()$target
           )
@@ -1221,13 +1221,13 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
       if (input$reportML == "LogisticR_glmnet") {
         Obj <- models_list()$LogisticR_glmnet
 
-        rc <- goophi::rocCurve(
+        rc <- stove::rocCurve(
           modelsList = models_list(),
           targetVar = splitresult()$target
         )
         output$rocCurve <- renderPlot(rc)
 
-        cm <- goophi::confusionMatrix(
+        cm <- stove::confusionMatrix(
           modelName = "LogisticR_glmnet",
           modelsList = models_list(),
           targetVar = splitresult()$target
@@ -1236,7 +1236,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         output$confusionMatrix <- renderPlot(cm)
 
         output$EvalMatrix <- renderPrint({
-          goophi::evalMetricsC(
+          stove::evalMetricsC(
             modelsList = models_list(),
             targetVar = splitresult()$target
           )
