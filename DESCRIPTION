@@ -10,6 +10,7 @@ BugReports: https://github.com/statgarten/door/issues
 Imports: 
     board,
     caret (>= 6.0-93),
+    cicerone,
     colourpicker (>= 1.1.1),
     config (>= 0.3.1),
     data.table (>= 1.14.2),
@@ -25,6 +26,7 @@ Imports:
     ggparty (>= 1.0.0),
     ggplot2 (>= 3.3.6),
     golem (>= 0.3.2),
+    goophi,
     haven (>= 2.5.1),
     htmlwidgets (>= 1.5.4),
     jstable (>= 1.0.7),
@@ -55,14 +57,14 @@ Imports:
     writexl (>= 1.4.0)
 Suggests:
     knitr
+VignetteBuilder: 
+    knitr
 Remotes:
     github::statgarten/board,
     github::statgarten/datatoys,
     github::statgarten/scissor,
     github::statgarten/stove,
     github::vqv/ggbiplot
-VignetteBuilder: 
-    knitr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1

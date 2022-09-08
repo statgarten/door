@@ -11,6 +11,7 @@
 #' @import esquisse
 #' @import shiny.i18n
 #' @importFrom shinydashboard dashboardBody
+#' @import cicerone
 #' @importFrom shinydashboardPlus box dashboardHeader dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput
 #' @importFrom shinyBS bsTooltip bsPopover bsButton
@@ -37,13 +38,16 @@ app_ui <- function(request) {
             choiceValues = i18n_shiny$get_languages(),
             selected = NULL,
             individual = TRUE
-          )
+          ),
+          actionButton('guideme', 'guide!'),
+          actionButton('github', 'github', onclick = "window.open('http://www.statgarten.com', '_blank')")
         )
       ),
       # Sidebar
       sidebar = dashboardSidebar(disable = TRUE, minified = FALSE, width = 0),
       body = dashboardBody(
         useShinyjs(),
+        use_cicerone(),
         fluidPage(
           ## Module Selector
           shinyjs::disabled( # used to enable after file upload
@@ -80,7 +84,12 @@ app_ui <- function(request) {
                 status = "purple",
                 width = 12,
                 reactable::reactableOutput(outputId = "DT")
-              )
+              ),
+              actionButton(inputId = "showUpdateModule", label = i18n_shiny$t("Update Data")), ## Update
+              actionButton(inputId = "showFilterModule", label = i18n_shiny$t("Filter Data")), ## Filter
+              actionButton(inputId = "showTransformModule", label = i18n_shiny$t("Transform Data")), ## Transform
+              actionButton(inputId = "showReorderModule", label = i18n_shiny$t("Reorder Data")), ## Reorder
+              actionButton(inputId = "showExportModule", label = i18n_shiny$t("Export Data")) ## Export
             )
           ),
           ### Import panel
@@ -89,17 +98,12 @@ app_ui <- function(request) {
             div(
               id = "importModule",
               tabsetPanel(
+                id = 'ImportTabsetPanel',
                 tabPanel( # File (Default)
-
                   title = i18n_shiny$t("Files"),
                   shinycssloaders::withSpinner(
                     uiOutput(outputId = "datamods_import_file"),
-                  ),
-                  h4(HTML(paste0(i18n_shiny$t("Example Dataset from"), " ", tags$a("datatoys", href = "https://statgarten.github.io/datatoys/")))),
-                  shinycssloaders::withSpinner(
-                    uiOutput(outputId = "exampleDataset")
                   )
-
                 ),
                 tabPanel( # URL
                   title = i18n_shiny$t("URL"),
@@ -144,17 +148,15 @@ app_ui <- function(request) {
                 tabPanel( # Google Sheet
                   title = i18n_shiny$t("Google Sheet"),
                   uiOutput(outputId = "datamods_import_googlesheets")
+                ),
+                tabPanel( # datatoys
+                  id = 'tabPanelDatatoys',
+                  title = 'Datatoys',
+                  h4(HTML(paste0(i18n_shiny$t("Example Dataset from"), " ", tags$a("datatoys", href = "https://statgarten.github.io/datatoys/")))),
+                    shinycssloaders::withSpinner(
+                      uiOutput(outputId = "exampleDataset")
+                    )
                 )
-              )
-            ),
-            shinyjs::hidden(
-              div(
-                id = "importModuleActionButtons",
-                actionButton(inputId = "showUpdateModule", label = i18n_shiny$t("Update Data")), ## Update
-                actionButton(inputId = "showFilterModule", label = i18n_shiny$t("Filter Data")), ## Filter
-                actionButton(inputId = "showTransformModule", label = i18n_shiny$t("Transform Data")), ## Transform
-                actionButton(inputId = "showReorderModule", label = i18n_shiny$t("Reorder Data")), ## Reorder
-                actionButton(inputId = "showExportModule", label = i18n_shiny$t("Export Data")) ## Export
               )
             )
           ),
@@ -163,14 +165,13 @@ app_ui <- function(request) {
           conditionalPanel(
             condition = 'input.module == "Vis"',
               div(
-                id = "visModule",
-                # actionButton('showesquisse', 'Initiate visualize'),
                 shinydashboardPlus::box(
                   title = "General Visualization",
                   status = "purple",
                   collapsible = TRUE,
                   solidHeader = TRUE,
                   width = 12,
+                  id = 'visBox',
                   shinyWidgets::checkboxGroupButtons(
                     inputId = "aes",
                     label = i18n_shiny$t("Aesthetic options"),
@@ -195,9 +196,8 @@ app_ui <- function(request) {
           ### EDA panel
           conditionalPanel(
             condition = 'input.module == "EDA"',
-            shinyjs::hidden(
               div(
-                id = "edaModule",
+                id = 'edabox',
                 shinydashboardPlus::box(
                   title = "Dataset Description",
                   status = "purple",
@@ -239,161 +239,112 @@ app_ui <- function(request) {
                   )
                 )
               )
-            )
           ),
           ## Stat Panel
           conditionalPanel(
             condition = 'input.module == "Stat"',
-            shinyjs::hidden(
-              div(
-                id = "StatModule",
-                shinydashboardPlus::box(
-                  title = "jsTable",
-                  status = "purple",
-                  collapsible = TRUE,
-                  solidHeader = TRUE,
-                  width = 12,
-                  fluidRow(
-                    column(
-                      width = 6,
-                      selectInput(
-                        inputId = "tableOneStrata",
-                        label = "Group by",
-                        choices = NULL,
-                        selected = NULL
-                      )
-                    ),
-                    column(
-                      width = 6,
-                      actionButton(
-                        inputId = "generateTable",
-                        label = "generate Table"
-                      )
+            div(
+              shinydashboardPlus::box(
+                title = "jsTable",
+                status = "purple",
+                collapsible = TRUE,
+                solidHeader = TRUE,
+                width = 12,
+                fluidRow(
+                  column(
+                    width = 6,
+                    selectInput(
+                      inputId = "tableOneStrata",
+                      label = "Group by",
+                      choices = NULL,
+                      selected = NULL
                     )
                   ),
-                  reactableOutput(outputId = "tableOne")
+                  column(
+                    width = 6,
+                    actionButton(
+                      inputId = "generateTable",
+                      label = "generate Table"
+                    )
+                  )
                 ),
-                shinydashboardPlus::box(
-                  title = "PCA",
-                  status = "purple",
-                  collapsible = TRUE,
-                  solidHeader = TRUE,
-                  width = 12,
-                  mod_pcaModule_ui("pcaModule_1")
-                ),
-                shinydashboardPlus::box(
-                  title = "tree",
-                  status = "purple",
-                  collapsible = TRUE,
-                  solidHeader = TRUE,
-                  width = 12,
-                  mod_treeModule_ui("treeModule_1")
-                ),
-                shinydashboardPlus::box(
-                  title = "mlr",
-                  status = "purple",
-                  collapsible = TRUE,
-                  solidHeader = TRUE,
-                  width = 12,
-                  mod_mlrModule_ui("mlrModule_1")
-                ),
-                shinydashboardPlus::box(
-                  title = "cluster",
-                  status = "purple",
-                  collapsible = TRUE,
-                  solidHeader = TRUE,
-                  width = 12,
-                  mod_kmsModule_ui("kmsModule_1")
-                ),
-
-                shinydashboardPlus::box(
-                  title = "Aggregate",
-                  status = "purple",
-                  collapsible = TRUE,
-                  solidHeader = TRUE,
-                  width = 12,
-                  mod_groupStatModule_ui("groupStatModule_1")
-                )
+                reactableOutput(outputId = "tableOne")
+              ),
+              shinydashboardPlus::box(
+                title = "PCA",
+                status = "purple",
+                collapsible = TRUE,
+                solidHeader = TRUE,
+                width = 12,
+                mod_pcaModule_ui("pcaModule_1")
+              ),
+              shinydashboardPlus::box(
+                title = "tree",
+                status = "purple",
+                collapsible = TRUE,
+                solidHeader = TRUE,
+                width = 12,
+                mod_treeModule_ui("treeModule_1")
+              ),
+              shinydashboardPlus::box(
+                title = "mlr",
+                status = "purple",
+                collapsible = TRUE,
+                solidHeader = TRUE,
+                width = 12,
+                mod_mlrModule_ui("mlrModule_1")
+              ),
+              shinydashboardPlus::box(
+                title = "cluster",
+                status = "purple",
+                collapsible = TRUE,
+                solidHeader = TRUE,
+                width = 12,
+                mod_kmsModule_ui("kmsModule_1")
+              ),
+              shinydashboardPlus::box(
+                title = "Aggregate",
+                status = "purple",
+                collapsible = TRUE,
+                solidHeader = TRUE,
+                width = 12,
+                mod_groupStatModule_ui("groupStatModule_1")
               )
             )
           ),
           ## ML Panel
           conditionalPanel(
             condition = 'input.module == "ML"',
-            shinyjs::hidden(
-              div(
-                id = "MLModule",
-                ## split
-                shinydashboardPlus::box(
-                  style = "height:50vh; overflow-y: scroll;",
-                  title = "Data Setup",
-                  collapsible = TRUE,
-                  collapsed = FALSE,
-                  solidHeader = TRUE,
-                  status = "purple",
-                  width = 12,
-                  mod_ttSplitModule_ui(id = "ttSplitModule_1")
-                  # ,
-                  # footer = actionButton(
-                  #   inputId = ("applyML"),
-                  #   label = tagList(
-                  #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                  #     i18n("Apply changes")
-                  #   ),
-                  #   width = "100%"
-                  # )
-                ),
-                ## preprocess
-
-                # shinydashboardPlus::box(
-                #   style = "height:400px; overflow-y: scroll;",
-                #   title = "Preprocess",
-                #   collapsible = TRUE,
-                #   collapsed = FALSE,
-                #   solidHeader = TRUE,
-                #   status = "purple",
-                #   width = 12
-                #   # mod_preprocessModule_ui("preprocessModule_1") # ,
-                #   # footer = actionButton(
-                #   #   inputId = ("applyML"),
-                #   #   label = tagList(
-                #   #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                #   #     i18n("Apply changes")
-                #   #   ),
-                #   #   width = "100%"
-                #   # )
-                # ),
-                shinydashboardPlus::box(
-                  style = "height:400px;",
-                  title = "Modeling",
-                  collapsible = TRUE,
-                  collapsed = FALSE,
-                  solidHeader = TRUE,
-                  status = "purple",
-                  width = 12,
-                  mod_modelingModule_ui("modelingModule_1") # ,
-                  # footer = actionButton(
-                  #   inputId = ("applyML"),
-                  #   label = tagList(
-                  #     phosphoricons::ph("arrow-circle-right", title = i18n("Apply changes")),
-                  #     i18n("Apply changes")
-                  #   ),
-                  #   width = "100%"
-                  # )
-                )
+            div(
+              ## split
+              shinydashboardPlus::box(
+                style = "height:50vh; overflow-y: scroll;",
+                title = "Data Setup",
+                collapsible = TRUE,
+                collapsed = FALSE,
+                solidHeader = TRUE,
+                status = "purple",
+                width = 12,
+                mod_ttSplitModule_ui(id = "ttSplitModule_1")
+              ),
+              shinydashboardPlus::box(
+                style = "height:400px;",
+                title = "Modeling",
+                collapsible = TRUE,
+                collapsed = FALSE,
+                solidHeader = TRUE,
+                status = "purple",
+                width = 12,
+                mod_modelingModule_ui("modelingModule_1")
               )
-            ),
+            )
           ),
-
           ## Report Panel
           conditionalPanel(
             condition = 'input.module == "Report"',
-            shinyjs::hidden(
-              div(
-                id = "ReportModule",
-                radioButtons("format", "Document format", c("PDF", "HTML", "Word"), inline = TRUE),
-                downloadButton(outputId = "downloadReport")
-              )
+            div(
+              radioButtons("format", "Document format", c("PDF", "HTML", "Word"), inline = TRUE),
+              downloadButton(outputId = "downloadReport")
             )
           )
         )

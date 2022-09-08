@@ -9,6 +9,7 @@
 #' @importFrom reactable renderReactable
 #' @importFrom shinydashboardPlus descriptionBlock
 #' @importFrom GGally ggcorr
+#' @import cicerone
 #' @importFrom shinyjs hide show
 #' @importFrom tibble as_tibble
 #' @import datamods
@@ -19,22 +20,126 @@ app_server <- function(input, output, session) {
   options(shiny.maxRequestSize = 30 * 1024^2) # file upload size 30mb
   # calling the translator sent as a golem option
 
+  # i18n
   i18n_shiny <- golem::get_golem_options(which = "translator")
   i18n_shiny$set_translation_language("en")
 
-  i18n_r <- reactive({
-    i18n_shiny
+  i18n_r <- reactive({ i18n_shiny })
+
+  # cicerone
+
+  guide <- Cicerone$
+    new()$
+    step( # datatoys;
+      el = 'ImportTabsetPanel', # tabset id
+      title = 'provides 4 data type',
+      description = 'file, url, google sheet and public data. click datatoys'
+    )$
+    step(
+      el = 'exampleDataset',
+      title = 'dataset',
+      description = 'select accident and push Load Example data'
+    )$
+    step(
+      el = 'DT',
+      title = 'updated data',
+      description = 'desc1. next, 500+ 500, sort column'
+    )$
+    step(
+      el = 'showUpdateModule',
+      title = 'update function',
+      description = '<a href="https://google.com">update Button with link</a>'
+    )$
+    step(
+      el = 'module',
+      title = 'modules',
+      description = 'try EDA; other guide will here link'
+    )$
+    step(
+      el = 'corplot',
+      title = 'edabox',
+      description = 'you can see data profile'
+    )$
+    step(
+      el = 'module',
+      title = 'modules',
+      description = 'other modules also can used. refer our manual. enjoy! '
+    )
+
+  observeEvent(input$guideme, {
+    guide$init()$start()
   })
 
+
+  # landing
+
+  # showModal(
+  #   modalDialog(
+  #     title = 'welcome to statgarten',
+  #     p('description'),
+  #     p('blah'),
+  #     p('blah'),
+  #     actionButton('guide', 'guide'),
+  #     actionButton('na', 'na'),
+  #     easyClose = FALSE,
+  #     footer = NULL
+  #   )
+  # )
+
+  observeEvent(input$na, {
+    removeModal()
+  })
+
+  observeEvent(input$guide, {
+    removeModal()
+    guide$init()$start()
+  })
+
+
+
+  ## import Panel
+
+  # datatoy load data
   observeEvent(input$loadExample, {
     eval(parse(text = paste0("data_rv$data <- datatoys::", input$datatoy)))
     data_rv$name <- input$datatoy
     inputData(data_rv$data)
   })
 
+  # EXAMPLE IMPORT IN URL
+  observeEvent(input$exampleURL, {
+    updateTextInputIcon(
+      session = session,
+      inputId = "importModule_2-link",
+      value = "https://github.com/statgarten/door/raw/main/example_g1e.xlsx"
+    )
+  })
+
+  observeEvent(input$exampleR, {
+    updateTextInputIcon(
+      session = session,
+      inputId = "importModule_2-link",
+      value = "https://github.com/statgarten/goophi/raw/main/data/boston_r.csv"
+    )
+  })
+
+  observeEvent(input$exampleC, {
+    updateTextInputIcon(
+      session = session,
+      inputId = "importModule_2-link",
+      value = "https://github.com/statgarten/goophi/raw/main/data/boston_c.csv"
+    )
+  })
+
+  # update
   observeEvent(input$showUpdateModule, {
     showModal(modalDialog(
+      id = 'updateModal',
       h3(i18n_shiny$t("Update data")),
+      descriptionBlock('1. Uncheck: not use that column'),
+      descriptionBlock('2. Replace Name: rename that column'),
+      descriptionBlock('3. New class: change column type'),
+      descriptionBlock('4. Click Apply changes button below.'),
       ui2(
         id = "updateModule_1" # removed unneccessary part
       ),
@@ -51,6 +156,7 @@ app_server <- function(input, output, session) {
     ))
   })
 
+  # export
   observeEvent(input$showExportModule, {
     showModal(modalDialog(
       h3(i18n_shiny$t("Export data")),
@@ -60,6 +166,7 @@ app_server <- function(input, output, session) {
     ))
   })
 
+  # filter
   observeEvent(input$showFilterModule, {
     showModal(modalDialog(
       h3(i18n_shiny$t("Filter data")),
@@ -77,6 +184,7 @@ app_server <- function(input, output, session) {
     ))
   })
 
+  # transform
   observeEvent(input$showTransformModule, {
     showModal(modalDialog(
       h3(i18n_shiny$t("Transform data")),
@@ -126,6 +234,7 @@ app_server <- function(input, output, session) {
     ))
   })
 
+  # reorder
   observeEvent(input$showReorderModule, {
     showModal(modalDialog(
       h3(i18n_shiny$t("Reorder data")),
@@ -151,10 +260,14 @@ app_server <- function(input, output, session) {
     shiny.i18n::update_lang(session, input$lang)
     i18n_r()$set_translation_language(input$lang)
 
+    ## Datamods
+    app_dir <- system.file(package = "door")
 
+    ## Datatoys
+    require(datatoys, quietly = TRUE)
     if(input$lang == 'en'){
       output$exampleDataset <- renderUI({
-        require(datatoys)
+
         Choices <- c(
           'accident',
           "airport",
@@ -212,9 +325,10 @@ app_server <- function(input, output, session) {
         )
       })
     }
+
     if(input$lang == 'ko'){
       output$exampleDataset <- renderUI({
-        require(datatoys)
+
         Choices <- c(
           "사망교통사고 정보"='accident',
           "전세계 공항정보"="airport",
@@ -274,13 +388,6 @@ app_server <- function(input, output, session) {
 
 
     }
-    ## Datamods
-
-    # app/www/translation/ ERROR
-    # www/translation/ error
-    # inst/app/www/translation FINE with ctrl shift 0
-
-    app_dir <- system.file(package = "door")
 
     # Datamods
     datamods::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang, ".csv"))
@@ -306,21 +413,6 @@ app_server <- function(input, output, session) {
       )
     })
 
-    # if(!is.null(data_rv$data)){ # not to show when starts
-    #
-    #   # Esquisse
-    #
-    #   # esquisse::set_i18n(paste0(app_dir, "/app/www/translations/", input$lang,".csv"))
-    #   # solved with datamods
-    #
-    #   esquisse_server(
-    #     id = "visModule_e",
-    #     data_rv = data_rv,
-    #     default_aes = reactive(input$aes),
-    #     import_from = NULL
-    #   )
-    # }
-
     # re-render url module
     output$datamods_import_url <- renderUI({
       datamods::import_url_ui(id = "importModule_2")
@@ -331,7 +423,9 @@ app_server <- function(input, output, session) {
     })
   })
 
-  require(tibble)
+  require(tibble, quietly = TRUE)
+
+  ## reactive data declare
 
   # import
   data_rv <- reactiveValues(data = NULL)
@@ -342,59 +436,29 @@ app_server <- function(input, output, session) {
   data_ml <- reactiveValues(train = NULL, test = NULL)
   trainData <- reactiveVal(NULL)
   testData <- reactiveVal(NULL)
-
   models_list <- reactiveVal(list())
 
   # Stats
-  # tableOne <- reactiveVal(NULL)
 
   # Reports
   rmarkdownParams <- reactiveVal(NULL)
 
-  # EXAMPLE IMPORT
-  observeEvent(input$exampleURL, {
-    updateTextInputIcon(
-      session = session,
-      inputId = "importModule_2-link",
-      value = "https://github.com/statgarten/door/raw/main/example_g1e.xlsx"
-    )
-  })
-
-  observeEvent(input$exampleR, {
-    updateTextInputIcon(
-      session = session,
-      inputId = "importModule_2-link",
-      value = "https://github.com/statgarten/goophi/raw/main/data/boston_r.csv"
-    )
-  })
-  observeEvent(input$exampleC, {
-    updateTextInputIcon(
-      session = session,
-      inputId = "importModule_2-link",
-      value = "https://github.com/statgarten/goophi/raw/main/data/boston_c.csv"
-    )
-  })
-
-
   # EDA Plot
-  # ggobj <- reactiveVal(NULL) # relation scatter chart # RELATION NOT USED
-
   distobj <- reactiveVal(NULL) # variable histogram
   distobj2 <- reactiveVal(NULL) # variable pie chart
   uiobj <- reactiveVal(NULL) # variable quantitle box
 
-  # output$corplot2 <- renderPlot(ggobj()) # NOT USED?
   output$distplot <- renderPlot(distobj())
   output$distplot2 <- renderPlot(distobj2())
   output$distBox <- renderUI(uiobj())
 
-  # Vis
+  # Vis Panel
   plotlyobj <- reactiveVal(NULL)
   output$plot <- renderPlotly(plotlyobj())
 
   mod_mapVisModule_server("mapVisModule_1", inputData)
 
-  # Stat
+  # Stat Panel
   mod_pcaModule_server("pcaModule_1", inputData)
   mod_treeModule_server("treeModule_1", inputData)
   mod_kmsModule_server("kmsModule_1", inputData)
@@ -402,6 +466,9 @@ app_server <- function(input, output, session) {
   mod_groupStatModule_server("groupStatModule_1", inputData)
 
 
+  ## after data uploaded
+
+  # from file
   from_file <- import_file_server(
     id = "importModule_1",
     read_fns = list(
@@ -429,9 +496,8 @@ app_server <- function(input, output, session) {
     inputData(data_rv$data)
   })
 
-  from_url <- import_url_server(
-    id = "importModule_2"
-  )
+  # from url
+  from_url <- import_url_server( id = "importModule_2" )
 
   observeEvent(from_url$data(), {
     data_rv$data <- from_url$data()
@@ -439,9 +505,8 @@ app_server <- function(input, output, session) {
     inputData(data_rv$data)
   })
 
-  from_gs <- import_googlesheets_server(
-    id = "importModule_3"
-  )
+  # from google sheet
+  from_gs <- import_googlesheets_server( id = "importModule_3" )
 
   observeEvent(from_gs$data(), {
     data_rv$data <- from_gs$data()
@@ -449,6 +514,7 @@ app_server <- function(input, output, session) {
     inputData(data_rv$data)
   })
 
+  # stat: table one
   observeEvent(input$generateTable, {
     req(input$generateTable)
 
@@ -464,9 +530,12 @@ app_server <- function(input, output, session) {
     })
   })
 
-  observeEvent(data_rv$data, { # Data loaded
-    inputData(data_rv$data)
+  # Data loaded
+  observeEvent(data_rv$data, {
+    inputData(data_rv$data) # set data
     shinyjs::enable(id = "moduleSelector")
+
+    # tableone update
     updateSelectInput(
       inputId = "tableOneStrata",
       label = "Group by",
@@ -474,6 +543,7 @@ app_server <- function(input, output, session) {
       selected = NULL
     )
 
+    # esquisse render
     output$esquisse_ui2 <- renderUI({
       esquisse_ui(
         id = "visModule_e",
@@ -489,29 +559,17 @@ app_server <- function(input, output, session) {
       import_from = NULL
     )
 
-    ## double ui2 declare not work
-
-
-
+    ## NOTE: double ui2 declare not work
 
     # Module -> Body
     show(id = "viewModule")
     hide(id = "importModule")
-    # show(id = "visModule")
-    show(id = "edaModule")
-    show(id = "StatModule")
-    show(id = "MLModule")
-    show(id = "ReportModule")
-
-    show(id = "importModuleActionButtons")
 
     # define column types
     columnTypes <- defineColumnTypes(data_rv$data)
 
     ## EDA
-
     obj <- board::brief(inputData = inputData())
-
     obj$unif <- ifelse(obj$unif, "True", NA)
     obj$uniq <- ifelse(obj$uniq, "True", NA)
 
@@ -529,6 +587,7 @@ app_server <- function(input, output, session) {
     if (!is.null(obj$cors)) {
       output$corplot <- renderPlot(GGally::ggcorr(obj$cors))
     } # if is not null, draw correlation plot
+
     output$dataDimension <- renderUI(
       descriptionBlock(
         header = paste0(obj$desc$nrow, " X ", obj$desc$ncol),
@@ -537,6 +596,7 @@ app_server <- function(input, output, session) {
         marginBottom = FALSE
       )
     )
+
     output$missingData <- renderUI(
       descriptionBlock(
         header = paste0(obj$desc$missingCellCount, "(", obj$desc$missingCellRatio, "%)"),
@@ -545,6 +605,7 @@ app_server <- function(input, output, session) {
         marginBottom = FALSE
       )
     )
+
     updateSelectInput(
       inputId = "variableSelect",
       label = "variable",
@@ -563,8 +624,6 @@ app_server <- function(input, output, session) {
       )
     )
   })
-
-
 
   ## Main table (View)
 
@@ -585,7 +644,6 @@ app_server <- function(input, output, session) {
       striped = TRUE
     )
   })
-
 
   # table on import (realtime updates)
   output$table <- reactable::renderReactable({

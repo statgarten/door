@@ -2,6 +2,7 @@
 
 export(run_app)
 import(caret)
+import(cicerone)
 import(datamods)
 import(dplyr)
 import(esquisse)
