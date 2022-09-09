@@ -11,7 +11,6 @@
 #' @import esquisse
 #' @import shiny.i18n
 #' @importFrom shinydashboard dashboardBody
-#' @import cicerone
 #' @importFrom shinydashboardPlus box dashboardHeader dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput
 #' @importFrom shinyBS bsTooltip bsPopover bsButton
@@ -26,7 +25,13 @@ app_ui <- function(request) {
     dashboardPage(
       skin = "black",
       header = dashboardHeader(
-        title = i18n_shiny$t("Statgarten"),
+        title = HTML(
+          paste0(
+            '<a href="https://github.com/statgarten/", target = "_blank">',
+            i18n_shiny$t("Statgarten"),
+            "</a>"
+          )
+        ),
         titleWidth = NULL,
         controlbarIcon = icon("gear", verify_fa = FALSE), # to hide error
         leftUi = tagList(
@@ -39,15 +44,13 @@ app_ui <- function(request) {
             selected = NULL,
             individual = TRUE
           ),
-          actionButton('guideme', 'guide!'),
-          actionButton('github', 'github', onclick = "window.open('http://www.statgarten.com', '_blank')")
+          uiOutput('guideButton') # Guide Button
         )
       ),
       # Sidebar
       sidebar = dashboardSidebar(disable = TRUE, minified = FALSE, width = 0),
       body = dashboardBody(
         useShinyjs(),
-        use_cicerone(),
         fluidPage(
           ## Module Selector
           shinyjs::disabled( # used to enable after file upload
@@ -59,15 +62,10 @@ app_ui <- function(request) {
                 choices = c("Import", "Vis", "EDA", "Stat", "Report", "ML"),
                 selected = "Import",
                 individual = FALSE,
-                size = 'xs',
-                width = '100%',
+                size = "xs",
+                width = "100%",
                 # direction = 'vertical', NOPE
-                justified = TRUE, #TRUE,
-                checkIcon = list(
-                  # yes = tags$i(class = "fa fa-circle", style = "color: #37E2D5")
-                  #,
-                  #no = tags$i(class = "fa fa-circle", style = "color: #FBCB0A")
-                )
+                justified = TRUE
               )
             )
           ),
@@ -98,7 +96,7 @@ app_ui <- function(request) {
             div(
               id = "importModule",
               tabsetPanel(
-                id = 'ImportTabsetPanel',
+                id = "ImportTabsetPanel",
                 tabPanel( # File (Default)
                   title = i18n_shiny$t("Files"),
                   shinycssloaders::withSpinner(
@@ -150,12 +148,12 @@ app_ui <- function(request) {
                   uiOutput(outputId = "datamods_import_googlesheets")
                 ),
                 tabPanel( # datatoys
-                  id = 'tabPanelDatatoys',
-                  title = 'Datatoys',
+                  id = "tabPanelDatatoys",
+                  title = "Datatoys",
                   h4(HTML(paste0(i18n_shiny$t("Example Dataset from"), " ", tags$a("datatoys", href = "https://statgarten.github.io/datatoys/")))),
-                    shinycssloaders::withSpinner(
-                      uiOutput(outputId = "exampleDataset")
-                    )
+                  shinycssloaders::withSpinner(
+                    uiOutput(outputId = "exampleDataset")
+                  )
                 )
               )
             )
@@ -164,81 +162,81 @@ app_ui <- function(request) {
           ### Vis panel
           conditionalPanel(
             condition = 'input.module == "Vis"',
-              div(
-                shinydashboardPlus::box(
-                  title = "General Visualization",
-                  status = "purple",
-                  collapsible = TRUE,
-                  solidHeader = TRUE,
-                  width = 12,
-                  id = 'visBox',
-                  shinyWidgets::checkboxGroupButtons(
-                    inputId = "aes",
-                    label = i18n_shiny$t("Aesthetic options"),
-                    choices = c("fill", "color", "size", "shape", "facet", "facet_row", "facet_col"),
-                    selected = c("fill", "color", "size", "facet"),
-                    justified = TRUE,
-                    checkIcon = list(yes = icon("ok", lib = "glyphicon"))
-                  ),
-                  uiOutput(outputId = "esquisse_ui2")
+            div(
+              shinydashboardPlus::box(
+                title = "General Visualization",
+                status = "purple",
+                collapsible = TRUE,
+                solidHeader = TRUE,
+                width = 12,
+                id = "visBox",
+                shinyWidgets::checkboxGroupButtons(
+                  inputId = "aes",
+                  label = i18n_shiny$t("Aesthetic options"),
+                  choices = c("fill", "color", "size", "shape", "facet", "facet_row", "facet_col"),
+                  selected = c("fill", "color", "size", "facet"),
+                  justified = TRUE,
+                  checkIcon = list(yes = icon("ok", lib = "glyphicon"))
                 ),
-                shinydashboardPlus::box(
-                  title = "Map Visualization",
-                  status = "purple",
-                  collapsible = TRUE,
-                  solidHeader = TRUE,
-                  width = 12,
-                  mod_mapVisModule_ui("mapVisModule_1")
-                )
+                uiOutput(outputId = "esquisse_ui2")
+              ),
+              shinydashboardPlus::box(
+                title = "Map Visualization",
+                status = "purple",
+                collapsible = TRUE,
+                solidHeader = TRUE,
+                width = 12,
+                mod_mapVisModule_ui("mapVisModule_1")
               )
+            )
           ),
 
           ### EDA panel
           conditionalPanel(
             condition = 'input.module == "EDA"',
-              div(
-                id = 'edabox',
-                shinydashboardPlus::box(
-                  title = "Dataset Description",
-                  status = "purple",
-                  collapsible = TRUE,
-                  solidHeader = TRUE,
-                  width = 12,
-                  fluidRow(
-                    column(width = 6, uiOutput(outputId = "dataDimension")),
-                    column(width = 6, uiOutput(outputId = "missingData"))
-                  )
-                ),
-                shinydashboardPlus::box(
-                  title = "Correlation",
-                  status = "purple",
-                  collapsible = TRUE,
-                  solidHeader = TRUE,
-                  width = 6,
-                  plotOutput(outputId = "corplot")
-                ),
-                shinydashboardPlus::box(
-                  title = "Variables",
-                  status = "purple",
-                  collapsible = TRUE,
-                  solidHeader = TRUE,
-                  width = 6,
-                  reactableOutput(outputId = "reactOutput")
-                ),
-                shinydashboardPlus::box(
-                  title = "Distribution",
-                  status = "purple",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  width = 12,
-                  mod_variableModule_ui("variableModule_1"),
-                  fluidRow(
-                    column(width = 4, plotOutput("distplot")),
-                    column(width = 4, plotOutput("distplot2")),
-                    column(width = 4, uiOutput("distBox"))
-                  )
+            div(
+              id = "edabox",
+              shinydashboardPlus::box(
+                title = "Dataset Description",
+                status = "purple",
+                collapsible = TRUE,
+                solidHeader = TRUE,
+                width = 12,
+                fluidRow(
+                  column(width = 6, uiOutput(outputId = "dataDimension")),
+                  column(width = 6, uiOutput(outputId = "missingData"))
+                )
+              ),
+              shinydashboardPlus::box(
+                title = "Correlation",
+                status = "purple",
+                collapsible = TRUE,
+                solidHeader = TRUE,
+                width = 6,
+                plotOutput(outputId = "corplot")
+              ),
+              shinydashboardPlus::box(
+                title = "Variables",
+                status = "purple",
+                collapsible = TRUE,
+                solidHeader = TRUE,
+                width = 6,
+                reactableOutput(outputId = "reactOutput")
+              ),
+              shinydashboardPlus::box(
+                title = "Distribution",
+                status = "purple",
+                solidHeader = TRUE,
+                collapsible = TRUE,
+                width = 12,
+                mod_variableModule_ui("variableModule_1"),
+                fluidRow(
+                  column(width = 4, plotOutput("distplot")),
+                  column(width = 4, plotOutput("distplot2")),
+                  column(width = 4, uiOutput("distBox"))
                 )
               )
+            )
           ),
           ## Stat Panel
           conditionalPanel(
@@ -386,7 +384,7 @@ golem_add_external_resources <- function() {
     favicon(),
     bundle_resources(
       path = app_sys("app/www"),
-      app_title = "statgarten"
+      app_title = "statgarten" # chrome title
     )
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()

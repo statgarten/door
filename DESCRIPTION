@@ -1,6 +1,6 @@
 Package: door
 Title: Shiny module for statgarten
-Version: 0.1.4
+Version: 0.1.5
 Authors@R: 
     person("Jinhwan", "Kim", , "hwanistic@gmail.com", role = c("cre", "aut"))
 Description: PKG_DESC.
@@ -10,7 +10,6 @@ BugReports: https://github.com/statgarten/door/issues
 Imports: 
     board,
     caret (>= 6.0-93),
-    cicerone,
     colourpicker (>= 1.1.1),
     config (>= 0.3.1),
     data.table (>= 1.14.2),
@@ -46,6 +45,7 @@ Imports:
     shinycssloaders (>= 1.0.0.9000),
     shinydashboard (>= 0.7.2),
     shinydashboardPlus (>= 2.0.3),
+    shinyglide,
     shinyjs (>= 2.1.0),
     shinyWidgets (>= 0.7.2),
     showtext (>= 0.9-5),

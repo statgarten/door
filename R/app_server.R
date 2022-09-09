@@ -9,9 +9,9 @@
 #' @importFrom reactable renderReactable
 #' @importFrom shinydashboardPlus descriptionBlock
 #' @importFrom GGally ggcorr
-#' @import cicerone
 #' @importFrom shinyjs hide show
 #' @importFrom tibble as_tibble
+#' @importFrom shinyglide glide screen
 #' @import datamods
 #' @import rmarkdown
 
@@ -20,82 +20,63 @@ app_server <- function(input, output, session) {
   options(shiny.maxRequestSize = 30 * 1024^2) # file upload size 30mb
   # calling the translator sent as a golem option
 
+  ## Directory (Translation / Img file)
+  app_dir <- system.file(package = "door")
+
+
   # i18n
   i18n_shiny <- golem::get_golem_options(which = "translator")
   i18n_shiny$set_translation_language("en")
 
   i18n_r <- reactive({ i18n_shiny })
 
-  # cicerone
+  # guideButton render
+  observeEvent(input$module, {
+    output$guideButton <- renderUI({
+      actionButton(
+        inputId = paste0(input$module, 'Guide'),
+        label = NULL,
+        icon = icon('info')
+      )
+    })
+  })
 
-  guide <- Cicerone$
-    new()$
-    step( # datatoys;
-      el = 'ImportTabsetPanel', # tabset id
-      title = 'provides 4 data type',
-      description = 'file, url, google sheet and public data. click datatoys'
-    )$
-    step(
-      el = 'exampleDataset',
-      title = 'dataset',
-      description = 'select accident and push Load Example data'
-    )$
-    step(
-      el = 'DT',
-      title = 'updated data',
-      description = 'desc1. next, 500+ 500, sort column'
-    )$
-    step(
-      el = 'showUpdateModule',
-      title = 'update function',
-      description = '<a href="https://google.com">update Button with link</a>'
-    )$
-    step(
-      el = 'module',
-      title = 'modules',
-      description = 'try EDA; other guide will here link'
-    )$
-    step(
-      el = 'corplot',
-      title = 'edabox',
-      description = 'you can see data profile'
-    )$
-    step(
-      el = 'module',
-      title = 'modules',
-      description = 'other modules also can used. refer our manual. enjoy! '
+  # Guide
+  observeEvent(input$ImportGuide, { # import
+    showModal(
+      modalDialog(
+        easyClose = TRUE,
+        footer = NULL,
+        size = 'xl',
+        shinyglide::glide(
+          screen(
+            tags$img(src="www/img/asdf.png", width = '100%')
+          ),
+          screen(
+            tags$img(src="www/img/zxcv.jpg", width = '100%')
+          )
+        )
+      )
     )
-
-  observeEvent(input$guideme, {
-    guide$init()$start()
   })
 
-
-  # landing
-
-  # showModal(
-  #   modalDialog(
-  #     title = 'welcome to statgarten',
-  #     p('description'),
-  #     p('blah'),
-  #     p('blah'),
-  #     actionButton('guide', 'guide'),
-  #     actionButton('na', 'na'),
-  #     easyClose = FALSE,
-  #     footer = NULL
-  #   )
-  # )
-
-  observeEvent(input$na, {
-    removeModal()
+  observeEvent(input$VisGuide, { # Vis
+    showModal(
+      modalDialog(
+        easyClose = TRUE,
+        footer = NULL,
+        size = 'xl',
+        shinyglide::glide(
+          screen(
+            tags$img(src="www/img/qwer.jpg", width = '100%')
+          ),
+          screen(
+            tags$img(src="www/img/ghjk.jpeg", width = '100%')
+          )
+        )
+      )
+    )
   })
-
-  observeEvent(input$guide, {
-    removeModal()
-    guide$init()$start()
-  })
-
-
 
   ## import Panel
 
@@ -260,8 +241,6 @@ app_server <- function(input, output, session) {
     shiny.i18n::update_lang(session, input$lang)
     i18n_r()$set_translation_language(input$lang)
 
-    ## Datamods
-    app_dir <- system.file(package = "door")
 
     ## Datatoys
     require(datatoys, quietly = TRUE)
