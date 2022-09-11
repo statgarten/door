@@ -1,6 +1,6 @@
 Package: door
 Title: Shiny module for statgarten
-Version: 0.1.5
+Version: 0.1.6
 Authors@R: 
     person("Jinhwan", "Kim", , "hwanistic@gmail.com", role = c("cre", "aut"))
 Description: PKG_DESC.
@@ -25,7 +25,6 @@ Imports:
     ggparty (>= 1.0.0),
     ggplot2 (>= 3.3.6),
     golem (>= 0.3.2),
-    goophi,
     haven (>= 2.5.1),
     htmlwidgets (>= 1.5.4),
     jstable (>= 1.0.7),

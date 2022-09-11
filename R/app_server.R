@@ -9,6 +9,7 @@
 #' @importFrom reactable renderReactable
 #' @importFrom shinydashboardPlus descriptionBlock
 #' @importFrom GGally ggcorr
+#' @importFrom plotly renderPlotly
 #' @importFrom shinyjs hide show
 #' @importFrom tibble as_tibble
 #' @importFrom shinyglide glide screen
@@ -512,7 +513,23 @@ app_server <- function(input, output, session) {
   # Data loaded
   observeEvent(data_rv$data, {
     inputData(data_rv$data) # set data
-    shinyjs::enable(id = "moduleSelector")
+
+    # shinyjs::enable(id = "moduleSelector")
+    shinyjs::hide(id = 'importModule')
+
+    output$moduleSelector <- renderUI({
+      shinyWidgets::radioGroupButtons(
+        inputId = "module",
+        label = NULL,
+        choices = c("Vis", "EDA", "Stat", "ML"),
+        selected = numeric(0),
+        individual = FALSE,
+        size = "lg", # xs (v), sm (v), normal (v), lg (v)
+        width = "100%",
+        # direction = 'vertical', NOPE
+        justified = TRUE
+      )
+    })
 
     # tableone update
     updateSelectInput(
@@ -542,7 +559,6 @@ app_server <- function(input, output, session) {
 
     # Module -> Body
     show(id = "viewModule")
-    hide(id = "importModule")
 
     # define column types
     columnTypes <- defineColumnTypes(data_rv$data)
@@ -783,32 +799,13 @@ app_server <- function(input, output, session) {
 
   mod_cleanModule_server("cleanModule_1", inputData, opened)
 
-  # mod_splitModule_server(
-  #   id = "splitModule_1",
-  #   inputData = inputData,
-  #   opened = opened
-  # )
-
   mod_reshapeModule_server("reshapeModule_1", inputData, opened)
 
   mod_exportModule_server("exportModule_1", inputData)
 
   ## Vis
 
-  # mod_visModule_server(
-  #   id = "visModule_1",
-  #   inputData = inputData,
-  #   opened = opened,
-  #   plotlyobj = plotlyobj
-  # )
-
-
-
   ## EDA
-
-  # mod_briefModule_server("briefModule_1", inputData, opened)
-  #
-  # mod_relationModule_server("relationModule_1", inputData, ggobj, opened) # NOT USE
 
   mod_variableModule_server("variableModule_1", inputData, distobj, distobj2, uiobj)
 

@@ -3,7 +3,6 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny dplyr tidyr
-#' @import plotly
 #' @import datamods
 #' @importFrom shinyjs hidden useShinyjs
 #' @importFrom DT DTOutput
@@ -53,22 +52,8 @@ app_ui <- function(request) {
         useShinyjs(),
         fluidPage(
           ## Module Selector
-          shinyjs::disabled( # used to enable after file upload
-            div(
-              id = "moduleSelector",
-              shinyWidgets::radioGroupButtons(
-                inputId = "module",
-                label = NULL,
-                choices = c("Import", "Vis", "EDA", "Stat", "Report", "ML"),
-                selected = "Import",
-                individual = FALSE,
-                size = "xs",
-                width = "100%",
-                # direction = 'vertical', NOPE
-                justified = TRUE
-              )
-            )
-          ),
+          # used to enable after file upload
+          uiOutput('moduleSelector'),
           # Data View
           shinyjs::hidden(
             div(
@@ -81,79 +66,80 @@ app_ui <- function(request) {
                 solidHeader = TRUE,
                 status = "purple",
                 width = 12,
-                reactable::reactableOutput(outputId = "DT")
-              ),
-              actionButton(inputId = "showUpdateModule", label = i18n_shiny$t("Update Data")), ## Update
-              actionButton(inputId = "showFilterModule", label = i18n_shiny$t("Filter Data")), ## Filter
-              actionButton(inputId = "showTransformModule", label = i18n_shiny$t("Transform Data")), ## Transform
-              actionButton(inputId = "showReorderModule", label = i18n_shiny$t("Reorder Data")), ## Reorder
-              actionButton(inputId = "showExportModule", label = i18n_shiny$t("Export Data")) ## Export
+                reactable::reactableOutput(outputId = "DT"),
+                actionButton(inputId = "showUpdateModule", label = i18n_shiny$t("Update Data")), ## Update
+                actionButton(inputId = "showFilterModule", label = i18n_shiny$t("Filter Data")), ## Filter
+                actionButton(inputId = "showTransformModule", label = i18n_shiny$t("Transform Data")), ## Transform
+                actionButton(inputId = "showReorderModule", label = i18n_shiny$t("Reorder Data")), ## Reorder
+                actionButton(inputId = "showExportModule", label = i18n_shiny$t("Export Data")) ## Export
+              )
             )
           ),
-          ### Import panel
-          conditionalPanel(
-            condition = 'input.module == "Import"',
-            div(
-              id = "importModule",
-              tabsetPanel(
-                id = "ImportTabsetPanel",
-                tabPanel( # File (Default)
-                  title = i18n_shiny$t("Files"),
-                  shinycssloaders::withSpinner(
-                    uiOutput(outputId = "datamods_import_file"),
-                  )
-                ),
-                tabPanel( # URL
-                  title = i18n_shiny$t("URL"),
-                  br(),
-                  fluidRow(
-                    column(
-                      width = 4,
-                      shinyWidgets::actionBttn( # example data load
-                        inputId = "exampleURL",
-                        label = i18n_shiny$t("Load Example data"),
-                        style = "material-flat",
-                        size = "sm",
-                        block = TRUE,
-                        color = "royal"
-                      )
-                    ),
-                    column(
-                      width = 4,
-                      shinyWidgets::actionBttn( # example data load
-                        inputId = "exampleR",
-                        label = i18n_shiny$t("Load Boston: Regression"),
-                        style = "material-flat",
-                        size = "sm",
-                        block = TRUE,
-                        color = "royal"
-                      )
-                    ),
-                    column(
-                      width = 4,
-                      shinyWidgets::actionBttn( # example data load
-                        inputId = "exampleC",
-                        label = i18n_shiny$t("Load Boston: Classification"),
-                        style = "material-flat",
-                        size = "sm",
-                        block = TRUE,
-                        color = "royal"
-                      )
+          ### Import panel (temporary, remove after data upload)
+          div(
+            id = "importModule",
+            tabsetPanel(
+              tabPanel( # File (Default)
+                title = i18n_shiny$t("Files"),
+                shinycssloaders::withSpinner(
+                  uiOutput(outputId = "datamods_import_file"),
+                )
+              ),
+              tabPanel( # URL
+                title = i18n_shiny$t("URL"),
+                br(),
+                # Examples
+                fluidRow(
+                  column(
+                    width = 4,
+                    shinyWidgets::actionBttn( # example data load
+                      inputId = "exampleURL",
+                      label = i18n_shiny$t("Load Example data"),
+                      style = "material-flat",
+                      size = "sm",
+                      block = TRUE,
+                      color = "royal"
                     )
                   ),
-                  uiOutput(outputId = "datamods_import_url")
-                ),
-                tabPanel( # Google Sheet
-                  title = i18n_shiny$t("Google Sheet"),
-                  uiOutput(outputId = "datamods_import_googlesheets")
-                ),
-                tabPanel( # datatoys
-                  id = "tabPanelDatatoys",
-                  title = "Datatoys",
-                  h4(HTML(paste0(i18n_shiny$t("Example Dataset from"), " ", tags$a("datatoys", href = "https://statgarten.github.io/datatoys/")))),
-                  shinycssloaders::withSpinner(
-                    uiOutput(outputId = "exampleDataset")
+                  column(
+                    width = 4,
+                    shinyWidgets::actionBttn( # example data load
+                      inputId = "exampleR",
+                      label = i18n_shiny$t("Load Boston: Regression"),
+                      style = "material-flat",
+                      size = "sm",
+                      block = TRUE,
+                      color = "royal"
+                    )
+                  ),
+                  column(
+                    width = 4,
+                    shinyWidgets::actionBttn( # example data load
+                      inputId = "exampleC",
+                      label = i18n_shiny$t("Load Boston: Classification"),
+                      style = "material-flat",
+                      size = "sm",
+                      block = TRUE,
+                      color = "royal"
+                    )
                   )
+                ),
+                uiOutput(outputId = "datamods_import_url")
+              ),
+              tabPanel( # Google Sheet
+                title = i18n_shiny$t("Google Sheet"),
+                uiOutput(outputId = "datamods_import_googlesheets")
+              ),
+              tabPanel( # datatoys
+                id = "tabPanelDatatoys",
+                title = "Datatoys",
+                h4(HTML(paste0(
+                  i18n_shiny$t("Example Dataset from"), " ",
+                  tags$a("datatoys", href = "https://statgarten.github.io/datatoys/")
+                  )
+                )),
+                shinycssloaders::withSpinner(
+                  uiOutput(outputId = "exampleDataset")
                 )
               )
             )
@@ -234,6 +220,23 @@ app_ui <- function(request) {
                   column(width = 4, plotOutput("distplot")),
                   column(width = 4, plotOutput("distplot2")),
                   column(width = 4, uiOutput("distBox"))
+                )
+              ),
+              shinydashboardPlus::box(
+                title = "Report",
+                status = "purple",
+                solidHeader = TRUE,
+                collapsible = TRUE,
+                width = 12,
+                fluidRow(
+                  column(
+                    width = 6,
+                    radioButtons("format", "Document format", c("PDF", "HTML", "Word"), inline = TRUE)
+                  ),
+                  column(
+                    width = 6,
+                    downloadButton(outputId = "downloadReport")
+                  )
                 )
               )
             )
@@ -340,10 +343,7 @@ app_ui <- function(request) {
           ## Report Panel
           conditionalPanel(
             condition = 'input.module == "Report"',
-            div(
-              radioButtons("format", "Document format", c("PDF", "HTML", "Word"), inline = TRUE),
-              downloadButton(outputId = "downloadReport")
-            )
+
           )
         )
       ),
