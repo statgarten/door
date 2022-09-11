@@ -24,12 +24,22 @@ app_server <- function(input, output, session) {
   ## Directory (Translation / Img file)
   app_dir <- system.file(package = "door")
 
-
   # i18n
   i18n_shiny <- golem::get_golem_options(which = "translator")
   i18n_shiny$set_translation_language("en")
 
   i18n_r <- reactive({ i18n_shiny })
+
+
+  # default guideButton
+
+  output$guideButton <- renderUI({
+    actionButton(
+      inputId = paste0('DefaultGuide'),
+      label = NULL,
+      icon = icon('info')
+    )
+  })
 
   # guideButton render
   observeEvent(input$module, {
@@ -43,24 +53,7 @@ app_server <- function(input, output, session) {
   })
 
   # Guide
-  observeEvent(input$ImportGuide, { # import
-    showModal(
-      modalDialog(
-        easyClose = TRUE,
-        footer = NULL,
-        size = 'xl',
-        shinyglide::glide(
-          screen(
-            tags$img(src="www/img/asdf.png", width = '100%')
-          ),
-          screen(
-            tags$img(src="www/img/zxcv.jpg", width = '100%')
-          )
-        )
-      )
-    )
-  })
-
+  # Default is in view module
   observeEvent(input$VisGuide, { # Vis
     showModal(
       modalDialog(
@@ -522,7 +515,7 @@ app_server <- function(input, output, session) {
         inputId = "module",
         label = NULL,
         choices = c("Vis", "EDA", "Stat", "ML"),
-        selected = numeric(0),
+        selected = "Vis",
         individual = FALSE,
         size = "lg", # xs (v), sm (v), normal (v), lg (v)
         width = "100%",

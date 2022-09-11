@@ -142,7 +142,30 @@ app_ui <- function(request) {
                   uiOutput(outputId = "exampleDataset")
                 )
               )
+            ),
+
+            br(),
+            shinyglide::glide( # Default Guide
+              height = '80%',
+              controls_position = 'top',
+              screen(
+                br(),
+                tags$img(src="www/img/asdf.png", width = '100%')
+              ),
+              screen(
+                br(),
+                tags$img(src="www/img/zxcv.jpg", width = '100%')
+              )
             )
+
+            # shinydashboardPlus::box(
+            #   title = "First Guide",
+            #   status = "purple",
+            #   collapsible = TRUE,
+            #   solidHeader = TRUE,
+            #   width = 12,
+            #
+            # )
           ),
 
           ### Vis panel
