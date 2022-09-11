@@ -46,8 +46,7 @@ mod_mlrModule_ui <- function(id){
 #'
 #' @noRd
 mod_mlrModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
-    require(caret)
+  moduleServer( id, function(input, output, session){    
     ns <- session$ns
     req(inputData)
 
@@ -65,7 +64,7 @@ mod_mlrModule_server <- function(id, inputData){
 
       output$text <- renderPrint({summary(model)})
 
-      vI <- varImp(model)
+      vI <- caret::varImp(model)
       vI$Features <- rownames(vI)
       colnames(vI)[1] <- 'Importance'
       rownames(vI) <- NULL

@@ -126,8 +126,6 @@ mod_treeModule_server <- function(id, inputData) {
       )
     })
 
-    require(ggparty)
-
     observeEvent(input$tree, {
       req(input$tree)
 

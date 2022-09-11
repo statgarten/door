@@ -6,7 +6,7 @@
 #'
 #' @noRd
 #' @importFrom factoextra fviz_cluster
-#' @importFrom plotly ggplotly
+#' @importFrom plotly ggplotly plotlyOutput
 #' @importFrom shiny NS tagList
 mod_kmsModule_ui <- function(id){
   ns <- NS(id)
