@@ -30,17 +30,6 @@ app_server <- function(input, output, session) {
 
   i18n_r <- reactive({ i18n_shiny })
 
-
-  # default guideButton
-
-  output$guideButton <- renderUI({
-    actionButton(
-      inputId = paste0('DefaultGuide'),
-      label = NULL,
-      icon = icon('info')
-    )
-  })
-
   # guideButton render
   observeEvent(input$module, {
     output$guideButton <- renderUI({

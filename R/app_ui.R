@@ -146,15 +146,18 @@ app_ui <- function(request) {
 
             br(),
             shinyglide::glide( # Default Guide
-              height = '80%',
-              controls_position = 'top',
+              controls_position = 'bottom',
               screen(
                 br(),
-                tags$img(src="www/img/asdf.png", width = '100%')
+                tags$img(src="www/img/guide.001.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
               ),
               screen(
                 br(),
-                tags$img(src="www/img/zxcv.jpg", width = '100%')
+                tags$img(src="www/img/guide.002.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
+              ),
+              screen(
+                br(),
+                tags$img(src="www/img/guide.003.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
               )
             )
 

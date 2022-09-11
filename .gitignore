@@ -47,3 +47,6 @@ inst/doc
 /Meta/
 EDA_prototype(NOT USED).R
 old_app.R
+
+# guide image template
+/guide/
