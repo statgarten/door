@@ -160,15 +160,6 @@ app_ui <- function(request) {
                 tags$img(src="www/img/guide.003.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
               )
             )
-
-            # shinydashboardPlus::box(
-            #   title = "First Guide",
-            #   status = "purple",
-            #   collapsible = TRUE,
-            #   solidHeader = TRUE,
-            #   width = 12,
-            #
-            # )
           ),
 
           ### Vis panel

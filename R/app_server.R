@@ -49,12 +49,19 @@ app_server <- function(input, output, session) {
         easyClose = TRUE,
         footer = NULL,
         size = 'xl',
-        shinyglide::glide(
+        shinyglide::glide( # Default Guide
+          controls_position = 'bottom',
           screen(
-            tags$img(src="www/img/qwer.jpg", width = '100%')
+            br(),
+            tags$img(src="www/img/guide.004.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
           ),
           screen(
-            tags$img(src="www/img/ghjk.jpeg", width = '100%')
+            br(),
+            tags$img(src="www/img/guide.005.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
+          ),
+          screen(
+            br(),
+            tags$img(src="www/img/guide.006.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
           )
         )
       )
