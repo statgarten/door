@@ -14,7 +14,8 @@ test <- function(data, extension = "html"){
     output_format = switch(extension,
                            "pdf" = pdf_document(),
                            "html" = html_document(),
-                           "docx" = word_document()
+                           "docx" = word_document(),
+                           "dashboard" = flexdashboard::flex_dashboard(),
     ),
   )
 }

@@ -1,0 +1,151 @@
+---
+title: "Report"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+params:
+  inputData: NA
+  MLResult: NA
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(shinydashboardPlus)
+library(reactable)
+library(dplyr)
+library(board)
+data <- mtcars
+obj <- board::brief(inputData = data)
+```
+
+## Row {data-height="150"}
+
+### Dataset Description
+
+```{r}
+
+dataDimension <- descriptionBlock(
+  header = paste0(obj$desc$nrow, " X ", obj$desc$ncol),
+  numberIcon = icon("expand"),
+  number = "Data Dimension",
+  marginBottom = FALSE
+)
+missingData <- descriptionBlock(
+  header = paste0(obj$desc$missingCellCount, "(", obj$desc$missingCellRatio, "%)"),
+  numberIcon = icon("question"),
+  number = "Missing Data",
+  marginBottom = FALSE
+)
+shinydashboardPlus::box(
+  title = "Dataset Description",
+  # status = "purple",
+  collapsible = FALSE,
+  solidHeader = TRUE,
+  width = 12,
+  fluidRow(
+    column(width = 6, dataDimension),
+    column(width = 6, missingData)
+  )
+)
+```
+
+## Row
+
+### Correlation
+
+```{r}
+
+shinyApp(
+  ui = fillPage(
+    shinydashboardPlus::box(
+                title = "Correlation",
+                status = "purple",
+                collapsible = FALSE,
+                solidHeader = TRUE,
+                width = 6,
+                plotOutput(outputId = "corplot")
+              )
+  ),
+  server = function(input, output) {
+if (!is.null(obj$cors)) {
+      output$corplot <- renderPlot(GGally::ggcorr(obj$cors))
+    }
+  },
+  options = list(height = 600)
+)
+```
+
+### Variables
+
+```{r}
+EDAres <- data.frame(
+  Name = obj$names,
+  UniqueValues = obj$cards,
+  Zero = obj$zeros,
+  Missing = obj$miss,
+  isUniform = obj$unif,
+  isUnique = obj$uniq
+)
+
+shinyApp(
+  ui = fillPage(
+    shinydashboardPlus::box(
+      title = "Variables",
+      status = "purple",
+      collapsible = FALSE,
+      solidHeader = TRUE,
+      width = 6,
+      reactableOutput(outputId = "reactOutput")
+    )
+  ),
+  server = function(input, output) {
+    output$reactOutput <- renderReactable(
+      reactable(
+        EDAres,
+        bordered = TRUE,
+        compact = TRUE,
+        striped = TRUE
+      )
+    )
+  },
+  options = list(height = 600)
+)
+```
+
+## Row
+
+### Distribution
+
+```{r}
+source("../R/mod_variableModule.R")
+shinyApp(
+  ui = fillPage(
+    shinydashboardPlus::box(
+      title = "Distribution",
+      status = "purple",
+      solidHeader = TRUE,
+      collapsible = TRUE,
+      width = 12,
+      mod_variableModule_ui("variableModule_1"),
+      fluidRow(
+        column(width = 4, plotOutput("distplot")),
+        column(width = 4, plotOutput("distplot2")),
+        column(width = 4, uiOutput("distBox"))
+      )
+    )
+  ),
+  server = function(input, output) {
+    distobj <- reactiveVal(NULL) # variable histogram
+    distobj2 <- reactiveVal(NULL) # variable pie chart
+    uiobj <- reactiveVal(NULL) # variable quantitle box
+    output$distplot <- renderPlot(distobj())
+    output$distplot2 <- renderPlot(distobj2())
+    output$distBox <- renderUI(uiobj())
+    mod_variableModule_server("variableModule_1", reactive(data), distobj, distobj2, uiobj)
+  },
+  options = list(height = 600)
+)
+```
