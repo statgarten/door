@@ -425,7 +425,7 @@ app_server <- function(input, output, session) {
   plotlyobj <- reactiveVal(NULL)
   output$plot <- renderPlotly(plotlyobj())
 
-  mod_mapVisModule_server("mapVisModule_1", inputData)
+  mod_mapVisModule_server("mapVisModule_1", inputData, i18n = i18n_r, lang = reactive({input$lang}))
 
   # Stat Panel
   mod_pcaModule_server("pcaModule_1", inputData)

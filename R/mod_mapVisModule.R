@@ -8,7 +8,7 @@
 #'
 #' @importFrom shiny NS tagList
 #' @import leaflet
-mod_mapVisModule_ui <- function(id) {
+mod_mapVisModule_ui <- function(id, i18n) {
   ns <- NS(id)
   tagList(
     leafletOutput(outputId = ns("mymap")),
@@ -23,13 +23,19 @@ mod_mapVisModule_ui <- function(id) {
       ),
       column(
         width = 4,
-        sliderInput(ns("radius"), label = "marker size", min = 1, max = 10, value = 5, step = 1, ticks = FALSE),
+        sliderInput(
+          ns("radius"),
+          label = i18n$t("marker size"),
+          min = 1, max = 10, value = 5, step = 1, ticks = FALSE),
       )
     ),
     fluidRow(
       column(
         width = 4,
-        checkboxInput(ns("cluster"), label = "Group marker")
+        checkboxInput(
+          ns("cluster"),
+          label = i18n$t("Group marker")
+        )
       ),
       div(
         id = ns("div"),
@@ -39,18 +45,20 @@ mod_mapVisModule_ui <- function(id) {
         ),
         column(
           width = 4,
-          sliderInput(ns("opacity"), label = "alpha", min = 0, max = 1, value = 0.5, step = 0.1, ticks = FALSE)
+          sliderInput(ns("opacity"),
+                      label = i18n$t("alpha"),
+                      min = 0, max = 1, value = 0.5, step = 0.1, ticks = FALSE)
         )
       )
     ),
-    actionButton(ns("draw"), label = "Draw")
+    actionButton(ns("draw"), label = i18n$t("Draw"))
   )
 }
 
 #' mapVisModule Server Functions
 #'
 #' @noRd
-mod_mapVisModule_server <- function(id, inputData) {
+mod_mapVisModule_server <- function(id, inputData, i18n, lang) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     req(inputData)
@@ -63,12 +71,13 @@ mod_mapVisModule_server <- function(id, inputData) {
       }
     })
 
-    observeEvent(inputData(), {
+    observeEvent(list(inputData(), lang()), {
       data <- inputData()
+
       updateSelectizeInput(
         session,
         inputId = "x",
-        label = "longitude column (X)",
+        label = i18n()$t("longitude column (X)"),
         choices = names(Filter(is.numeric, data)), # Numeric only
         server = TRUE,
         selected = NULL
@@ -77,7 +86,7 @@ mod_mapVisModule_server <- function(id, inputData) {
       updateSelectizeInput(
         session,
         inputId = "y",
-        label = "latitude column (Y)",
+        label = i18n()$t("latitude column (Y)"),
         choices = names(Filter(is.numeric, data)), # Numeric only
         server = TRUE,
         selected = NULL
@@ -86,7 +95,7 @@ mod_mapVisModule_server <- function(id, inputData) {
       updateSelectizeInput(
         session,
         inputId = "color",
-        label = "color column",
+        label = i18n()$t("color column"),
         choices = union(names(Filter(is.numeric, data)), names(Filter(is.factor, data))),
         server = TRUE,
         selected = NULL

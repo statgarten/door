@@ -189,7 +189,7 @@ app_ui <- function(request) {
                 collapsible = TRUE,
                 solidHeader = TRUE,
                 width = 12,
-                mod_mapVisModule_ui("mapVisModule_1")
+                mod_mapVisModule_ui("mapVisModule_1", i18n = i18n_shiny)
               )
             )
           ),

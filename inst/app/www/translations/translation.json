@@ -30,6 +30,14 @@
     {"en": "Imported data", "ko": "준비 된 데이터"},
     {"en": "Aesthetic options", "ko": "그래프 요소 설정"},
     {"en": "Import data", "ko": "데이터 불러오기"},
-    {"en": "Example Dataset from", "ko": "공공 데이터 불러오기: "}
+    {"en": "Example Dataset from", "ko": "공공 데이터 불러오기: "},
+    {"en": "longitude column (X)", "ko": "경도 (X)"},
+    {"en": "latitude column (Y)", "ko": "위도 (Y)"},
+    {"en": "color column", "ko": "색상"},
+    {"en": "marker size", "ko": "표식 크기"},
+    {"en": "Group marker", "ko": "표식 그룹화"},
+    {"en": "alpha", "ko": "투명도"},
+    {"en": "Draw", "ko": "그리기"} 
+       
   ]
 }
