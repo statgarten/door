@@ -16,7 +16,7 @@ mod_pcaModule_ui <- function(id) {
     uiOutput(outputId = ns("biplotSlot")),
     fluidRow(
       column(
-        width = 4,
+        width = 3,
         selectInput(
           inputId = ns("columns"),
           label = "",
@@ -25,11 +25,15 @@ mod_pcaModule_ui <- function(id) {
         )
       ),
       column(
-        width = 4,
+        width = 3,
         selectInput(inputId = ns("group"), label = "", choices = NULL)
       ),
       column(
-        width = 4,
+        width = 3,
+        selectInput(inputId = ns("labels"), label = "", choices = NULL)
+      ),
+      column(
+        width = 3,
         fluidRow(
           sliderInput(
             inputId = ns("slotSize"),
@@ -71,6 +75,12 @@ mod_pcaModule_server <- function(id, inputData) {
         choices = names(Filter(is.numeric, data))
       )
 
+      updateSelectizeInput(
+        inputId = "labels",
+        label = "Labels-Opt (Character)",
+        choices = c('NULL', names(Filter(is.character, data)))
+      )
+
       updateSelectInput(
         inputId = "group",
         label = "Group columns (Factor)",
@@ -83,18 +93,24 @@ mod_pcaModule_server <- function(id, inputData) {
 
       data <- inputData()
 
+      groups <- data[[input$group]]
+      labels <- data[[input$labels]]
+
       output$biplot <- renderPlotly({
-        groups <- data[[input$group]]
+
         data <- data %>%
           select(input$columns) %>%
           replace(is.na(.), 0)
 
         pp <- prcomp(data, scale. = input$scale)
 
+        if(input$labels =='NULL'){labels <- NULL}
+
         ggbiplot(
           pp,
           obs.scale = 1,
           var.scale = 1,
+          labels = labels,
           ellipse = TRUE,
           circle = TRUE,
           groups = groups
