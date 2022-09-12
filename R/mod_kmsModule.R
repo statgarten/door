@@ -13,6 +13,7 @@ mod_kmsModule_ui <- function(id){
   tagList(
     sliderInput(ns('k'),'k',min = 2, max = 10, value = 4, step = 1),
     checkboxInput(ns('scale'), 'scale',value = TRUE),
+    selectInput(inputId = ns("labels"), label = "", choices = NULL),
     actionButton(ns('cluster'), 'cluster'),
     plotlyOutput(ns('plot'))
   )
@@ -27,16 +28,38 @@ mod_kmsModule_server <- function(id, inputData){
 
     req(inputData)
 
+
+    observeEvent(inputData(), {
+      data <- inputData()
+
+      updateSelectizeInput(
+        inputId = "labels",
+        label = "Labels-Opt (Character)",
+        choices = c('NULL', names(Filter(is.character, data)))
+      )
+    })
+
     observeEvent(input$cluster, {
 
       data <- inputData()
 
-      data <- Filter(is.numeric, data)
+      print(input$labels)
+      if(input$labels != 'NULL'){ # keep label variable
+        labels <- data[[input$labels]]
+      }
+
+      data <- Filter(is.numeric, data) # select numeric only
+
       if(input$scale){
         data <- scale(data)
       }
 
       km.res <- kmeans(data, centers = input$k)
+
+      if(input$labels != 'NULL'){
+        rownames(data) <- labels
+      }
+
       output$plot <- renderPlotly({
         plotly::ggplotly(
           factoextra::fviz_cluster(
