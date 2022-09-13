@@ -10,20 +10,27 @@ test <- function(data, extension = "html"){
     params = list(
       inputData = data
     ),
-    input = "inst/report.Rmd",
+    input = switch(extension,
+                   "pdf" = "inst/report.Rmd",
+                   "html" ="inst/report.Rmd",
+                   "docx" = "inst/report.Rmd",
+                   "dashboard" = "inst/report-dashboard.Rmd"
+    ),
     output_format = switch(extension,
                            "pdf" = pdf_document(),
                            "html" = html_document(),
                            "docx" = word_document(),
-                           "dashboard" = flexdashboard::flex_dashboard(),
-    ),
+                           "dashboard" = flex_dashboard(orientation = "rows", vertical_layout = "scroll"),
+    )
   )
 }
 
-extension <-  "html"
+extension <-  "dashboard"
 
 example <- readxl::read_xlsx("example_g1e.xlsx")
+test(mtcars, extension)
 test(example, extension)
+test(example, "html")
 test(karaoke, extension)
 test(tuition, extension)
 test(scholarship, extension)
