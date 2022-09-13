@@ -13,7 +13,9 @@
 mod_pcaModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    uiOutput(outputId = ns("biplotSlot")),
+    shinyjs::hidden(
+      uiOutput(outputId = ns("biplotSlot"))
+    ),
     fluidRow(
       column(
         width = 3,
@@ -41,11 +43,11 @@ mod_pcaModule_ui <- function(id) {
             min = 400, max = 1000, step = 50, value = 400,
             ticks = FALSE
           ),
-          checkboxInput(inputId = ns("scale"), "variable normalize")
+          checkboxInput(inputId = ns("scale"), "variable normalize",value = TRUE)
         )
       )
     ),
-    actionButton(inputId = ns("pca"), label = "draw")
+    actionButton(inputId = ns("pca"), label = "draw", style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%')
   )
 }
 
@@ -64,8 +66,6 @@ mod_pcaModule_server <- function(id, inputData) {
         plotlyOutput(outputId = ns("biplot"), height = paste0(input$slotSize, "px"))
       })
     })
-
-    # data <- scholar %>% mutate(학제별 = as.factor(학제별), 설립별 = as.factor(설립별))
 
     observeEvent(inputData(), {
       data <- inputData()
@@ -88,13 +88,15 @@ mod_pcaModule_server <- function(id, inputData) {
       )
     })
 
-    observeEvent(input$pca, {
+    observeEvent(input$pca, { # draw plot
       req(input$pca)
 
       data <- inputData()
 
       groups <- data[[input$group]]
       labels <- data[[input$labels]]
+
+      shinyjs::show(id = "biplotSlot")
 
       output$biplot <- renderPlotly({
 

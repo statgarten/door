@@ -14,7 +14,7 @@ mod_kmsModule_ui <- function(id){
     sliderInput(ns('k'),'k',min = 2, max = 10, value = 4, step = 1),
     checkboxInput(ns('scale'), 'scale',value = TRUE),
     selectInput(inputId = ns("labels"), label = "", choices = NULL),
-    actionButton(ns('cluster'), 'cluster'),
+    actionButton(ns('cluster'), 'cluster',style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'),
     plotlyOutput(ns('plot'))
   )
 }

@@ -251,19 +251,24 @@ app_ui <- function(request) {
                 collapsible = TRUE,
                 width = 12,
                 fluidRow(
-                  column(
-                    width = 6,
-                    radioButtons(
-                      "format",
-                      i18n_shiny$t("Document format"),
-                      c("PDF", "HTML", "Word"),
-                      inline = TRUE
-                    )
+                  # column(
+                  #   width = 6,
+                  #
+                  # ),
+                  radioButtons(
+                    "format",
+                    i18n_shiny$t("Document format"),
+                    c("PDF", "HTML", "Word"),
+                    inline = TRUE
                   ),
-                  column(
-                    width = 6,
-                    downloadButton(outputId = "downloadReport")
+                  downloadButton(
+                    outputId = "downloadReport",
+                    style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
                   )
+                  # column(
+                  #   width = 6,
+                  #
+                  # )
                 )
               )
             )
@@ -279,21 +284,16 @@ app_ui <- function(request) {
                 solidHeader = TRUE,
                 width = 12,
                 fluidRow(
-                  column(
-                    width = 6,
-                    selectInput(
-                      inputId = "tableOneStrata",
-                      label = i18n_shiny$t("Group by"),
-                      choices = NULL,
-                      selected = NULL
-                    )
+                  selectInput(
+                    inputId = "tableOneStrata",
+                    label = i18n_shiny$t("Group by"),
+                    choices = NULL,
+                    selected = NULL
                   ),
-                  column(
-                    width = 6,
-                    actionButton(
-                      inputId = "generateTable",
-                      label = i18n_shiny$t("generate Table")
-                    )
+                  actionButton(
+                    inputId = "generateTable",
+                    label = i18n_shiny$t("generate Table"),
+                    style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
                   )
                 ),
                 reactableOutput(outputId = "tableOne")
@@ -366,11 +366,6 @@ app_ui <- function(request) {
                 mod_modelingModule_ui("modelingModule_1")
               )
             )
-          ),
-          ## Report Panel
-          conditionalPanel(
-            condition = 'input.module == "Report"',
-
           )
         )
       ),

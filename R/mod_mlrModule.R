@@ -38,7 +38,7 @@ mod_mlrModule_ui <- function(id){
         plotOutput(ns('plot'))
       )
     ),
-    actionButton(ns('reg'),'reg')
+    actionButton(ns('reg'),'reg', style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%')
   )
 }
 
@@ -46,7 +46,7 @@ mod_mlrModule_ui <- function(id){
 #'
 #' @noRd
 mod_mlrModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){    
+  moduleServer( id, function(input, output, session){
     ns <- session$ns
     req(inputData)
 

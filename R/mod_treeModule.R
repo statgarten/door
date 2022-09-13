@@ -13,7 +13,7 @@
 mod_treeModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    h4("regression"),
+    plotOutput(ns("plot")),
     fluidRow(
       column(
         width = 4,
@@ -35,8 +35,7 @@ mod_treeModule_ui <- function(id) {
         actionButton(ns("openTerminal"), "terminal", width = "100%")
       )
     ),
-    actionButton(ns("tree"), "tree"),
-    plotOutput(ns("plot"))
+    actionButton(ns("tree"), "tree", style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%')
   )
 }
 

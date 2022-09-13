@@ -45,13 +45,22 @@ mod_mapVisModule_ui <- function(id, i18n) {
         ),
         column(
           width = 4,
-          sliderInput(ns("opacity"),
+          sliderInput(
+            ns("opacity"),
                       label = i18n$t("alpha"),
                       min = 0, max = 1, value = 0.5, step = 0.1, ticks = FALSE)
         )
       )
     ),
-    actionButton(ns("draw"), label = i18n$t("Draw"))
+    actionButton(
+      ns("draw"),
+      label = tagList(
+        phosphoricons::ph("arrow-circle-right"),
+        i18n$t("Draw")
+      ),
+      style = 'font-weight: bold;background: #3EC70B;color: white;',
+      width = "100%"
+    )
   )
 }
 

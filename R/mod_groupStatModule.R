@@ -35,13 +35,15 @@ mod_groupStatModule_ui <- function(id) {
     ),
     actionButton(
       inputId = ns("build"),
-      label = "build"
-    ),
-    tags$button(
-      tagList(fontawesome::fa("download"), "Download as CSV"),
-      class = "btn btn-default shiny-download-link",
-      onclick = "Reactable.downloadDataCSV('groupStatModule_1-myTable', 'downloads.csv')"
+      label = "build",
+      style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
     )
+    #,
+    # tags$button(
+    #   tagList(fontawesome::fa("download"), "Download as CSV"),
+    #   class = "btn btn-default shiny-download-link",
+    #   onclick = "Reactable.downloadDataCSV('groupStatModule_1-myTable', 'downloads.csv')"
+    # )
   )
 }
 
