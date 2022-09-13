@@ -37,7 +37,8 @@
     {"en": "marker size", "ko": "표식 크기"},
     {"en": "Group marker", "ko": "표식 그룹화"},
     {"en": "alpha", "ko": "투명도"},
-    {"en": "Draw", "ko": "그리기"} 
-       
+    {"en": "Draw", "ko": "그리기"},
+    {"en": "General Visualization", "ko": "기본 시각화"},
+    {"en": "Map Visualization", "ko": "지도 시각화"}     
   ]
 }

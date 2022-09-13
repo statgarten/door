@@ -67,11 +67,16 @@ app_ui <- function(request) {
                 status = "purple",
                 width = 12,
                 reactable::reactableOutput(outputId = "DT"),
-                actionButton(inputId = "showUpdateModule", label = i18n_shiny$t("Update Data")), ## Update
-                actionButton(inputId = "showFilterModule", label = i18n_shiny$t("Filter Data")), ## Filter
-                actionButton(inputId = "showTransformModule", label = i18n_shiny$t("Transform Data")), ## Transform
-                actionButton(inputId = "showReorderModule", label = i18n_shiny$t("Reorder Data")), ## Reorder
-                actionButton(inputId = "showExportModule", label = i18n_shiny$t("Export Data")) ## Export
+                column(
+                  width = 12,
+                  align = "center",
+                  actionButton(inputId = "showUpdateModule", label = i18n_shiny$t("Update Data")), ## Update
+                  actionButton(inputId = "showFilterModule", label = i18n_shiny$t("Filter Data")), ## Filter
+                  actionButton(inputId = "showTransformModule", label = i18n_shiny$t("Transform Data")), ## Transform
+                  actionButton(inputId = "showReorderModule", label = i18n_shiny$t("Reorder Data")), ## Reorder
+                  actionButton(inputId = "showExportModule", label = i18n_shiny$t("Export Data")) ## Export
+                )
+
               )
             )
           ),
@@ -167,7 +172,7 @@ app_ui <- function(request) {
             condition = 'input.module == "Vis"',
             div(
               shinydashboardPlus::box(
-                title = "General Visualization",
+                title = i18n_shiny$t("General Visualization"),
                 status = "purple",
                 collapsible = TRUE,
                 solidHeader = TRUE,
@@ -184,7 +189,7 @@ app_ui <- function(request) {
                 uiOutput(outputId = "esquisse_ui2")
               ),
               shinydashboardPlus::box(
-                title = "Map Visualization",
+                title = i18n_shiny$t("Map Visualization"),
                 status = "purple",
                 collapsible = TRUE,
                 solidHeader = TRUE,

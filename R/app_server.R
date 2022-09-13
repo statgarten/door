@@ -107,10 +107,6 @@ app_server <- function(input, output, session) {
     showModal(modalDialog(
       id = 'updateModal',
       h3(i18n_shiny$t("Update data")),
-      descriptionBlock('1. Uncheck: not use that column'),
-      descriptionBlock('2. Replace Name: rename that column'),
-      descriptionBlock('3. New class: change column type'),
-      descriptionBlock('4. Click Apply changes button below.'),
       ui2(
         id = "updateModule_1" # removed unneccessary part
       ),
@@ -163,32 +159,26 @@ app_server <- function(input, output, session) {
         id = "transformPanel",
         tabPanel(
           title = i18n_shiny$t("Round"),
-          icon = icon("scissors"),
           mod_roundModule_ui("roundModule_1")
         ),
         tabPanel( # Log2 / Log / Log10
           title = i18n_shiny$t("Log"),
-          icon = icon("ruler"),
           mod_logModule_ui("logModule_1")
         ),
         tabPanel(
           title = i18n_shiny$t("Replace"),
-          icon = icon("font"),
           mod_replaceModule_ui("replaceModule_1")
         ),
         tabPanel(
           title = i18n_shiny$t("ETC"),
-          icon = icon("minus"),
           mod_etcModlue_ui("etcModule_1")
         ),
         tabPanel(
           title = i18n_shiny$t("Binarize"),
-          icon = icon("slash"),
           mod_binarizeModule_ui("binModule_1")
         ),
         tabPanel(
           title = i18n_shiny$t("Split"),
-          icon = icon("arrows-left-right"),
           mod_splitModule_ui(id = "splitModule_1")
         )
       ),
