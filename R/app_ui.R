@@ -205,7 +205,7 @@ app_ui <- function(request) {
             div(
               id = "edabox",
               shinydashboardPlus::box(
-                title = "Dataset Description",
+                title = i18n_shiny$t("Dataset Description"),
                 status = "purple",
                 collapsible = TRUE,
                 solidHeader = TRUE,
@@ -216,7 +216,7 @@ app_ui <- function(request) {
                 )
               ),
               shinydashboardPlus::box(
-                title = "Correlation",
+                title = i18n_shiny$t("Correlation"),
                 status = "purple",
                 collapsible = TRUE,
                 solidHeader = TRUE,
@@ -224,7 +224,7 @@ app_ui <- function(request) {
                 plotOutput(outputId = "corplot")
               ),
               shinydashboardPlus::box(
-                title = "Variables",
+                title = i18n_shiny$t("Variables"),
                 status = "purple",
                 collapsible = TRUE,
                 solidHeader = TRUE,
@@ -232,7 +232,7 @@ app_ui <- function(request) {
                 reactableOutput(outputId = "reactOutput")
               ),
               shinydashboardPlus::box(
-                title = "Distribution",
+                title = i18n_shiny$t("Distribution"),
                 status = "purple",
                 solidHeader = TRUE,
                 collapsible = TRUE,
@@ -245,7 +245,7 @@ app_ui <- function(request) {
                 )
               ),
               shinydashboardPlus::box(
-                title = "Report",
+                title = i18n_shiny$t("Report"),
                 status = "purple",
                 solidHeader = TRUE,
                 collapsible = TRUE,
@@ -253,7 +253,12 @@ app_ui <- function(request) {
                 fluidRow(
                   column(
                     width = 6,
-                    radioButtons("format", "Document format", c("PDF", "HTML", "Word"), inline = TRUE)
+                    radioButtons(
+                      "format",
+                      i18n_shiny$t("Document format"),
+                      c("PDF", "HTML", "Word"),
+                      inline = TRUE
+                    )
                   ),
                   column(
                     width = 6,
@@ -268,7 +273,7 @@ app_ui <- function(request) {
             condition = 'input.module == "Stat"',
             div(
               shinydashboardPlus::box(
-                title = "jsTable",
+                title = "Table 1", # Not translate
                 status = "purple",
                 collapsible = TRUE,
                 solidHeader = TRUE,
@@ -278,7 +283,7 @@ app_ui <- function(request) {
                     width = 6,
                     selectInput(
                       inputId = "tableOneStrata",
-                      label = "Group by",
+                      label = i18n_shiny$t("Group by"),
                       choices = NULL,
                       selected = NULL
                     )
@@ -287,14 +292,14 @@ app_ui <- function(request) {
                     width = 6,
                     actionButton(
                       inputId = "generateTable",
-                      label = "generate Table"
+                      label = i18n_shiny$t("generate Table")
                     )
                   )
                 ),
                 reactableOutput(outputId = "tableOne")
               ),
               shinydashboardPlus::box(
-                title = "PCA",
+                title = i18n_shiny$t("PCA"),
                 status = "purple",
                 collapsible = TRUE,
                 solidHeader = TRUE,
@@ -302,7 +307,7 @@ app_ui <- function(request) {
                 mod_pcaModule_ui("pcaModule_1")
               ),
               shinydashboardPlus::box(
-                title = "tree",
+                title = i18n_shiny$t("Decision tree"),
                 status = "purple",
                 collapsible = TRUE,
                 solidHeader = TRUE,
@@ -310,7 +315,7 @@ app_ui <- function(request) {
                 mod_treeModule_ui("treeModule_1")
               ),
               shinydashboardPlus::box(
-                title = "mlr",
+                title = i18n_shiny$t("Linear regression"),
                 status = "purple",
                 collapsible = TRUE,
                 solidHeader = TRUE,
@@ -318,7 +323,7 @@ app_ui <- function(request) {
                 mod_mlrModule_ui("mlrModule_1")
               ),
               shinydashboardPlus::box(
-                title = "cluster",
+                title = i18n_shiny$t("K-means cluster"),
                 status = "purple",
                 collapsible = TRUE,
                 solidHeader = TRUE,
@@ -326,7 +331,7 @@ app_ui <- function(request) {
                 mod_kmsModule_ui("kmsModule_1")
               ),
               shinydashboardPlus::box(
-                title = "Aggregate",
+                title = i18n_shiny$t("Group metrics"),
                 status = "purple",
                 collapsible = TRUE,
                 solidHeader = TRUE,

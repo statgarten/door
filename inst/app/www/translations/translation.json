@@ -39,6 +39,21 @@
     {"en": "alpha", "ko": "투명도"},
     {"en": "Draw", "ko": "그리기"},
     {"en": "General Visualization", "ko": "기본 시각화"},
-    {"en": "Map Visualization", "ko": "지도 시각화"}     
+    {"en": "Map Visualization", "ko": "지도 시각화"},
+    {"en": "Dataset Description", "ko": "데이터 프로파일"},
+    {"en": "Correlation", "ko": "상관관계"},
+    {"en": "Variables", "ko": "변수 항목"},
+    {"en": "Distribution", "ko": "변수 분포"},
+    {"en": "Report", "ko": "리포트"},
+    {"en": "Data Dimension", "ko": "데이터셋 차원"},
+    {"en": "Missing Data", "ko": "결측 데이터"},
+    {"en": "Group by", "ko": "그룹 변수"},
+    {"en": "generate Table", "ko": "테이블 생성"},
+    {"en": "PCA", "ko": "주성분 분석"},
+    {"en": "Decision tree", "ko": "결정 트리"},
+    {"en": "Linear regression", "ko": "선형 회귀 모델링"},
+    {"en": "K-means cluster", "ko": "K-평균 군집화"},
+    {"en": "Group metrics", "ko": "그룹별 지표"},
+    {"en": "Document format" , "ko": "결과물 형식"}
   ]
 }
