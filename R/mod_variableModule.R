@@ -47,6 +47,9 @@ mod_variableModule_server <- function(id, inputData, distobj, distobj2, uiobj) {
       numericV <- inputData() %>%
         dplyr::select(where(is.numeric)) %>%
         colnames()
+      uiobj(NULL)
+      distobj(NULL)
+      distobj2(NULL)
 
       if (input$variableDescription %in% numericV) { # if is numeric only
         distobj(
