@@ -7,8 +7,10 @@
 #' @importFrom readxl read_xls read_xlsx
 #' @importFrom readr read_rds
 #' @importFrom reactable renderReactable
+#' @importFrom jstable CreateTableOneJS
 #' @importFrom shinydashboardPlus descriptionBlock
 #' @importFrom GGally ggcorr
+#' @importFrom dplyr select
 #' @importFrom plotly renderPlotly
 #' @importFrom shinyjs hide show
 #' @importFrom tibble as_tibble
@@ -479,12 +481,32 @@ app_server <- function(input, output, session) {
 
     output$tableOne <- renderReactable({
       data <- inputData()
+
+      strata <- NULL
+      if(input$tableOneStrata != 'NULL') strata <- input$tableOneStrata
+
+      tbl <- jstable::CreateTableOneJS(
+        vars = setdiff(colnames(data), strata),
+        data = data,
+        strata = strata
+      )$table
+
+      tbl <- tbl[, -c(ncol(tbl)-1, ncol(tbl))] # remove test / sig column
+
       reactable::reactable(
-        jstable::CreateTableOneJS(
-          vars = setdiff(colnames(data), input$tableOneStrata),
-          data = data,
-          strata = input$tableOneStrata
-        )$table
+        tbl,
+        columns = list(
+          p = colDef(
+            style = function(value){
+              value <- gsub(' ','', value) # remove empty space
+              color <- '#1e3799'
+              if(value < 0.05){
+                color <- "#eb2f06"
+              }
+              list(color = color, fontWeight = 'bold')
+            }
+          )
+        )
       )
     })
   })
@@ -514,8 +536,8 @@ app_server <- function(input, output, session) {
     updateSelectInput(
       inputId = "tableOneStrata",
       label = "Group by",
-      choices = colnames(data_rv$data),
-      selected = NULL
+      choices = c("NULL" ,colnames(data_rv$data)),
+      selected = numeric(0)
     )
 
     # esquisse render
@@ -566,7 +588,7 @@ app_server <- function(input, output, session) {
       descriptionBlock(
         header = paste0(obj$desc$nrow, " X ", obj$desc$ncol),
         numberIcon = icon("expand"),
-        number = "Data Dimension",
+        number = i18n_shiny$t("Data Dimension"),
         marginBottom = FALSE
       )
     )
@@ -575,7 +597,7 @@ app_server <- function(input, output, session) {
       descriptionBlock(
         header = paste0(obj$desc$missingCellCount, "(", obj$desc$missingCellRatio, "%)"),
         numberIcon = icon("question"),
-        number = "Missing Data",
+        number = i18n_shiny$t("Missing Data"),
         marginBottom = FALSE
       )
     )
