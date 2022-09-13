@@ -170,14 +170,15 @@ app_ui <- function(request) {
           ### Vis panel
           conditionalPanel(
             condition = 'input.module == "Vis"',
-            div(
-              shinydashboardPlus::box(
-                title = i18n_shiny$t("General Visualization"),
-                status = "purple",
-                collapsible = TRUE,
-                solidHeader = TRUE,
-                width = 12,
-                id = "visBox",
+            verticalTabsetPanel(
+              contentWidth = 11,
+              color= '#37E2D5', # SKY
+              # #37E2D5 SKY
+              # #FBCB0A Yellow
+              # #C70A80 Red
+              verticalTabPanel(
+                title ='General',
+                box_height = '4em',
                 shinyWidgets::checkboxGroupButtons(
                   inputId = "aes",
                   label = i18n_shiny$t("Aesthetic options"),
@@ -188,12 +189,9 @@ app_ui <- function(request) {
                 ),
                 uiOutput(outputId = "esquisse_ui2")
               ),
-              shinydashboardPlus::box(
-                title = i18n_shiny$t("Map Visualization"),
-                status = "purple",
-                collapsible = TRUE,
-                solidHeader = TRUE,
-                width = 12,
+              verticalTabPanel(
+                title = 'Map',
+                box_height = '4em',
                 mod_mapVisModule_ui("mapVisModule_1", i18n = i18n_shiny)
               )
             )
@@ -202,143 +200,122 @@ app_ui <- function(request) {
           ### EDA panel
           conditionalPanel(
             condition = 'input.module == "EDA"',
-            div(
-              id = "edabox",
-              shinydashboardPlus::box(
+            verticalTabsetPanel(
+              contentWidth = 11,
+              color= '#37E2D5',
+              # #37E2D5 SKY
+              # #FBCB0A Yellow
+              # #C70A80 Red
+              verticalTabPanel(
                 title = i18n_shiny$t("Dataset Description"),
-                status = "purple",
-                collapsible = TRUE,
-                solidHeader = TRUE,
-                width = 12,
+                box_height = '5em',
                 fluidRow(
-                  column(width = 6, uiOutput(outputId = "dataDimension")),
-                  column(width = 6, uiOutput(outputId = "missingData"))
+                  column(
+                    width = 4,
+                    uiOutput(outputId = "dataDimension")
+                  ),
+                  column(
+                    width = 4,
+                    uiOutput(outputId = "missingData")
+                  ),
+                  column(
+                    width = 4,
+                    radioButtons(
+                      "format",
+                      i18n_shiny$t("Document format"),
+                      c("PDF", "HTML", "Word"),
+                      inline = TRUE
+                    ),
+                    downloadButton(
+                      outputId = "downloadReport",
+                      style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+                    )
+                  )
                 )
               ),
-              shinydashboardPlus::box(
+              verticalTabPanel(
                 title = i18n_shiny$t("Correlation"),
-                status = "purple",
-                collapsible = TRUE,
-                solidHeader = TRUE,
-                width = 6,
+                box_height = '4em',
                 plotOutput(outputId = "corplot")
               ),
-              shinydashboardPlus::box(
+              verticalTabPanel(
                 title = i18n_shiny$t("Variables"),
-                status = "purple",
-                collapsible = TRUE,
-                solidHeader = TRUE,
-                width = 6,
+                box_height = '4em',
                 reactableOutput(outputId = "reactOutput")
               ),
-              shinydashboardPlus::box(
+              verticalTabPanel(
                 title = i18n_shiny$t("Distribution"),
-                status = "purple",
-                solidHeader = TRUE,
-                collapsible = TRUE,
-                width = 12,
+                box_height = '4em',
                 mod_variableModule_ui("variableModule_1"),
                 fluidRow(
                   column(width = 4, plotOutput("distplot")),
                   column(width = 4, plotOutput("distplot2")),
                   column(width = 4, uiOutput("distBox"))
                 )
-              ),
-              shinydashboardPlus::box(
-                title = i18n_shiny$t("Report"),
-                status = "purple",
-                solidHeader = TRUE,
-                collapsible = TRUE,
-                width = 12,
-                fluidRow(
-                  # column(
-                  #   width = 6,
-                  #
-                  # ),
-                  radioButtons(
-                    "format",
-                    i18n_shiny$t("Document format"),
-                    c("PDF", "HTML", "Word"),
-                    inline = TRUE
-                  ),
-                  downloadButton(
-                    outputId = "downloadReport",
-                    style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
-                  )
-                  # column(
-                  #   width = 6,
-                  #
-                  # )
-                )
               )
             )
+
           ),
           ## Stat Panel
           conditionalPanel(
             condition = 'input.module == "Stat"',
-            div(
-              shinydashboardPlus::box(
-                title = "Table 1", # Not translate
-                status = "purple",
-                collapsible = TRUE,
-                solidHeader = TRUE,
-                width = 12,
+            verticalTabsetPanel(
+              contentWidth = 11,
+              color= '#3742fa', # Blue
+              # #37E2D5 SKY
+              # #FBCB0A Yellow
+              # #C70A80 Red
+              verticalTabPanel(
+                title ='Table 1', # Not translate
+                box_height = '4em',
                 fluidRow(
-                  selectInput(
-                    inputId = "tableOneStrata",
-                    label = i18n_shiny$t("Group by"),
-                    choices = NULL,
-                    selected = NULL
+                  column( # Result Area
+                    width = 9,
+                    reactableOutput(outputId = "tableOne")
                   ),
-                  actionButton(
-                    inputId = "generateTable",
-                    label = i18n_shiny$t("generate Table"),
-                    style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+                  column(
+                    width = 3,
+                    selectInput( # Options
+                      inputId = "tableOneStrata",
+                      label = i18n_shiny$t("Group by"),
+                      choices = NULL,
+                      selected = NULL
+                    ),
+                    actionButton( # Main action
+                      inputId = "generateTable",
+                      label = i18n_shiny$t("generate Table"),
+                      style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+                    )
                   )
-                ),
-                reactableOutput(outputId = "tableOne")
+                )
               ),
-              shinydashboardPlus::box(
+              verticalTabPanel(
                 title = i18n_shiny$t("PCA"),
-                status = "purple",
-                collapsible = TRUE,
-                solidHeader = TRUE,
-                width = 12,
+                box_height = '4em',
                 mod_pcaModule_ui("pcaModule_1")
               ),
-              shinydashboardPlus::box(
+              verticalTabPanel(
                 title = i18n_shiny$t("Decision tree"),
-                status = "purple",
-                collapsible = TRUE,
-                solidHeader = TRUE,
-                width = 12,
+                box_height = '5em',
                 mod_treeModule_ui("treeModule_1")
               ),
-              shinydashboardPlus::box(
+              verticalTabPanel(
                 title = i18n_shiny$t("Linear regression"),
-                status = "purple",
-                collapsible = TRUE,
-                solidHeader = TRUE,
-                width = 12,
+                box_height = '5em',
                 mod_mlrModule_ui("mlrModule_1")
               ),
-              shinydashboardPlus::box(
+              verticalTabPanel(
                 title = i18n_shiny$t("K-means cluster"),
-                status = "purple",
-                collapsible = TRUE,
-                solidHeader = TRUE,
-                width = 12,
+                box_height = '5em',
                 mod_kmsModule_ui("kmsModule_1")
               ),
-              shinydashboardPlus::box(
+              verticalTabPanel(
                 title = i18n_shiny$t("Group metrics"),
-                status = "purple",
-                collapsible = TRUE,
-                solidHeader = TRUE,
-                width = 12,
+                box_height = '5em',
                 mod_groupStatModule_ui("groupStatModule_1")
               )
             )
+
           ),
           ## ML Panel
           conditionalPanel(

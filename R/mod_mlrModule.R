@@ -9,37 +9,46 @@
 #' @importFrom shiny NS tagList
 mod_mlrModule_ui <- function(id){
   ns <- NS(id)
-  tagList(
-    fluidRow(
+  fluidRow(
+    column( # Result Area
+      width = 9,
       column(
-        width = 4,
-        selectInput(ns('x'),'x',choices = NULL, multiple = TRUE)
+        width = 6,
+        plotOutput(ns('plot'), width = '100%')
       ),
-      column(
-        width = 4,
-        selectInput(ns('y'),'y',choices = NULL)
-      ),
-      column(
-        width = 4,
-        actionLink(
-          ns('interpret'),
-          'Interpretation of Linear Regression Output',
-          onclick = 'window.open("https://stats.stackexchange.com/questions/5135/interpretation-of-rs-lm-output", "_blank")'
-        )
-      )
-    ),
-    fluidRow(
       column(
         width = 6,
         verbatimTextOutput(ns('text'))
-      ),
-      column(
-        width = 6,
-        plotOutput(ns('plot'))
       )
     ),
-    actionButton(ns('reg'),'reg', style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%')
+    column( # Options
+      width = 3,
+      selectInput(
+        ns('x'),
+        'x',
+        choices = NULL,
+        multiple = TRUE,
+        width = '100%'
+      ),
+      selectInput(
+        ns('y'),
+        'y',
+        choices = NULL,
+        width = '100%'
+      ),
+      actionButton( # Main Action
+        ns('reg'),
+        'reg',
+        style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+      )
+    )
   )
+
+  # actionLink(
+  #   ns('interpret'),
+  #   'Interpretation of Linear Regression Output',
+  #   onclick = 'window.open("https://stats.stackexchange.com/questions/5135/interpretation-of-rs-lm-output", "_blank")'
+  # )
 }
 
 #' mlrModule Server Functions

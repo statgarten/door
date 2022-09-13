@@ -12,30 +12,29 @@
 #' @importFrom partykit lmtree
 mod_treeModule_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-    plotOutput(ns("plot")),
-    fluidRow(
-      column(
-        width = 4,
-        selectInput(ns("x"), "x", choices = NULL, multiple = TRUE, width = "100%"),
-        selectInput(ns("y"), "y", choices = NULL, width = "100%")
-      ),
-      column(
-        width = 4,
-        selectInput(ns("nodePlotX"), "nodePlotX", choices = NULL, width = "100%"),
-        selectInput(ns("nodePlotColor"), "nodePlotColor", choices = NULL, width = "100%"),
-        selectInput(ns("nodePlotShape"), "nodePlotShape", choices = NULL, width = "100%"),
-        sliderInput(ns("nodePlotAlpha"), "nodePlotAlpha", min = 0, max = 1, value = 0.5, step = 0.1, width = "100%")
-      ),
-      column(
-        width = 4,
-        h5("options"),
-        actionButton(ns("openNode"), "node", width = "100%"),
-        actionButton(ns("openEdge"), "edge", width = "100%"),
-        actionButton(ns("openTerminal"), "terminal", width = "100%")
-      )
+  fluidRow(
+    column( # Result Area
+      width = 9,
+      plotOutput(ns("plot"))
     ),
-    actionButton(ns("tree"), "tree", style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%')
+    column( # Options
+      width = 3,
+      selectInput(ns("x"), "x", choices = NULL, multiple = TRUE, width = "100%"),
+      selectInput(ns("y"), "y", choices = NULL, width = "100%"),
+      selectInput(ns("nodePlotX"), "nodePlotX", choices = NULL, width = "100%"),
+      selectInput(ns("nodePlotColor"), "nodePlotColor", choices = NULL, width = "100%"),
+      selectInput(ns("nodePlotShape"), "nodePlotShape", choices = NULL, width = "100%"),
+      sliderInput(ns("nodePlotAlpha"), "nodePlotAlpha", min = 0, max = 1, value = 0.5, step = 0.1, width = "100%"),
+      h5("options"),
+      actionButton(ns("openNode"), "node", width = "100%"),
+      actionButton(ns("openEdge"), "edge", width = "100%"),
+      actionButton(ns("openTerminal"), "terminal", width = "100%"),
+      actionButton( # Main action
+        ns("tree"),
+        "tree",
+        style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+      )
+    )
   )
 }
 

@@ -12,43 +12,55 @@
 #' @importFrom plotly ggplotly
 mod_pcaModule_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-    shinyjs::hidden(
-      uiOutput(outputId = ns("biplotSlot"))
-    ),
-    fluidRow(
-      column(
-        width = 3,
-        selectInput(
-          inputId = ns("columns"),
-          label = "",
-          choices = NULL,
-          multiple = TRUE
-        )
-      ),
-      column(
-        width = 3,
-        selectInput(inputId = ns("group"), label = "", choices = NULL)
-      ),
-      column(
-        width = 3,
-        selectInput(inputId = ns("labels"), label = "", choices = NULL)
-      ),
-      column(
-        width = 3,
-        fluidRow(
-          sliderInput(
-            inputId = ns("slotSize"),
-            label = "height of plot",
-            min = 400, max = 1000, step = 50, value = 400,
-            ticks = FALSE
-          ),
-          checkboxInput(inputId = ns("scale"), "variable normalize",value = TRUE)
-        )
+  fluidRow(
+    column( # Result Area
+      width = 9,
+      shinyjs::hidden(
+        uiOutput(outputId = ns("biplotSlot"))
       )
     ),
-    actionButton(inputId = ns("pca"), label = "draw", style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%')
+    column( # Options
+      width = 3,
+      selectInput(
+        inputId = ns("columns"),
+        label = "",
+        choices = NULL,
+        multiple = TRUE,
+        width = '100%'
+      ),
+      selectInput(
+        inputId = ns("group"),
+        label = "",
+        choices = NULL,
+        width = '100%'
+      ),
+      selectInput(
+        inputId = ns("labels"),
+        label = "",
+        choices = NULL,
+        width = '100%'
+      ),
+      sliderInput(
+        inputId = ns("slotSize"),
+        label = "height of plot",
+        min = 400, max = 1000, step = 50, value = 400,
+        ticks = FALSE,
+        width = '100%'
+      ),
+      checkboxInput(
+        inputId = ns("scale"),
+        "variable normalize",
+        value = TRUE,
+        width = '100%'
+      ),
+      actionButton( # Main Action
+        inputId = ns("pca"),
+        label = "draw",
+        style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+      )
+    )
   )
+
 }
 
 #' pcaModule Server Functions

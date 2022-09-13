@@ -10,41 +10,45 @@
 #' @importFrom reactable reactableOutput reactable renderReactable
 mod_groupStatModule_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-    reactableOutput(
-      outputId = ns("myTable")
-    ),
-    fluidRow(
-      column(
-        width = 6,
-        selectizeInput(
-          inputId = ns("groups"),
-          label = "",
-          choices = NULL,
-          multiple = TRUE
-        )
-      ),
-      column(
-        width = 6,
-        selectInput(
-          inputId = ns("func"),
-          label = "summary",
-          choices = c("mean", "median", "sd", "iqr" = "IQR", "mad", "min", "max")
-        ) # not quantile, first, last, nth, n, n_distint
+  fluidRow(
+    column( # Result Area
+      width = 9,
+      reactableOutput(
+        outputId = ns("myTable"),
+        width = '100%'
       )
     ),
-    actionButton(
-      inputId = ns("build"),
-      label = "build",
-      style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+    column( # options
+      width = 3,
+      selectizeInput(
+        inputId = ns("groups"),
+        label = "",
+        choices = NULL,
+        multiple = TRUE,
+        width = '100%'
+      ),
+      selectInput(
+        inputId = ns("func"),
+        label = "summary",
+        choices = c("mean", "median", "sd", "iqr" = "IQR", "mad", "min", "max"),
+        width = '100%'
+      ), # not quantile, first, last, nth, n, n_distint
+      actionButton( # Main Action
+        inputId = ns("build"),
+        label = "build",
+        style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+      )
     )
-    #,
-    # tags$button(
-    #   tagList(fontawesome::fa("download"), "Download as CSV"),
-    #   class = "btn btn-default shiny-download-link",
-    #   onclick = "Reactable.downloadDataCSV('groupStatModule_1-myTable', 'downloads.csv')"
-    # )
   )
+
+  ## NOT USED DOWNLOAD BUTTON
+
+  # tags$button(
+  #   tagList(fontawesome::fa("download"), "Download as CSV"),
+  #   class = "btn btn-default shiny-download-link",
+  #   onclick = "Reactable.downloadDataCSV('groupStatModule_1-myTable', 'downloads.csv')"
+  # )
+
 }
 
 #' groupStatModule Server Functions

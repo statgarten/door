@@ -10,12 +10,40 @@
 #' @importFrom shiny NS tagList
 mod_kmsModule_ui <- function(id){
   ns <- NS(id)
-  tagList(
-    sliderInput(ns('k'),'k',min = 2, max = 10, value = 4, step = 1),
-    checkboxInput(ns('scale'), 'scale',value = TRUE),
-    selectInput(inputId = ns("labels"), label = "", choices = NULL),
-    actionButton(ns('cluster'), 'cluster',style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'),
-    plotlyOutput(ns('plot'))
+  fluidRow(
+    column( # Result Area
+      width = 9,
+      plotlyOutput(ns('plot'), width = '100%')
+    ),
+    column( # Options
+      width = 3,
+      sliderInput(
+        ns('k'),
+        'k',
+        min = 2,
+        max = 10,
+        value = 4,
+        step = 1,
+        width = '100%'
+      ),
+      checkboxInput(
+        ns('scale'),
+        'scale',
+        value = TRUE,
+        width = '100%'
+      ),
+      selectInput(
+        inputId = ns("labels"),
+        label = "",
+        choices = NULL,
+        width = '100%'
+      ),
+      actionButton( # Main Action
+        ns('cluster'),
+        'cluster',
+        style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+      )
+    )
   )
 }
 

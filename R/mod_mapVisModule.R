@@ -11,55 +11,49 @@
 mod_mapVisModule_ui <- function(id, i18n) {
   ns <- NS(id)
   tagList(
-    leafletOutput(outputId = ns("mymap")),
     fluidRow(
-      column(
-        width = 4,
-        selectInput(ns("x"), label = "", choices = NULL)
+      column( # Result Area
+        width = 9,
+        leafletOutput(outputId = ns("mymap"))
       ),
-      column(
-        width = 4,
-        selectInput(ns("y"), label = "", choices = NULL)
-      ),
-      column(
-        width = 4,
-        sliderInput(
-          ns("radius"),
-          label = i18n$t("marker size"),
-          min = 1, max = 10, value = 5, step = 1, ticks = FALSE),
-      )
-    ),
-    fluidRow(
-      column(
-        width = 4,
-        checkboxInput(
-          ns("cluster"),
-          label = i18n$t("Group marker")
-        )
-      ),
-      div(
-        id = ns("div"),
-        column(
-          width = 4,
-          selectInput(ns("color"), "", choices = NULL)
-        ),
-        column(
-          width = 4,
+      column( # Options
+        width = 3,
+        fluidRow(
+          style = 'margin:auto',
+          selectInput(ns("x"), label = "", choices = NULL, width = '100%'),
+          selectInput(ns("y"), label = "", choices = NULL, width = '100%'),
           sliderInput(
-            ns("opacity"),
-                      label = i18n$t("alpha"),
-                      min = 0, max = 1, value = 0.5, step = 0.1, ticks = FALSE)
+            ns("radius"),
+            label = i18n$t("marker size"),
+            min = 1, max = 10, value = 5, step = 1, ticks = FALSE,
+            width = '100%'
+          ),
+          checkboxInput(
+            ns("cluster"),
+            label = i18n$t("Group marker"),
+            width = '100%'
+          ),
+          div(
+            id = ns("div"),
+            selectInput(ns("color"), "", choices = NULL, width = '100%'),
+            sliderInput(
+              ns("opacity"),
+              label = i18n$t("alpha"),
+              min = 0, max = 1, value = 0.5, step = 0.1, ticks = FALSE,
+              width = '100%'
+            )
+          ),
+          actionButton( # Main action
+            ns("draw"),
+            label = tagList(
+              phosphoricons::ph("arrow-circle-right"),
+              i18n$t("Draw")
+            ),
+            style = 'font-weight: bold;background: #3EC70B;color: white;',
+            width = "100%"
+          )
         )
       )
-    ),
-    actionButton(
-      ns("draw"),
-      label = tagList(
-        phosphoricons::ph("arrow-circle-right"),
-        i18n$t("Draw")
-      ),
-      style = 'font-weight: bold;background: #3EC70B;color: white;',
-      width = "100%"
     )
   )
 }
