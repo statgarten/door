@@ -30,15 +30,17 @@ app_server <- function(input, output, session) {
   i18n_shiny <- golem::get_golem_options(which = "translator")
   i18n_shiny$set_translation_language("en")
 
-  i18n_r <- reactive({ i18n_shiny })
+  i18n_r <- reactive({
+    i18n_shiny
+  })
 
   # guideButton render
   observeEvent(input$module, {
     output$guideButton <- renderUI({
       actionButton(
-        inputId = paste0(input$module, 'Guide'),
+        inputId = paste0(input$module, "Guide"),
         label = NULL,
-        icon = icon('info')
+        icon = icon("info")
       )
     })
   })
@@ -50,20 +52,20 @@ app_server <- function(input, output, session) {
       modalDialog(
         easyClose = TRUE,
         footer = NULL,
-        size = 'xl',
+        size = "xl",
         shinyglide::glide( # Default Guide
-          controls_position = 'bottom',
+          controls_position = "bottom",
           screen(
             br(),
-            tags$img(src="www/img/guide.004.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
+            tags$img(src = "www/img/guide.004.png", style = "display: block;margin-left: auto;margin-right: auto;width: 50%;")
           ),
           screen(
             br(),
-            tags$img(src="www/img/guide.005.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
+            tags$img(src = "www/img/guide.005.png", style = "display: block;margin-left: auto;margin-right: auto;width: 50%;")
           ),
           screen(
             br(),
-            tags$img(src="www/img/guide.006.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
+            tags$img(src = "www/img/guide.006.png", style = "display: block;margin-left: auto;margin-right: auto;width: 50%;")
           )
         )
       )
@@ -107,7 +109,7 @@ app_server <- function(input, output, session) {
   # update
   observeEvent(input$showUpdateModule, {
     showModal(modalDialog(
-      id = 'updateModal',
+      id = "updateModal",
       h3(i18n_shiny$t("Update data")),
       ui2(
         id = "updateModule_1" # removed unneccessary part
@@ -226,11 +228,10 @@ app_server <- function(input, output, session) {
 
     ## Datatoys
     require(datatoys, quietly = TRUE)
-    if(input$lang == 'en'){
+    if (input$lang == "en") {
       output$exampleDataset <- renderUI({
-
         Choices <- c(
-          'accident',
+          "accident",
           "airport",
           "bloodTest",
           "busStation",
@@ -287,46 +288,45 @@ app_server <- function(input, output, session) {
       })
     }
 
-    if(input$lang == 'ko'){
+    if (input$lang == "ko") {
       output$exampleDataset <- renderUI({
-
         Choices <- c(
-          "사망교통사고 정보"='accident',
-          "전세계 공항정보"="airport",
-          "2014-15 혈액검사 데이터"="bloodTest",
-          "전국 버스 정류장 위치정보"= "busStation",
-          "자동차검사소 정보"="carInspection",
-          "아동학대 신고정보"="childAbuse",
-          "범죄 발생 지역별 통계"="crime",
-          "범죄 발생 장소별 통계"="crimePlace",
-          "국내 승강기 보유 현황"="elevator",
-          "화재통계"="fire",
-          "전국 소방서 정보"="fireStation",
-          "2021 전국푸드뱅크 기부자 통계"="foodBank",
-          "식품영양성분 데이터베이스"="foodNutrients",
-          "전국 주유소 등록현황"="gasStation",
-          "해외진출기업 정보"="globalBusiness",
-          "응급의료기관 및 응급의료지원센터 현황"="gyeonggiER",
-          "병의원 기본정보"="hospitalInfo",
-          "2021 공동주택 공시가격 정보"="housingPrice",
-          "단란주점 영업 정보"="karaoke",
-          "법정동 정보"="legalDong",
-          "일반건강검진결과"="medicalCheckup",
+          "사망교통사고 정보" = "accident",
+          "전세계 공항정보" = "airport",
+          "2014-15 혈액검사 데이터" = "bloodTest",
+          "전국 버스 정류장 위치정보" = "busStation",
+          "자동차검사소 정보" = "carInspection",
+          "아동학대 신고정보" = "childAbuse",
+          "범죄 발생 지역별 통계" = "crime",
+          "범죄 발생 장소별 통계" = "crimePlace",
+          "국내 승강기 보유 현황" = "elevator",
+          "화재통계" = "fire",
+          "전국 소방서 정보" = "fireStation",
+          "2021 전국푸드뱅크 기부자 통계" = "foodBank",
+          "식품영양성분 데이터베이스" = "foodNutrients",
+          "전국 주유소 등록현황" = "gasStation",
+          "해외진출기업 정보" = "globalBusiness",
+          "응급의료기관 및 응급의료지원센터 현황" = "gyeonggiER",
+          "병의원 기본정보" = "hospitalInfo",
+          "2021 공동주택 공시가격 정보" = "housingPrice",
+          "단란주점 영업 정보" = "karaoke",
+          "법정동 정보" = "legalDong",
+          "일반건강검진결과" = "medicalCheckup",
           "의약품 주성분 정보" = "medicine",
-          "국민연금사업장 정보"="nationalPension",
-          "생필품가격 정보"="necessariesPrice",
-          "협력국 개발지표 및 ODA 지원 실적"="odaIndex",
-          "소득수준별 ODA 실적통계"="odaKR",
-          "국가별 개발협력동향정보"="odaNews",
-          "공공데이터포털 목록개방현황"="openData",
-          "반려동물 이름 통계"="petNames",
+          "국민연금사업장 정보" = "nationalPension",
+          "생필품가격 정보" = "necessariesPrice",
+          "협력국 개발지표 및 ODA 지원 실적" = "odaIndex",
+          "소득수준별 ODA 실적통계" = "odaKR",
+          "국가별 개발협력동향정보" = "odaNews",
+          "공공데이터포털 목록개방현황" = "openData",
+          "반려동물 이름 통계" = "petNames",
           "약국 기본정보" = "pharmacyInfo",
-          "축산오염원조사정보"="pollution",
-          "우체국 정보"="postOffice",
-          "맛집 정보"="restaurant",
-          "2020년도 장학금 수혜현황"="scholarship",
-          "응급실 위치 정보"="seoulER",
-          "장학금 정보"="tuition"
+          "축산오염원조사정보" = "pollution",
+          "우체국 정보" = "postOffice",
+          "맛집 정보" = "restaurant",
+          "2020년도 장학금 수혜현황" = "scholarship",
+          "응급실 위치 정보" = "seoulER",
+          "장학금 정보" = "tuition"
         )
 
         tagList(
@@ -346,8 +346,6 @@ app_server <- function(input, output, session) {
           actionButton(inputId = "loadExample", label = i18n_shiny$t("Load Example data")),
         )
       })
-
-
     }
 
     # Datamods
@@ -408,7 +406,9 @@ app_server <- function(input, output, session) {
   plotlyobj <- reactiveVal(NULL)
   output$plot <- renderPlotly(plotlyobj())
 
-  mod_mapVisModule_server("mapVisModule_1", inputData, i18n = i18n_r, lang = reactive({input$lang}))
+  mod_mapVisModule_server("mapVisModule_1", inputData, i18n = i18n_r, lang = reactive({
+    input$lang
+  }))
 
   # Stat Panel
   mod_pcaModule_server("pcaModule_1", inputData)
@@ -449,7 +449,7 @@ app_server <- function(input, output, session) {
   })
 
   # from url
-  from_url <- import_url_server( id = "importModule_2" )
+  from_url <- import_url_server(id = "importModule_2")
 
   observeEvent(from_url$data(), {
     data_rv$data <- from_url$data()
@@ -458,7 +458,7 @@ app_server <- function(input, output, session) {
   })
 
   # from google sheet
-  from_gs <- import_googlesheets_server( id = "importModule_3" )
+  from_gs <- import_googlesheets_server(id = "importModule_3")
 
   observeEvent(from_gs$data(), {
     data_rv$data <- from_gs$data()
@@ -474,7 +474,7 @@ app_server <- function(input, output, session) {
       data <- inputData()
 
       strata <- NULL
-      if(input$tableOneStrata != 'NULL') strata <- input$tableOneStrata
+      if (input$tableOneStrata != "NULL") strata <- input$tableOneStrata
 
       tbl <- jstable::CreateTableOneJS(
         vars = setdiff(colnames(data), strata),
@@ -482,19 +482,19 @@ app_server <- function(input, output, session) {
         strata = strata
       )$table
 
-      tbl <- tbl[, -c(ncol(tbl)-1, ncol(tbl))] # remove test / sig column
+      tbl <- tbl[, -c(ncol(tbl) - 1, ncol(tbl))] # remove test / sig column
 
       reactable::reactable(
         tbl,
         columns = list(
           p = colDef(
-            style = function(value){
-              value <- gsub(' ','', value) # remove empty space
-              color <- '#1e3799'
-              if(value < 0.05){
+            style = function(value) {
+              value <- gsub(" ", "", value) # remove empty space
+              color <- "#1e3799"
+              if (value < 0.05) {
                 color <- "#eb2f06"
               }
-              list(color = color, fontWeight = 'bold')
+              list(color = color, fontWeight = "bold")
             }
           )
         )
@@ -507,7 +507,7 @@ app_server <- function(input, output, session) {
     inputData(data_rv$data) # set data
 
     # shinyjs::enable(id = "moduleSelector")
-    shinyjs::hide(id = 'importModule')
+    shinyjs::hide(id = "importModule")
 
     output$moduleSelector <- renderUI({
       shinyWidgets::radioGroupButtons(
@@ -527,7 +527,7 @@ app_server <- function(input, output, session) {
     updateSelectInput(
       inputId = "tableOneStrata",
       label = "Group by",
-      choices = c("NULL" ,colnames(data_rv$data)),
+      choices = c("NULL", colnames(data_rv$data)),
       selected = numeric(0)
     )
 
@@ -860,11 +860,17 @@ app_server <- function(input, output, session) {
         params = list(
           inputData = data_rv$data
         ),
-        input = "report.Rmd",
+        input = switch(input$format,
+          PDF = "report.Rmd",
+          HTML = "report.Rmd",
+          Word = "report.Rmd",
+          Dashboard = "report-dashboard.Rmd"
+        ),
         output_format = switch(input$format,
           PDF = pdf_document(),
           HTML = html_document(),
-          Word = word_document()
+          Word = word_document(),
+          Dashboard = flexdashboard::flex_dashboard(orientation = "rows", vertical_layout = "scroll"),
         )
       )
       file.rename(out, file)

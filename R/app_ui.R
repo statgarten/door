@@ -223,7 +223,7 @@ app_ui <- function(request) {
                     radioButtons(
                       "format",
                       i18n_shiny$t("Document format"),
-                      c("PDF", "HTML", "Word"),
+                      c("PDF", "HTML", "Word", "Dashboard"),
                       inline = TRUE
                     ),
                     downloadButton(
