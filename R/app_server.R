@@ -404,15 +404,6 @@ app_server <- function(input, output, session) {
   # Reports
   rmarkdownParams <- reactiveVal(NULL)
 
-  # EDA Plot
-  distobj <- reactiveVal(NULL) # variable histogram
-  distobj2 <- reactiveVal(NULL) # variable pie chart
-  uiobj <- reactiveVal(NULL) # variable quantitle box
-
-  output$distplot <- renderPlot(distobj())
-  output$distplot2 <- renderPlot(distobj2())
-  output$distBox <- renderUI(uiobj())
-
   # Vis Panel
   plotlyobj <- reactiveVal(NULL)
   output$plot <- renderPlotly(plotlyobj())
@@ -808,7 +799,7 @@ app_server <- function(input, output, session) {
 
   ## EDA
 
-  mod_variableModule_server("variableModule_1", inputData, distobj, distobj2, uiobj)
+  mod_variableModule_server("variableModule_1", inputData)
 
   ## ML
 

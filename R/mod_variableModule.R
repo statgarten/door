@@ -8,24 +8,41 @@
 #'
 #' @importFrom shiny NS tagList
 #' @importFrom dplyr select
+#' @importFrom board ggpie distribute
 #' @importFrom shinydashboardPlus descriptionBlock
 mod_variableModule_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-    selectInput(
-      inputId = ns("variableDescription"),
-      label = "Select Variable",
-      choices = NULL,
-      selected = NULL,
-      multiple = FALSE
+  fluidRow( # Result Area
+    column(
+      width = 3,
+      plotOutput(ns("distplot"))
     ),
+    column(
+      width = 3,
+      plotOutput(ns("distplot2"))
+    ),
+    column(
+      width = 3,
+      uiOutput(ns("distBox"))
+    ),
+    column( # Options
+      width = 3,
+      selectInput(
+        inputId = ns("variableDescription"),
+        label = "Select Variable",
+        choices = NULL,
+        selected = NULL,
+        multiple = FALSE
+      )
+    )
+    # Main Action X (Reactive)
   )
 }
 
 #' variableModule Server Functions
 #'
 #' @noRd
-mod_variableModule_server <- function(id, inputData, distobj, distobj2, uiobj) {
+mod_variableModule_server <- function(id, inputData) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observeEvent(inputData(), {
@@ -40,6 +57,8 @@ mod_variableModule_server <- function(id, inputData, distobj, distobj2, uiobj) {
     })
 
     observeEvent(input$variableDescription, {
+      req(input$variableDescription)
+
       if (input$variableDescription == "") {
         return(0)
       }
@@ -47,18 +66,12 @@ mod_variableModule_server <- function(id, inputData, distobj, distobj2, uiobj) {
       numericV <- inputData() %>%
         dplyr::select(where(is.numeric)) %>%
         colnames()
-      uiobj(NULL)
-      distobj(NULL)
-      distobj2(NULL)
 
       if (input$variableDescription %in% numericV) { # if is numeric only
-        distobj(
-          board::distribute(inputData()[, input$variableDescription])
-        )
         des <- board::describe(inputData()[, input$variableDescription])
         out <- board::outlier(inputData()[, input$variableDescription])
 
-        uiobj(
+        output$distBox <- renderUI({
           tagList(
             fluidRow(
               column(width = 6, descriptionBlock(header = des$count, number = "Count", marginBottom = FALSE)),
@@ -83,12 +96,20 @@ mod_variableModule_server <- function(id, inputData, distobj, distobj2, uiobj) {
               column(width = 3, descriptionBlock(header = out$uv, number = "Small Outlier Value", marginBottom = FALSE))
             )
           )
-        )
+        })
+      }
+      else{
+        output$distBox <- renderUI({tagList()})
       }
 
-      distobj2(
+      output$distplot <- renderPlot({
+        board::distribute(inputData()[, input$variableDescription])
+      })
+
+      output$distplot2 <- renderPlot({
         board::ggpie(inputData()[, input$variableDescription])
-      )
+      })
+
     })
   })
 }
