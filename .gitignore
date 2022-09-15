@@ -50,3 +50,7 @@ old_app.R
 
 # guide image template
 /guide/
+
+# Report Caches
+/inst/figures
+/inst/report-paper.docx

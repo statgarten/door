@@ -1,59 +1,105 @@
 ---
+title: "Title"
+author: "(Author)$^{1,*}$"
+csl: nature.csl
+output:
+  word_document:
+    fig_height: 6
+    fig_width: 9
+    reference_docx: doc_ref.docx
+  html_document:
+    code_folding: hide
+    fig_height: 6
+    fig_width: 9
+    highlight: textmate
+    theme: cosmo
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: no
+    dev: jpeg
+  pdf_document:
+    fig_height: 6
+    fig_width: 9
+header-includes: \usepackage{kotex} \usepackage[doublespacing]{setspace}  \usepackage{multirow}
+bibliography: report-paper.bib
+editor_options: 
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
 params:
   inputData: NA
-  MLResult: NA
+  MLResult: "MLResult not Available"
 ---
 
-<!-- load_all will recognize change -->
-
-<!-- params = list(obj = ~~~) -->
-<!-- obj <- params$obj -->
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
+```{=html}
+<style>
+   p {line-height: 2.5em;}
+</style>
+```
+```{r setup, include=FALSE}
 inputData <- params$inputData
-library(ggplot2)
-library(ggpie)
-library(GGally)
-library(naniar)
-library(dplyr)
-library(knitr)
+library(ggplot2);library(ggpie);library(GGally);library(naniar);library(dplyr)
+library(knitr);library(reshape2);library(grid);library(gridExtra)
+library(scales);library(dplyr);library(data.table)
+
+opts_chunk$set(echo = F,fig.align="center",message=FALSE, warning=FALSE,fig.height = 7,cache=T,dpi=300,fig.path = 'figures/')
+
+reverselog_trans <- function(base = exp(1)) {
+    trans <- function(x) -log(x, base)
+    inv <- function(x) base^(-x)
+    trans_new(paste0("reverselog-", format(base)), trans, inv, 
+              log_breaks(base = base), 
+              domain = c(1e-100, Inf))
+}
 ```
 
-## Data information
+**1** (Affiliation)
 
-Number of Row with given data is `r nrow(inputData)` 
+$\ast$ Correspondence:
 
-Number of Column with given data is `r ncol(inputData)` 
+(Name, Degree)
 
-Total Count of missing data is `r length(which(is.na(inputData)))`
+(Affiliation)
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
+* (Address)
+
+Tel: (Tel)
+
+Fax: (Fax)
+
+E-mail: [(Email)](mailto:<Email>){.email}
+
+**keywords** : (Keywords)
+
+## Abstract
+
+(Abstract)
+
+## Introduction
+
+(Introduction)
+
+## Data
+
+```{r}
 ignoreNA <- names(which(colSums(is.na(inputData)) == nrow(inputData)))
 if (length(ignoreNA) > 0) {
-  print("Columns Below is removed because every rows are NA")
+  print("* Columns Below is removed because every rows are NA")
   print(ignoreNA)
   inputData <- inputData[, !(names(inputData) %in% ignoreNA)]
 }
 ```
 
-## Preview of data set
-
-top 5 data is below
+### MissingData
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
-head(inputData, 5)
+missingData <- naniar::miss_var_summary(inputData) %>% filter(n_miss > 0)
+knitr::kable(missingData)
 ```
 
-last 5 data is below
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-tail(inputData, 5)
-```
-### Column Attributes
+### Data Attributes
 ```{r, results='asis', echo = FALSE, warning = FALSE, message = FALSE}
-# tablebk <- vector('list', ncol(inputData))
-# tablebk2 <- vector('list', ncol(inputData))
-
 for (i in 1:length(inputData)) {
   count <- inputData %>%
     group_by(inputData[, i]) %>%
@@ -93,14 +139,31 @@ for (i in 1:length(inputData)) {
 }
 ```
 
-### MissingData
+## Body Paragraph 1
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-naniar::gg_miss_var(inputData)
-missingData <- naniar::miss_var_summary(inputData) %>% filter(n_miss > 0)
-knitr::kable(missingData)
-```
+### First Point about Topic
 
+(First Point about Topic)
+
+### Second Point about Topic
+
+(Second Point about Topic)
+
+## Body Paragraph 2
+
+### First Point about Topic
+
+(First Point about Topic)
+
+### Second Point about Topic
+
+(Second Point about Topic)
+
+## Discussion
+
+(Discussion)
+
+## Figures
 
 ### Correlation
 
@@ -110,6 +173,12 @@ if (inputData %>% select(where(is.numeric)) %>% length() < 2) {
 } else {
   ggcorr(inputData)
 }
+```
+
+### MissingData
+
+```{r}
+naniar::gg_miss_var(inputData)
 ```
 
 ### Scatterplot
@@ -137,27 +206,17 @@ for (i in 1:(ncol(scatterData) %/% 5 + 1)) {
 
 ```
 
-<!-- ### Distribution -->
+### Machine Learning Result
 
-<!-- ```{r, results='asis', echo = FALSE, warning = FALSE, message = FALSE} -->
-<!-- output <- vector('list', ncol(inputData)) -->
-<!-- for(i in 1:ncol(inputData)) { -->
-<!--   output[[i]] <- local({ -->
-<!--     i <- i -->
-<!--     fig <-ggplot(data=inputData, aes(x=inputData[[i]])) + geom_histogram(fill="skyblue",colour="black") + xlab("value") + theme(legend.position = "none") -->
-<!--   }) -->
-<!-- } -->
+Machine Learning Result is not available.
+```{r}
+# if(!is.na(MLResult)){
+#   print(MLResult)
+# } else {
+#   return("MLResult not available")
+# }
+```
 
+## Reference
 
-<!-- for(i in 1:ncol(inputData)) { -->
-<!-- cat("\n\n ", names(inputData)[i], "\n\n") -->
-<!-- x <- output[[i]] -->
-<!-- print(x) -->
-<!-- cat("\n\n") -->
-<!-- } -->
-<!-- ``` -->
-
-
-## Report information
-
-this report is generated with [Statgarten](https://github.com/statgarten) @ `r Sys.time()`
+(Reference)

@@ -851,7 +851,9 @@ app_server <- function(input, output, session) {
         switch(input$format,
           PDF = "pdf",
           HTML = "html",
-          Word = "docx"
+          Word = "docx",
+          Dashboard = "html",
+          Paper = "docx"
         )
       )
     },
@@ -873,13 +875,15 @@ app_server <- function(input, output, session) {
           PDF = "report.Rmd",
           HTML = "report.Rmd",
           Word = "report.Rmd",
-          Dashboard = "report-dashboard.Rmd"
+          Dashboard = "report-dashboard.Rmd",
+          Paper = "report-paper.Rmd"
         ),
         output_format = switch(input$format,
           PDF = pdf_document(),
           HTML = html_document(),
           Word = word_document(),
           Dashboard = flexdashboard::flex_dashboard(orientation = "rows", vertical_layout = "scroll"),
+          Paper = word_document()
         )
       )
       file.rename(out, file)
