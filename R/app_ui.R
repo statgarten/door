@@ -247,11 +247,6 @@ app_ui <- function(request) {
                 title = i18n_shiny$t("Distribution"),
                 box_height = '4em',
                 mod_variableModule_ui("variableModule_1"),
-                fluidRow(
-                  column(width = 4, plotOutput("distplot")),
-                  column(width = 4, plotOutput("distplot2")),
-                  column(width = 4, uiOutput("distBox"))
-                )
               )
             )
 
@@ -320,26 +315,20 @@ app_ui <- function(request) {
           ## ML Panel
           conditionalPanel(
             condition = 'input.module == "ML"',
-            div(
-              ## split
-              shinydashboardPlus::box(
-                style = "height:50vh; overflow-y: scroll;",
+            verticalTabsetPanel(
+              contentWidth = 11,
+              color= '#37E2D5', # SKY
+              # #37E2D5 SKY
+              # #FBCB0A Yellow
+              # #C70A80 Red
+              verticalTabPanel(
                 title = "Data Setup",
-                collapsible = TRUE,
-                collapsed = FALSE,
-                solidHeader = TRUE,
-                status = "purple",
-                width = 12,
+                box_height = '5em',
                 mod_ttSplitModule_ui(id = "ttSplitModule_1")
               ),
-              shinydashboardPlus::box(
-                style = "height:400px;",
+              verticalTabPanel(
                 title = "Modeling",
-                collapsible = TRUE,
-                collapsed = FALSE,
-                solidHeader = TRUE,
-                status = "purple",
-                width = 12,
+                box_height = '4em',
                 mod_modelingModule_ui("modelingModule_1")
               )
             )

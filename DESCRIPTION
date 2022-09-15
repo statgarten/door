@@ -1,6 +1,6 @@
 Package: door
 Title: Shiny module for statgarten
-Version: 0.1.6
+Version: 0.1.7
 Authors@R: 
     person("Jinhwan", "Kim", , "hwanistic@gmail.com", role = c("cre", "aut"))
 Description: PKG_DESC.
@@ -19,7 +19,6 @@ Imports:
     DT (>= 0.24),
     esquisse (>= 1.1.1),
     factoextra (>= 1.0.7),
-    fontawesome (>= 0.3.0),
     GGally (>= 2.1.2),
     ggbiplot (>= 0.55),
     ggparty (>= 1.0.0),

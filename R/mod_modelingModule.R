@@ -12,29 +12,65 @@ mod_modelingModule_ui <- function(id) {
   ns <- NS(id)
   tagList(
     fluidRow(
-      column(
-        width = 6,
+      column( # Result area
+        width = 9,
+        # Cluster
+        conditionalPanel(
+          "input.mode == 'clustering'",
+          ns = ns,
+          plotOutput(outputId = ns("ClusterPlot")),
+          plotOutput(outputId = ns("optimalK")),
+          verbatimTextOutput(outputId = ns("ClusterResult")),
+        ),
+
+        # Regression
+        conditionalPanel(
+          "input.mode == 'regression'",
+          ns = ns,
+          plotOutput(outputId = ns("RegressionPlot"))
+        ),
+
+        # Classification
+        conditionalPanel(
+          "input.mode == 'classification'",
+          ns = ns,
+          plotOutput(outputId = ns("confusionMatrix")),
+          plotOutput(outputId = ns("rocCurve"))
+        ),
+
+        # Regression & Classification both
+        conditionalPanel(
+          "input.mode == 'classification' || input.mode == 'regression'",
+          ns = ns,
+          verbatimTextOutput(outputId = ns("EvalMatrix"))
+        )
+      ),
+
+      column( # Options
+        width = 3,
         selectInput(
           inputId = ns("mode"),
           label = "mode 지정",
           choices = c("classification", "regression", "clustering"),
-          selected = NULL
+          selected = NULL,
+          width = '100%'
         ),
         selectInput(
           inputId = ns("algo"),
           label = "algo 지정",
           choices = c(
-            "Logistic Regression" = "LogisticR",
+            "Logistic Regression" = "logisticRegression",
             "Linear Regression" = "LinearR",
             "K Nearest Neighbor" = "KNN",
-            "Naive Bayes" = "NB",
+            "Naive Bayes" = "naiveBayes",
             "MLP",
-            "Decision Tree" = "DT",
-            "Random Forest" = "RF",
+            "Decision Tree" = "decisionTree",
+            "Random Forest" = "randomForest",
             "XGBoost",
             "lightGBM",
             "K Means Clustering" = "KMC"
-          )
+          ),
+          width = '100%'
         ),
         selectInput(
           inputId = ns("engine"),
@@ -44,792 +80,64 @@ mod_modelingModule_ui <- function(id) {
             "kknn", # KNN
             "klaR", # NB
             "nnet", # MLP
-            "rpart", # DT
-            "ranger", # RF
+            "rpart", # decisionTree
+            "ranger", # randomForest
             "xgboost", # XGBoost
             "lightgbm", # Light GBM,
             "-" # KMC
-          )
+          ),
+          width = '100%'
         ),
-        selectInput(
+        sliderInput(
           inputId = ns("fold"),
           label = "v 지정",
-          choices = c(1:20),
-          selected = 5
+          min = 1, max = 5, step = 1,value = 2,
+          width = '100%'
         ),
         selectInput(
           inputId = ns("metric"),
           label = "metric 지정",
           choices = c("roc_auc", "rmse"),
-          selected = "roc_auc"
-        )
-      ),
-      column(
-        width = 6,
-
-        ## Penalty
-        # Logistic / Linear / MLP
-        conditionalPanel(
-          "input.algo == 'LogisticR' || input.algo == 'LinearR' || input.algo == 'MLP'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("penaltyRangeMin"),
-                label = "penaltyRangeMin",
-                value = 0.1,
-                min = 0.0001,
-                max = 1,
-                step = 0.0001
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("penaltyRangeMax"),
-                label = "penaltyRangeMax",
-                value = 1,
-                min = 0.0001,
-                max = 1,
-                step = 0.0001
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("penaltyRangeLevels"),
-                label = "penaltyRangeLevels",
-                value = 5,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          )
-        ),
-
-        ## Mixtures
-        # Logistic / Linear Regression
-        conditionalPanel(
-          "input.algo == 'LogisticR' || input.algo == 'LinearR'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("mixtureRangeMin"),
-                label = "mixtureRangeMin",
-                value = 0,
-                min = 0,
-                max = 1,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("mixtureRangeMax"),
-                label = "mixtureRangeMax",
-                value = 1,
-                min = 0,
-                max = 1,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("mixtureRangeLevels"),
-                label = "mixtureRangeLevels",
-                value = 5,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          )
-        ),
-
-        ## Neighbors
-        # KNN
-        conditionalPanel(
-          "input.algo == 'KNN'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("neighborsRangeMin"),
-                label = "neighborsRangeMin",
-                value = 5,
-                min = 1,
-                max = 10,
-                step = 1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("neighborsRangeMax"),
-                label = "neighborsRangeMax",
-                value = 10,
-                min = 1,
-                max = 10,
-                step = 1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("neighborsRangeLevels"),
-                label = "neighborsRangeLevels",
-                value = 10,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          )
-        ),
-
-        ## Smooth & Laplace
-        # NB
-        conditionalPanel(
-          "input.algo == 'NB'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("smoothnessRangeMin"),
-                label = "smoothnessRangeMin",
-                value = 0.5,
-                min = 0.5,
-                max = 1.5,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("smoothnessRangeMax"),
-                label = "smoothnessRangeMax",
-                value = 1.5,
-                min = 1.5,
-                max = 1.5,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("smoothnessRangeLevels"),
-                label = "smoothnessRangeLevels",
-                value = 3,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          ),
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("LaplaceRangeMin"),
-                label = "LaplaceRangeMin",
-                value = 0,
-                min = 0,
-                max = 3,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("LaplaceRangeMax"),
-                label = "LaplaceRangeMax",
-                value = 3,
-                min = 0,
-                max = 3,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("LaplaceRangeLevels"),
-                label = "LaplaceRangeLevels",
-                value = 4,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          )
-        ),
-
-
-
-        ## hidden_units & epoches
-        # MLP
-        conditionalPanel(
-          "input.algo == 'MLP'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("hiddenUnitsRangeMin"),
-                label = "hiddenUnitsRangeMin",
-                value = 1,
-                min = 1,
-                max = 10,
-                step = 1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("hiddenUnitsRangeMax"),
-                label = "hiddenUnitsRangeMax",
-                value = 10,
-                min = 1,
-                max = 10,
-                step = 1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("hiddenUnitsRangeLevels"),
-                label = "hiddenUnitsRangeLevels",
-                value = 3,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          ),
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("epochsRangeMin"),
-                label = "epochsRangeMin",
-                value = 10,
-                min = 10,
-                max = 1000,
-                step = 1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("epochsRangeMax"),
-                label = "epochsRangeMax",
-                value = 100,
-                min = 10,
-                max = 1000,
-                step = 1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("epochsRangeLevels"),
-                label = "epochsRangeLevels",
-                value = 2,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          )
-        ),
-
-
-        ## treeDepth
-        # DT lightgbm, xgboost
-        conditionalPanel(
-          "input.algo == 'DT' || input.algo == 'XGBoost' || input.algo == 'lightGBM'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("treeDepthRangeMin"),
-                label = "treeDepthRangeMin",
-                value = 1,
-                min = 1,
-                max = 15,
-                step = 1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("treeDepthRangeMax"),
-                label = "treeDepthRangeMax",
-                value = 15,
-                min = 1,
-                max = 15,
-                step = 1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("treeDepthRangeLevels"),
-                label = "treeDepthRangeLevels",
-                value = 3,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          )
-        ),
-
-        ## minN
-        # DT, RF, lightGBM, xgboost
-        conditionalPanel(
-          "input.algo == 'DT' || input.algo=='RF' || input.algo == 'XGBoost' || input.algo == 'lightGBM'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("minNRangeMin"),
-                label = "minNRangeMin",
-                value = 2,
-                min = 2,
-                max = 40,
-                step = 1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("minNRangeMax"),
-                label = "minNRangeMax",
-                value = 40,
-                min = 2,
-                max = 40,
-                step = 1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("minNRangeLevels"),
-                label = "minNRangeLevels",
-                value = 3,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          )
-        ),
-
-        ## costComplexity
-        # DT
-        conditionalPanel(
-          "input.algo == 'DT'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("costComplexityRangeMin"),
-                label = "costComplexityRangeMin",
-                value = -2,
-                min = -10,
-                max = -1,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("costComplexityRangeMax"),
-                label = "costComplexityRangeMax",
-                value = -1,
-                min = -10,
-                max = -1,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("costComplexityRangeLevels"),
-                label = "costComplexityRangeLevels",
-                value = 2,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          )
-        ),
-
-        ## mtry & trees
-        # RF, XGboost, lightBGM
-        conditionalPanel(
-          "input.algo=='RF' || input.algo == 'XGBoost' || input.algo == 'lightGBM'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("mtryRangeMin"),
-                label = "mtryRangeMin",
-                value = 1,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("mtryRangeMax"),
-                label = "mtryRangeMax",
-                value = 20,
-                min = 1,
-                max = 20,
-                step = 11
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("mtryRangeLevels"),
-                label = "mtryRangeLevels",
-                value = 3,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          ),
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("treesRangeMin"),
-                label = "treesRangeMin",
-                value = 100,
-                min = 1,
-                max = 2000,
-                step = 50
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("treesRangeMax"),
-                label = "treesRangeMax",
-                value = 1000,
-                min = 1,
-                max = 2000,
-                step = 50
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("treesRangeLevels"),
-                label = "treesRangeLevels",
-                value = 3,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          )
-        ),
-
-
-        ## learnRate & lossReduction
-        # XGBOOST, LightGBM
-        conditionalPanel(
-          "input.algo == 'XGBoost' || input.algo == 'lightGBM'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("learnRateRangeMin"),
-                label = "learnRateRangeMin",
-                value = -2,
-                min = -10,
-                max = -1,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("learnRateRangeMax"),
-                label = "learnRateRangeMax",
-                value = -1,
-                min = -10,
-                max = -1,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("learnRateRangeLevels"),
-                label = "learnRateRangeLevels",
-                value = 2,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          ),
-          fluidRow(
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("lossReductionRangeMin"),
-                label = "lossReductionRangeMin",
-                value = -1,
-                min = -10,
-                max = 1.5,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("lossReductionRangeMax"),
-                label = "lossReductionRangeMax",
-                value = 1,
-                min = -10,
-                max = 1.5,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("lossReductionRangeLevels"),
-                label = "lossReductionRangeLevels",
-                value = 3,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            )
-          )
-        ),
-
-
-        ## sampleSize & stopIter
-        # xgboost
-
-        conditionalPanel(
-          "input.algo == 'XGBoost'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 3,
-              numericInput(
-                inputId = ns("sampleSizeRangeMin"),
-                label = "sampleSizeRangeMin",
-                value = 0,
-                min = 0,
-                max = 1,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 3,
-              numericInput(
-                inputId = ns("sampleSizeRangeMax"),
-                label = "sampleSizeRangeMax",
-                value = 1,
-                min = 0,
-                max = 1,
-                step = 0.1
-              )
-            ),
-            column(
-              width = 3,
-              numericInput(
-                inputId = ns("sampleSizeRangeLevels"),
-                label = "sampleSizeRangeLevels",
-                value = 3,
-                min = 1,
-                max = 20,
-                step = 1
-              )
-            ),
-            column(
-              width = 3,
-              numericInput(
-                inputId = ns("stopIter"),
-                label = "stopIter",
-                value = 30,
-                min = 3,
-                max = 500,
-                step = 1
-              )
-            )
-          )
-        ),
-
-        ## KMC
-
-        conditionalPanel(
-          "input.algo == 'KMC'",
-          ns = ns,
-          fluidRow(
-            column(
-              width = 3,
-              numericInput(
-                inputId = ns("maxK"),
-                label = "maxK",
-                value = 15,
-                min = 2,
-                max = 100,
-                step = 1
-              )
-            ),
-            column(
-              width = 3,
-              numericInput(
-                inputId = ns("nStart"),
-                label = "nStart",
-                value = 25,
-                min = 1,
-                max = 175,
-                step = 1
-              )
-            ),
-            column(
-              width = 3,
-              numericInput(
-                inputId = ns("iterMax"),
-                label = "iterMax",
-                value = 10,
-                min = 1,
-                max = 5000,
-                step = 50
-              )
-            ),
-            column(
-              width = 3,
-              numericInput(
-                inputId = ns("nBoot"),
-                label = "nBoot",
-                value = 100,
-                min = 1,
-                max = 500,
-                step = 50
-              )
-            )
-          ),
-          fluidRow(
-            column(
-              width = 4,
-              selectInput(
-                inputId = ns("algorithm"),
-                label = "algorithm",
-                choices = c("Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"),
-                selected = "Hartigan-Wong"
-              )
-            ),
-            column(
-              width = 4,
-              selectInput(
-                inputId = ns("selectOptimal"),
-                label = "selectOptimal",
-                choices = c("silhouette", "gap_stat"),
-                selected = "silhouette"
-              )
-            ),
-            column(
-              width = 4,
-              numericInput(
-                inputId = ns("seedNum"),
-                label = "seedNum",
-                value = 6471,
-                min = 1,
-                max = 9999,
-                step = 1
-              )
-            )
-          )
+          selected = "roc_auc",
+          width = '100%'
         ),
         actionButton(
+          ns('hyper'),
+          label = 'show hyper',
+          icon = icon('gear'),
+          style = 'font-weight:bold; background:#b2bec3; color:black; width:100%;'
+        ),
+        actionButton( # Main Action
           inputId = ns("applyModel"),
-          label = "모델 생성 버튼"
+          label = "모델 생성 버튼",
+          style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
         ),
         shinyjs::hidden(
           div(
-            id = ns("models"),
+            id = ns('models'),
             shinycssloaders::withSpinner(
               verbatimTextOutput(
                 outputId = ns("obj")
               )
+            ),
+            selectInput(
+              inputId = ns("reportML"),
+              label = "생성된 모델",
+              choices = NULL,
+              selected = NULL
+            ),
+            actionButton(
+              inputId = ns("generateReport"),
+              label = "report 생성",
+              style = 'font-weight: bold;background: #00b894;color: white; width: 100%'
             )
-          )
-        ),
-        fluidRow(
-          selectInput(
-            inputId = ns("reportML"),
-            label = "생성된 모델",
-            choices = NULL,
-            selected = NULL
-          ),
-          actionButton(
-            inputId = ns("generateReport"),
-            label = "report 생성"
-          ),
-
-          # Cluster
-          conditionalPanel(
-            "input.mode == 'clustering'",
-            ns = ns,
-            plotOutput(outputId = ns("ClusterPlot")),
-            plotOutput(outputId = ns("optimalK")),
-            verbatimTextOutput(outputId = ns("ClusterResult")),
-          ),
-
-          # Regression
-          conditionalPanel(
-            "input.mode == 'regression'",
-            ns = ns,
-            plotOutput(outputId = ns("RegressionPlot"))
-          ),
-
-          # Classification
-          conditionalPanel(
-            "input.mode == 'classification'",
-            ns = ns,
-            plotOutput(outputId = ns("confusionMatrix")),
-            plotOutput(outputId = ns("rocCurve"))
-          ),
-
-          # Regression & Classification both
-          conditionalPanel(
-            "input.mode == 'classification' || input.mode == 'regression'",
-            ns = ns,
-            verbatimTextOutput(outputId = ns("EvalMatrix"))
           )
         )
       )
     )
   )
 }
+
 
 #' modelingModule Server Functions
 #'
@@ -839,10 +147,727 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    observeEvent(input$applyModel, {
-      shinyjs::show(id = "models")
+    observeEvent(input$hyper,{
+      # Hyper Parameters
+      showModal(
+        modalDialog(
+          easyClose = TRUE,
+          footer = NULL,
+          title = 'HyperParameter Options',
 
-      if (input$algo == "LogisticR") {
+          ## Penalty
+          # Logistic / Linear / MLP
+          conditionalPanel(
+            "input.algo == 'logisticRegression' || input.algo == 'LinearR' || input.algo == 'MLP'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("penaltyRangeMin"),
+                  label = "penaltyRangeMin",
+                  value = 0.1,
+                  min = 0.0001,
+                  max = 1,
+                  step = 0.0001
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("penaltyRangeMax"),
+                  label = "penaltyRangeMax",
+                  value = 1,
+                  min = 0.0001,
+                  max = 1,
+                  step = 0.0001
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("penaltyRangeLevels"),
+                  label = "penaltyRangeLevels",
+                  value = 5,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            )
+          ),
+
+          ## Mixtures
+          # Logistic / Linear Regression
+          conditionalPanel(
+            "input.algo == 'logisticRegression' || input.algo == 'LinearR'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("mixtureRangeMin"),
+                  label = "mixtureRangeMin",
+                  value = 0,
+                  min = 0,
+                  max = 1,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("mixtureRangeMax"),
+                  label = "mixtureRangeMax",
+                  value = 1,
+                  min = 0,
+                  max = 1,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("mixtureRangeLevels"),
+                  label = "mixtureRangeLevels",
+                  value = 5,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            )
+          ),
+
+          ## Neighbors
+          # KNN
+          conditionalPanel(
+            "input.algo == 'KNN'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("neighborsRangeMin"),
+                  label = "neighborsRangeMin",
+                  value = 5,
+                  min = 1,
+                  max = 10,
+                  step = 1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("neighborsRangeMax"),
+                  label = "neighborsRangeMax",
+                  value = 10,
+                  min = 1,
+                  max = 10,
+                  step = 1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("neighborsRangeLevels"),
+                  label = "neighborsRangeLevels",
+                  value = 10,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            )
+          ),
+
+          ## Smooth & Laplace
+          # NB
+          conditionalPanel(
+            "input.algo == 'naiveBayes'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("smoothnessRangeMin"),
+                  label = "smoothnessRangeMin",
+                  value = 0.5,
+                  min = 0.5,
+                  max = 1.5,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("smoothnessRangeMax"),
+                  label = "smoothnessRangeMax",
+                  value = 1.5,
+                  min = 1.5,
+                  max = 1.5,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("smoothnessRangeLevels"),
+                  label = "smoothnessRangeLevels",
+                  value = 3,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            ),
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("LaplaceRangeMin"),
+                  label = "LaplaceRangeMin",
+                  value = 0,
+                  min = 0,
+                  max = 3,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("LaplaceRangeMax"),
+                  label = "LaplaceRangeMax",
+                  value = 3,
+                  min = 0,
+                  max = 3,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("LaplaceRangeLevels"),
+                  label = "LaplaceRangeLevels",
+                  value = 4,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            )
+          ),
+
+
+
+          ## hidden_units & epoches
+          # MLP
+          conditionalPanel(
+            "input.algo == 'MLP'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("hiddenUnitsRangeMin"),
+                  label = "hiddenUnitsRangeMin",
+                  value = 1,
+                  min = 1,
+                  max = 10,
+                  step = 1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("hiddenUnitsRangeMax"),
+                  label = "hiddenUnitsRangeMax",
+                  value = 10,
+                  min = 1,
+                  max = 10,
+                  step = 1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("hiddenUnitsRangeLevels"),
+                  label = "hiddenUnitsRangeLevels",
+                  value = 3,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            ),
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("epochsRangeMin"),
+                  label = "epochsRangeMin",
+                  value = 10,
+                  min = 10,
+                  max = 1000,
+                  step = 1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("epochsRangeMax"),
+                  label = "epochsRangeMax",
+                  value = 100,
+                  min = 10,
+                  max = 1000,
+                  step = 1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("epochsRangeLevels"),
+                  label = "epochsRangeLevels",
+                  value = 2,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            )
+          ),
+
+
+          ## treeDepth
+          # decisionTree lightgbm, xgboost
+          conditionalPanel(
+            "input.algo == 'decisionTree' || input.algo == 'XGBoost' || input.algo == 'lightGBM'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("treeDepthRangeMin"),
+                  label = "treeDepthRangeMin",
+                  value = 1,
+                  min = 1,
+                  max = 15,
+                  step = 1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("treeDepthRangeMax"),
+                  label = "treeDepthRangeMax",
+                  value = 15,
+                  min = 1,
+                  max = 15,
+                  step = 1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("treeDepthRangeLevels"),
+                  label = "treeDepthRangeLevels",
+                  value = 3,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            )
+          ),
+
+          ## minN
+          # decisionTree, randomForest, lightGBM, xgboost
+          conditionalPanel(
+            "input.algo == 'decisionTree' || input.algo=='randomForest' || input.algo == 'XGBoost' || input.algo == 'lightGBM'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("minNRangeMin"),
+                  label = "minNRangeMin",
+                  value = 2,
+                  min = 2,
+                  max = 40,
+                  step = 1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("minNRangeMax"),
+                  label = "minNRangeMax",
+                  value = 40,
+                  min = 2,
+                  max = 40,
+                  step = 1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("minNRangeLevels"),
+                  label = "minNRangeLevels",
+                  value = 3,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            )
+          ),
+
+          ## costComplexity
+          # decisionTree
+          conditionalPanel(
+            "input.algo == 'decisionTree'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("costComplexityRangeMin"),
+                  label = "costComplexityRangeMin",
+                  value = -2,
+                  min = -10,
+                  max = -1,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("costComplexityRangeMax"),
+                  label = "costComplexityRangeMax",
+                  value = -1,
+                  min = -10,
+                  max = -1,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("costComplexityRangeLevels"),
+                  label = "costComplexityRangeLevels",
+                  value = 2,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            )
+          ),
+
+          ## mtry & trees
+          # randomForest, XGboost, lightBGM
+          conditionalPanel(
+            "input.algo=='randomForest' || input.algo == 'XGBoost' || input.algo == 'lightGBM'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("mtryRangeMin"),
+                  label = "mtryRangeMin",
+                  value = 1,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("mtryRangeMax"),
+                  label = "mtryRangeMax",
+                  value = 20,
+                  min = 1,
+                  max = 20,
+                  step = 11
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("mtryRangeLevels"),
+                  label = "mtryRangeLevels",
+                  value = 3,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            ),
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("treesRangeMin"),
+                  label = "treesRangeMin",
+                  value = 100,
+                  min = 1,
+                  max = 2000,
+                  step = 50
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("treesRangeMax"),
+                  label = "treesRangeMax",
+                  value = 1000,
+                  min = 1,
+                  max = 2000,
+                  step = 50
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("treesRangeLevels"),
+                  label = "treesRangeLevels",
+                  value = 3,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            )
+          ),
+
+
+          ## learnRate & lossReduction
+          # XGBOOST, LightGBM
+          conditionalPanel(
+            "input.algo == 'XGBoost' || input.algo == 'lightGBM'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("learnRateRangeMin"),
+                  label = "learnRateRangeMin",
+                  value = -2,
+                  min = -10,
+                  max = -1,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("learnRateRangeMax"),
+                  label = "learnRateRangeMax",
+                  value = -1,
+                  min = -10,
+                  max = -1,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("learnRateRangeLevels"),
+                  label = "learnRateRangeLevels",
+                  value = 2,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            ),
+            fluidRow(
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("lossReductionRangeMin"),
+                  label = "lossReductionRangeMin",
+                  value = -1,
+                  min = -10,
+                  max = 1.5,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("lossReductionRangeMax"),
+                  label = "lossReductionRangeMax",
+                  value = 1,
+                  min = -10,
+                  max = 1.5,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("lossReductionRangeLevels"),
+                  label = "lossReductionRangeLevels",
+                  value = 3,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              )
+            )
+          ),
+
+
+          ## sampleSize & stopIter
+          # xgboost
+
+          conditionalPanel(
+            "input.algo == 'XGBoost'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 3,
+                numericInput(
+                  inputId = ns("sampleSizeRangeMin"),
+                  label = "sampleSizeRangeMin",
+                  value = 0,
+                  min = 0,
+                  max = 1,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 3,
+                numericInput(
+                  inputId = ns("sampleSizeRangeMax"),
+                  label = "sampleSizeRangeMax",
+                  value = 1,
+                  min = 0,
+                  max = 1,
+                  step = 0.1
+                )
+              ),
+              column(
+                width = 3,
+                numericInput(
+                  inputId = ns("sampleSizeRangeLevels"),
+                  label = "sampleSizeRangeLevels",
+                  value = 3,
+                  min = 1,
+                  max = 20,
+                  step = 1
+                )
+              ),
+              column(
+                width = 3,
+                numericInput(
+                  inputId = ns("stopIter"),
+                  label = "stopIter",
+                  value = 30,
+                  min = 3,
+                  max = 500,
+                  step = 1
+                )
+              )
+            )
+          ),
+
+          ## KMC
+
+          conditionalPanel(
+            "input.algo == 'KMC'",
+            ns = ns,
+            fluidRow(
+              column(
+                width = 3,
+                numericInput(
+                  inputId = ns("maxK"),
+                  label = "maxK",
+                  value = 15,
+                  min = 2,
+                  max = 100,
+                  step = 1
+                )
+              ),
+              column(
+                width = 3,
+                numericInput(
+                  inputId = ns("nStart"),
+                  label = "nStart",
+                  value = 25,
+                  min = 1,
+                  max = 175,
+                  step = 1
+                )
+              ),
+              column(
+                width = 3,
+                numericInput(
+                  inputId = ns("iterMax"),
+                  label = "iterMax",
+                  value = 10,
+                  min = 1,
+                  max = 5000,
+                  step = 50
+                )
+              ),
+              column(
+                width = 3,
+                numericInput(
+                  inputId = ns("nBoot"),
+                  label = "nBoot",
+                  value = 100,
+                  min = 1,
+                  max = 500,
+                  step = 50
+                )
+              )
+            ),
+            fluidRow(
+              column(
+                width = 4,
+                selectInput(
+                  inputId = ns("algorithm"),
+                  label = "algorithm",
+                  choices = c("Hartigan-Wong", "Lloyd", "Forgy", "MacQueen"),
+                  selected = "Hartigan-Wong"
+                )
+              ),
+              column(
+                width = 4,
+                selectInput(
+                  inputId = ns("selectOptimal"),
+                  label = "selectOptimal",
+                  choices = c("silhouette", "gap_stat"),
+                  selected = "silhouette"
+                )
+              ),
+              column(
+                width = 4,
+                numericInput(
+                  inputId = ns("seedNum"),
+                  label = "seedNum",
+                  value = 6471,
+                  min = 1,
+                  max = 9999,
+                  step = 1
+                )
+              )
+            )
+          )
+        )
+      )
+
+    })
+
+    observeEvent(input$applyModel, {
+
+      shinyjs::show(id = 'models')
+
+      if (input$algo == "logisticRegression") {
+
         modelObj <- reactive({
           Obj <- stove::logisticRegression(
             algo = input$algo,
@@ -853,12 +878,12 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula, ## Confirmed
             rec = splitresult()$rec,
             v = input$fold,
-            penaltyRangeMin = input$penaltyRangeMin,
-            penaltyRangeMax = input$penaltyRangeMax,
-            penaltyRangeLevels = input$penaltyRangeLevels,
-            mixtureRangeMin = input$mixtureRangeMin,
-            mixtureRangeMax = input$mixtureRangeMax,
-            mixtureRangeLevels = input$mixtureRangeLevels,
+            penaltyRangeMin = ifelse(is.null(input$penaltyRangeMin), 0.001, input$penaltyRangeMin),
+            penaltyRangeMax = ifelse(is.null(input$penaltyRangeMax), 1.0, input$penaltyRangeMax),
+            penaltyRangeLevels = ifelse(is.null(input$penaltyRangeLevels), 5, input$penaltyRangeLevels),
+            mixtureRangeMin = ifelse(is.null(input$mixtureRangeMin), 0, input$mixtureRangeMin),
+            mixtureRangeMax = ifelse(is.null(input$mixtureRangeMax), 1, input$mixtureRangeMax),
+            mixtureRangeLevels = ifelse(is.null(input$mixtureRangeLevels), 5, input$mixtureRangeLevels),
             metric = input$metric
           )
 
@@ -866,9 +891,11 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
           Obj
         })
+
         models_list(
-          append(models_list(), list("LogisticR_glmnet" = modelObj()))
+          append(models_list(), list("logisticRegression_glmnet" = modelObj()))
         )
+
       }
 
       if (input$algo == "LinearR") {
@@ -882,12 +909,12 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-            penaltyRangeMin = input$penaltyRangeMin,
-            penaltyRangeMax = input$penaltyRangeMax,
-            penaltyRangeLevels = input$penaltyRangeLevels,
-            mixtureRangeMin = input$mixtureRangeMin,
-            mixtureRangeMax = input$mixtureRangeMax,
-            mixtureRangeLevels = input$mixtureRangeLevels,
+            penaltyRangeMin = ifelse(is.null(input$penaltyRangeMin), 0.001, input$penaltyRangeMin),
+            penaltyRangeMax = ifelse(is.null(input$penaltyRangeMax), 1.0, input$penaltyRangeMax),
+            penaltyRangeLevels = ifelse(is.null(input$penaltyRangeLevels), 5, input$penaltyRangeLevels),
+            mixtureRangeMin = ifelse(is.null(input$mixtureRangeMin), 0, input$mixtureRangeMin),
+            mixtureRangeMax = ifelse(is.null(input$mixtureRangeMax), 1, input$mixtureRangeMax),
+            mixtureRangeLevels = ifelse(is.null(input$mixtureRangeLevels), 5, input$mixtureRangeLevels),
             metric = input$metric
           )
           Obj <- Obj$finalFittedModel
@@ -899,8 +926,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         )
       }
 
-
-      ## CHECK
       if (input$algo == "KNN") {
         modelObj <- reactive({
           Obj <- stove::KNN(
@@ -912,9 +937,9 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-            neighborsRangeMin = input$neighborsRangeMin,
-            neighborsRangeMax = input$neighborsRangeMax,
-            neighborsRangeLevels = input$neighborsRangeLevels,
+            neighborsRangeMin = ifelse(is.null(input$neighborsRangeMin), 1, input$neighborsRangeMin),
+            neighborsRangeMax = ifelse(is.null(input$neighborsRangeMax), 10, input$neighborsRangeMax),
+            neighborsRangeLevels = ifelse(is.null(input$neighborsRangeLevels), 10, input$neighborsRangeLevels),
             metric = input$metric
           )
 
@@ -929,7 +954,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         )
       }
 
-      if (input$algo == "NB") {
+      if (input$algo == "naiveBayes") {
         modelObj <- reactive({
           Obj <- stove::naiveBayes(
             algo = input$algo,
@@ -940,12 +965,12 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-            smoothnessRangeMin = input$smoothnessRangeMin,
-            smoothnessRangeMax = input$smoothnessRangeMax,
-            smoothnessRangeLevels = input$smoothnessRangeLevels,
-            LaplaceRangeMin = input$LaplaceRangeMin,
-            LaplaceRangeMax = input$LaplaceRangeMax,
-            LaplaceRangeLevels = input$LaplaceRangeLevels,
+            smoothnessRangeMin = ifelse(is.null(input$smoothnessRangeMin), 0.5, input$smoothnessRangeMin),
+            smoothnessRangeMax = ifelse(is.null(input$smoothnessRangeMax), 1.5, input$smoothnessRangeMax),
+            smoothnessRangeLevels = ifelse(is.null(input$smoothnessRangeLevels), 3, input$smoothnessRangeLevels),
+            LaplaceRangeMin = ifelse(is.null(input$LaplaceRangeMin), 0, input$LaplaceRangeMin),
+            LaplaceRangeMax = ifelse(is.null(input$LaplaceRangeMax), 3, input$LaplaceRangeMax),
+            LaplaceRangeLevels = ifelse(is.null(input$LaplaceRangeLevels), 4, input$LaplaceRangeLevels),
             metric = input$metric
           )
 
@@ -955,7 +980,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         })
 
         models_list(
-          append(models_list(), list("NB_klaR" = modelObj()))
+          append(models_list(), list("naiveBayes_klaR" = modelObj()))
         )
       }
 
@@ -970,15 +995,19 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-            hiddenUnitsRangeMin = input$hiddenUnitsRangeMin,
-            hiddenUnitsRangeMax = input$hiddenUnitsRangeMax,
-            hiddenUnitsRangeLevels = input$hiddenUnitsRangeLevels,
-            penaltyRangeMin = input$penaltyRangeMin,
-            penaltyRangeMax = input$penaltyRangeMax,
-            penaltyRangeLevels = input$penaltyRangeLevels,
-            epochsRangeMin = input$epochsRangeMin,
-            epochsRangeMax = input$epochsRangeMax,
-            epochsRangeLevels = input$epochsRangeLevels,
+
+            hiddenUnitsRangeMin = ifelse(is.null(input$hiddenUnitsRangeMin), 1, input$hiddenUnitsRangeMin),
+            hiddenUnitsRangeMax = ifelse(is.null(input$hiddenUnitsRangeMax), 10, input$hiddenUnitsRangeMax),
+            hiddenUnitsRangeLevels = ifelse(is.null(input$hiddenUnitsRangeLevels), 3, input$hiddenUnitsRangeLevels),
+
+            penaltyRangeMin = ifelse(is.null(input$penaltyRangeMin), 0.001, input$penaltyRangeMin),
+            penaltyRangeMax = ifelse(is.null(input$penaltyRangeMax), 1, input$penaltyRangeMax),
+            penaltyRangeLevels = ifelse(is.null(input$penaltyRangeLevels), 3, input$penaltyRangeLevels),
+
+            epochsRangeMin = ifelse(is.null(input$epochsRangeMin), 10, input$epochsRangeMin),
+            epochsRangeMax = ifelse(is.null(input$epochsRangeMax), 100, input$epochsRangeMax),
+            epochsRangeLevels = ifelse(is.null(input$epochsRangeLevels), 2, input$epochsRangeLevels),
+
             metric = input$metric
           )
 
@@ -992,7 +1021,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         )
       }
 
-      if (input$algo == "DT") {
+      if (input$algo == "decisionTree") {
         modelObj <- reactive({
           Obj <- stove::decisionTree(
             algo = input$algo,
@@ -1003,15 +1032,16 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-            treeDepthRangeMin = input$treeDepthRangeMin,
-            treeDepthRangeMax = input$treeDepthRangeMax,
-            treeDepthRangeLevels = input$treeDepthRangeLevels,
-            minNRangeMin = input$minNRangeMin,
-            minNRangeMax = input$minNRangeMax,
-            minNRangeLevels = input$minNRangeLevels,
-            costComplexityRangeMin = input$costComplexityRangeMin,
-            costComplexityRangeMax = input$costComplexityRangeMax,
-            costComplexityRangeLevels = input$costComplexityRangeLevels,
+            treeDepthRangeMin = ifelse(is.null(input$treeDepthRangeMin), 1, input$treeDepthRangeMin),
+            treeDepthRangeMax = ifelse(is.null(input$treeDepthRangeMax), 15, input$treeDepthRangeMax),
+            treeDepthRangeLevels = ifelse(is.null(input$treeDepthRangeLevels), 3, input$treeDepthRangeLevels),
+            minNRangeMin = ifelse(is.null(input$minNRangeMin), 2, input$minNRangeMin),
+            minNRangeMax = ifelse(is.null(input$minNRangeMax), 40, input$minNRangeMax),
+            minNRangeLevels = ifelse(is.null(input$minNRangeLevels), 3, input$minNRangeLevels),
+            costComplexityRangeMin = ifelse(is.null(input$costComplexityRangeMin), -2, input$costComplexityRangeMin),
+            costComplexityRangeMax = ifelse(is.null(input$costComplexityRangeMax), -1, input$costComplexityRangeMax),
+            costComplexityRangeLevels = ifelse(is.null(input$costComplexityRangeLevels), 2, input$costComplexityRangeLevels),
+
             metric = input$metric
           )
 
@@ -1021,11 +1051,11 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         })
 
         models_list(
-          append(models_list(), list("DT_rpart" = modelObj()))
+          append(models_list(), list("decisionTree_rpart" = modelObj()))
         )
       }
 
-      if (input$algo == "RF") {
+      if (input$algo == "randomForest") {
         modelObj <- reactive({
 
           Obj <- stove::randomForest(
@@ -1037,15 +1067,15 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-            mtryRangeMin = input$mtryRangeMin,
-            mtryRangeMax = input$mtryRangeMax,
-            mtryRangeLevels = input$mtryRangeLevels,
-            treesRangeMin = input$treesRangeMin,
-            treesRangeMax = input$treesRangeMax,
-            treesRangeLevels = input$treesRangeLevels,
-            minNRangeMin = input$minNRangeMin,
-            minNRangeMax = input$minNRangeMax,
-            minNRangeLevels = input$minNRangeLevels,
+            mtryRangeMin = ifelse(is.null(input$mtryRangeMin), 1, input$mtryRangeMin),
+            mtryRangeMax = ifelse(is.null(input$mtryRangeMax), 20, input$mtryRangeMax),
+            mtryRangeLevels = ifelse(is.null(input$mtryRangeLevels), 3, input$mtryRangeLevels),
+            treesRangeMin = ifelse(is.null(input$treesRangeMin), 100, input$treesRangeMin),
+            treesRangeMax = ifelse(is.null(input$treesRangeMax), 1000, input$treesRangeMax),
+            treesRangeLevels = ifelse(is.null(input$treesRangeLevels), 3, input$treesRangeLevels),
+            minNRangeMin = ifelse(is.null(input$minNRangeMin), 2, input$minNRangeMin),
+            minNRangeMax = ifelse(is.null(input$minNRangeMax), 40, input$minNRangeMax),
+            minNRangeLevels = ifelse(is.null(input$minNRangeLevels), 3, input$minNRangeLevels),
             metric = input$metric
           )
 
@@ -1055,7 +1085,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         })
 
         models_list(
-          append(models_list(), list("RF_ranger" = modelObj()))
+          append(models_list(), list("randomForest_ranger" = modelObj()))
         )
       }
 
@@ -1070,28 +1100,33 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-            treeDepthRangeMin = input$treeDepthRangeMin,
-            treeDepthRangeMax = input$treeDepthRangeMax,
-            treeDepthRangeLevels = input$treeDepthRangeLevels,
-            treesRangeMin = input$treesRangeMin,
-            treesRangeMax = input$treesRangeMax,
-            treesRangeLevels = input$treesRangeLevels,
-            learnRateRangeMin = input$learnRateRangeMin,
-            learnRateRangeMax = input$learnRateRangeMax,
-            learnRateRangeLevels = input$learnRateRangeLevels,
-            mtryRangeMin = input$mtryRangeMin,
-            mtryRangeMax = input$mtryRangeMax,
-            mtryRangeLevels = input$mtryRangeLevels,
-            minNRangeMin = input$minNRangeMin,
-            minNRangeMax = input$minNRangeMax,
-            minNRangeLevels = input$minNRangeLevels,
-            lossReductionRangeMin = input$lossReductionRangeMin,
-            lossReductionRangeMax = input$lossReductionRangeMax,
-            lossReductionRangeLevels = input$lossReductionRangeLevels,
-            sampleSizeRangeMin = input$sampleSizeRangeMin,
-            sampleSizeRangeMax = input$sampleSizeRangeMax,
-            sampleSizeRangeLevels = input$sampleSizeRangeLevels,
-            stopIter = input$stopIter,
+
+            treeDepthRangeMin = ifelse(is.null(input$treeDepthRangeMin), 5, input$treeDepthRangeMin),
+            treeDepthRangeMax = ifelse(is.null(input$treeDepthRangeMax), 15, input$treeDepthRangeMax),
+            treeDepthRangeLevels = ifelse(is.null(input$treeDepthRangeLevels), 3, input$treeDepthRangeLevels),
+
+            treesRangeMin = ifelse(is.null(input$treesRangeMin), 8, input$treesRangeMin),
+            treesRangeMax = ifelse(is.null(input$treesRangeMax), 32, input$treesRangeMax),
+            treesRangeLevels = ifelse(is.null(input$treesRangeLevels), 3, input$treesRangeLevels),
+
+            learnRateRangeMin = ifelse(is.null(input$learnRateRangeMin), -2, input$learnRateRangeMin),
+            learnRateRangeMax = ifelse(is.null(input$learnRateRangeMax), -1, input$learnRateRangeMax),
+            learnRateRangeLevels = ifelse(is.null(input$learnRateRangeLevels), 2, input$learnRateRangeLevels),
+
+            mtryRangeMin = ifelse(is.null(input$mtryRangeMin), 0, input$mtryRangeMin),
+            minNRangeMax = ifelse(is.null(input$minNRangeMax), 1, input$minNRangeMax),
+            minNRangeLevels = ifelse(is.null(input$minNRangeLevels), 3, input$minNRangeLevels),
+
+            lossReductionRangeMin = ifelse(is.null(input$lossReductionRangeMin), -1, input$lossReductionRangeMin),
+            lossReductionRangeMax = ifelse(is.null(input$lossReductionRangeMax), 1, input$lossReductionRangeMax),
+            lossReductionRangeLevels = ifelse(is.null(input$lossReductionRangeLevels), 3, input$lossReductionRangeLevels),
+
+            sampleSizeRangeMin = ifelse(is.null(input$sampleSizeRangeMin), 0, input$sampleSizeRangeMin),
+            sampleSizeRangeMax = ifelse(is.null(input$sampleSizeRangeMax), 1, input$sampleSizeRangeMax),
+            sampleSizeRangeLevels = ifelse(is.null(input$sampleSizeRangeLevels), 3, input$sampleSizeRangeLevels),
+
+            stopIter = ifelse(is.null(input$stopIter), 30, input$stopIter),
+
             metric = input$metric
           )
 
@@ -1116,24 +1151,31 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-            treeDepthRangeMin = input$treeDepthRangeMin,
-            treeDepthRangeMax = input$treeDepthRangeMax,
-            treeDepthRangeLevels = input$treeDepthRangeLevels,
-            treesRangeMin = input$treesRangeMin,
-            treesRangeMax = input$treesRangeMax,
-            treesRangeLevels = input$treesRangeLevels,
-            learnRateRangeMin = input$learnRateRangeMin,
-            learnRateRangeMax = input$learnRateRangeMax,
-            learnRateRangeLevels = input$learnRateRangeLevels,
-            mtryRangeMin = input$mtryRangeMin,
-            mtryRangeMax = input$mtryRangeMax,
-            mtryRangeLevels = input$mtryRangeLevels,
-            minNRangeMin = input$minNRangeMin,
-            minNRangeMax = input$minNRangeMax,
-            minNRangeLevels = input$minNRangeLevels,
-            lossReductionRangeMin = input$lossReductionRangeMin,
-            lossReductionRangeMax = input$lossReductionRangeMax,
-            lossReductionRangeLevels = input$lossReductionRangeLevels,
+
+            treeDepthRangeMin = ifelse(is.null(input$treeDepthRangeMin), 5, input$treeDepthRangeMin),
+            treeDepthRangeMax = ifelse(is.null(input$treeDepthRangeMax), 15, input$treeDepthRangeMax),
+            treeDepthRangeLevels = ifelse(is.null(input$treeDepthRangeLevels), 3, input$treeDepthRangeLevels),
+
+            treesRangeMin = ifelse(is.null(input$treesRangeMin), 10, input$treesRangeMin),
+            treesRangeMax = ifelse(is.null(input$treesRangeMax), 100, input$treesRangeMax),
+            treesRangeLevels = ifelse(is.null(input$treesRangeLevels), 2, input$treesRangeLevels),
+
+            learnRateRangeMin = ifelse(is.null(input$learnRateRangeMin), -2, input$learnRateRangeMin),
+            learnRateRangeMax = ifelse(is.null(input$learnRateRangeMax), -1, input$learnRateRangeMax),
+            learnRateRangeLevels = ifelse(is.null(input$learnRateRangeLevels), 2, input$learnRateRangeLevels),
+
+            mtryRangeMin = ifelse(is.null(input$mtryRangeMin), 1, input$mtryRangeMin),
+            mtryRangeMax = ifelse(is.null(input$mtryRangeMax), 20, input$mtryRangeMax),
+            mtryRangeLevels = ifelse(is.null(input$mtryRangeLevels), 3, input$mtryRangeLevels),
+
+            minNRangeMin = ifelse(is.null(input$minNRangeMin), 2, input$minNRangeMin),
+            minNRangeMax = ifelse(is.null(input$minNRangeMax), 40, input$minNRangeMax),
+            minNRangeLevels = ifelse(is.null(input$minNRangeLevels), 3, input$minNRangeLevels),
+
+            lossReductionRangeMin = ifelse(is.null(input$lossReductionRangeMin), -1, input$lossReductionRangeMin),
+            lossReductionRangeMax = ifelse(is.null(input$lossReductionRangeMax), 1, input$lossReductionRangeMax),
+            lossReductionRangeLevels = ifelse(is.null(input$lossReductionRangeLevels), 3, input$lossReductionRangeLevels),
+
             metric = input$metric
           )
 
@@ -1153,15 +1195,14 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         modelObj <- reactive({
           Obj <- stove::kMeansClustering(
             data = data,
-            maxK = input$maxK,
-            nStart = input$nStart,
-            iterMax = input$iterMax,
-            nBoot = input$nBoot,
-            algorithm = input$algorithm,
-            selectOptimal = input$selectOptimal,
-            seedNum = input$seedNum # CHECK
+            maxK = ifelse(is.null(input$maxK), 15, input$maxK),
+            nStart = ifelse(is.null(input$nStart), 25, input$nStart),
+            iterMax = ifelse(is.null(input$iterMax), 10, input$iterMax),
+            nBoot = ifelse(is.null(input$nBoot), 100, input$nBoot),
+            algorithm = ifelse(is.null(input$algorithm), "Hartigan-Wong", input$algorithm),
+            selectOptimal = ifelse(is.null(input$selectOptimal), "silhouette", input$selectOptimal),
+            seedNum = ifelse(is.null(input$seedNum), 6471, input$seedNum),
           )
-
 
           Obj
         })
@@ -1182,11 +1223,16 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         choices = names(models_list()),
         selected = NULL
       )
+
+
     })
 
     observeEvent(input$generateReport, {
       req(input$reportML)
-      if (input$reportML == "KmeansClustering") {
+      if(input$mode == 'clustering'){
+
+
+      # if (input$reportML == "KmeansClustering") {
         data <- rbind(splitresult()$train, splitresult()$test)
 
         Obj <- models_list()$KmeansClustering
@@ -1200,11 +1246,11 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         })
       }
 
-      if (input$reportML == "LinearR_glmnet") {
-        Obj <- models_list()$LinearR_glmnet
-
+      # Regression
+      if(input$mode == 'regression') {
+      #if (input$reportML == "LinearR_glmnet") {
         vis_result <- stove::regressionPlot(
-          modelName = "LinearR_glmnet",
+          modelName = input$reportML,
           modelsList = models_list(),
           targetVar = splitresult()$target
         )
@@ -1218,23 +1264,28 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         })
       }
 
-      if (input$reportML == "LogisticR_glmnet") {
-        Obj <- models_list()$LogisticR_glmnet
+      # Classification
+      if (input$mode == "classification") {
+      # if (input$reportML %in%
+      # c("LogisticR_glmnet", "KNN_kknn", "decisionTree_rpart", "lightGBM_lightgbm", "MLP_nnet", "NB_klaR", "randomForest_ranger", "XGBoost_xgboost") ) {
 
+        # Specific on Confusion Matrix
+        output$confusionMatrix <- renderPlot({
+          stove::confusionMatrix(
+            modelName = input$reportML,
+            modelsList = models_list(),
+            targetVar = splitresult()$target
+          )
+        })
+
+        # Multiple on ROC?
         rc <- stove::rocCurve(
           modelsList = models_list(),
           targetVar = splitresult()$target
         )
         output$rocCurve <- renderPlot(rc)
 
-        cm <- stove::confusionMatrix(
-          modelName = "LogisticR_glmnet",
-          modelsList = models_list(),
-          targetVar = splitresult()$target
-        )
-
-        output$confusionMatrix <- renderPlot(cm)
-
+        # Multiple on Evaluation Matrix?
         output$EvalMatrix <- renderPrint({
           stove::evalMetricsC(
             modelsList = models_list(),
@@ -1242,6 +1293,8 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
           )
         })
       }
+
+
     })
 
     observeEvent(input$mode, {
@@ -1251,12 +1304,12 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
           inputId = "algo",
           label = "algo 지정",
           choices = c(
-            "Logistic Regression" = "LogisticR",
+            "Logistic Regression" = "logisticRegression",
             "K Nearest Neighbor" = "KNN",
-            "Naive Bayes" = "NB",
+            "Naive Bayes" = "naiveBayes",
             "MLP",
-            "Decision Tree" = "DT",
-            "Random Forest" = "RF",
+            "Decision Tree" = "decisionTree",
+            "Random Forest" = "randomForest",
             "XGBoost",
             "lightGBM"
           ),
@@ -1278,8 +1331,8 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             "Linear Regression" = "LinearR",
             "K Nearest Neighbor" = "KNN",
             "MLP",
-            "Decision Tree" = "DT",
-            "Random Forest" = "RF",
+            "Decision Tree" = "decisionTree",
+            "Random Forest" = "randomForest",
             "XGBoost",
             "lightGBM"
           ),
@@ -1299,7 +1352,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         updateSelectInput(
           inputId = "algo",
           label = "algo 지정",
-          choices = "KMC",
+          choices = ("K Means Clustering" = "KMC"),
           selected = NULL
         )
         shinyjs::disable("metric")
@@ -1314,7 +1367,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
     observeEvent(input$algo, {
       req(input$mode)
-      if (input$algo == "LogisticR") {
+      if (input$algo == "logisticRegression") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
@@ -1335,7 +1388,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
           choices = "kknn" # KNN
         )
       }
-      if (input$algo == "NB") {
+      if (input$algo == "naiveBayes") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
@@ -1349,18 +1402,18 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
           choices = "nnet", # MLP
         )
       }
-      if (input$algo == "DT") {
+      if (input$algo == "decisionTree") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
-          choices = "rpart" # DT
+          choices = "rpart" # decisionTree
         )
       }
-      if (input$algo == "RF") {
+      if (input$algo == "randomForest") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
-          choices = "ranger" # RF
+          choices = "ranger" # randomForest
         )
       }
       if (input$algo == "XGBoost") {

@@ -5,41 +5,36 @@
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
 #' @noRd
-#'
+#' @importFrom stove trainTestSplit prepForCV
 #' @importFrom shiny NS tagList
 mod_ttSplitModule_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-    fluidRow(
-      column(
-        width = 4,
-        uiOutput(
-          outputId = ns("target")
-        ),
-        sliderInput(
-          inputId = ns("ratio"),
-          label = "trainSetRatio 지정",
-          min = 0,
-          max = 1,
-          value = 0.7
-        ),
-        actionButton(inputId = ns('split'),label = 'Split')
-      ),
-      column(
-        width = 8,
-        verbatimTextOutput(
-          outputId = ns("str")
-        )
+  fluidRow(
+    column(
+      width = 9,
+      verbatimTextOutput(
+        outputId = ns("str")
       )
     ),
-    DT::dataTableOutput(
-      outputId = ns("train")
-    ),
-
-    # h4('Example'),
-    # verbatimTextOutput(
-    #   ns('description')
-    # )
+    column(
+      width = 3,
+      uiOutput(
+        outputId = ns("target")
+      ),
+      sliderInput(
+        inputId = ns("ratio"),
+        label = "trainSetRatio 지정",
+        min = 0,
+        max = 1,
+        value = 0.7,
+        step = 0.05
+      ),
+      actionButton(
+        inputId = ns('split'),
+        label = 'Split',
+        style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+      )
+    )
   )
 }
 
@@ -68,32 +63,27 @@ mod_ttSplitModule_server <- function(id, inputData) {
     })
 
     observeEvent(input$split, {
-
       data <- inputData()
-      result <- goophi::trainTestSplit(
+      result <- stove::trainTestSplit(
         data = data,
         target = input$cols,
         prop = input$ratio
       )
 
-      output$train <- DT::renderDataTable(datatable(result$train[1:50,]) )
       output$str <- renderPrint(utils::str(result$train))
     })
 
     splitresult <-
       reactive({
-
         data <- inputData()
-
-        result <- goophi::trainTestSplit(
+        result <- stove::trainTestSplit(
           data = data,
           target = input$cols,
           prop = input$ratio
         )
 
         formula <- paste0(input$cols, " ~ .")
-
-        rec <- goophi::prepForCV(
+        rec <- stove::prepForCV(
           data = result$train,
           formula = formula,
           seed = '1234'
