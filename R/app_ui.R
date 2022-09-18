@@ -43,7 +43,7 @@ app_ui <- function(request) {
             selected = NULL,
             individual = TRUE
           ),
-          uiOutput('guideButton') # Guide Button
+          uiOutput("guideButton") # Guide Button
         )
       ),
       # Sidebar
@@ -53,7 +53,7 @@ app_ui <- function(request) {
         fluidPage(
           ## Module Selector
           # used to enable after file upload
-          uiOutput('moduleSelector'),
+          uiOutput("moduleSelector"),
           # Data View
           shinyjs::hidden(
             div(
@@ -76,7 +76,6 @@ app_ui <- function(request) {
                   actionButton(inputId = "showReorderModule", label = i18n_shiny$t("Reorder Data")), ## Reorder
                   actionButton(inputId = "showExportModule", label = i18n_shiny$t("Export Data")) ## Export
                 )
-
               )
             )
           ),
@@ -141,28 +140,26 @@ app_ui <- function(request) {
                 h4(HTML(paste0(
                   i18n_shiny$t("Example Dataset from"), " ",
                   tags$a("datatoys", href = "https://statgarten.github.io/datatoys/")
-                  )
-                )),
+                ))),
                 shinycssloaders::withSpinner(
                   uiOutput(outputId = "exampleDataset")
                 )
               )
             ),
-
             br(),
             shinyglide::glide( # Default Guide
-              controls_position = 'bottom',
+              controls_position = "bottom",
               screen(
                 br(),
-                tags$img(src="www/img/guide.001.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
+                tags$img(src = "www/img/guide.001.png", style = "display: block;margin-left: auto;margin-right: auto;width: 50%;")
               ),
               screen(
                 br(),
-                tags$img(src="www/img/guide.002.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
+                tags$img(src = "www/img/guide.002.png", style = "display: block;margin-left: auto;margin-right: auto;width: 50%;")
               ),
               screen(
                 br(),
-                tags$img(src="www/img/guide.003.png", style = 'display: block;margin-left: auto;margin-right: auto;width: 50%;')
+                tags$img(src = "www/img/guide.003.png", style = "display: block;margin-left: auto;margin-right: auto;width: 50%;")
               )
             )
           ),
@@ -172,13 +169,13 @@ app_ui <- function(request) {
             condition = 'input.module == "Vis"',
             verticalTabsetPanel(
               contentWidth = 11,
-              color= '#37E2D5', # SKY
+              color = "#37E2D5", # SKY
               # #37E2D5 SKY
               # #FBCB0A Yellow
               # #C70A80 Red
               verticalTabPanel(
-                title ='General',
-                box_height = '4em',
+                title = "General",
+                box_height = "4em",
                 shinyWidgets::checkboxGroupButtons(
                   inputId = "aes",
                   label = i18n_shiny$t("Aesthetic options"),
@@ -190,8 +187,8 @@ app_ui <- function(request) {
                 uiOutput(outputId = "esquisse_ui2")
               ),
               verticalTabPanel(
-                title = 'Map',
-                box_height = '4em',
+                title = "Map",
+                box_height = "4em",
                 mod_mapVisModule_ui("mapVisModule_1", i18n = i18n_shiny)
               )
             )
@@ -202,13 +199,13 @@ app_ui <- function(request) {
             condition = 'input.module == "EDA"',
             verticalTabsetPanel(
               contentWidth = 11,
-              color= '#37E2D5',
+              color = "#37E2D5",
               # #37E2D5 SKY
               # #FBCB0A Yellow
               # #C70A80 Red
               verticalTabPanel(
                 title = i18n_shiny$t("Dataset Description"),
-                box_height = '5em',
+                box_height = "5em",
                 fluidRow(
                   column(
                     width = 4,
@@ -228,41 +225,40 @@ app_ui <- function(request) {
                     ),
                     downloadButton(
                       outputId = "downloadReport",
-                      style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+                      style = "font-weight: bold;background: #3EC70B;color: white; width: 100%"
                     )
                   )
                 )
               ),
               verticalTabPanel(
                 title = i18n_shiny$t("Correlation"),
-                box_height = '4em',
+                box_height = "4em",
                 plotOutput(outputId = "corplot")
               ),
               verticalTabPanel(
                 title = i18n_shiny$t("Variables"),
-                box_height = '4em',
+                box_height = "4em",
                 reactableOutput(outputId = "reactOutput")
               ),
               verticalTabPanel(
                 title = i18n_shiny$t("Distribution"),
-                box_height = '4em',
+                box_height = "4em",
                 mod_variableModule_ui("variableModule_1"),
               )
             )
-
           ),
           ## Stat Panel
           conditionalPanel(
             condition = 'input.module == "Stat"',
             verticalTabsetPanel(
               contentWidth = 11,
-              color= '#3742fa', # Blue
+              color = "#3742fa", # Blue
               # #37E2D5 SKY
               # #FBCB0A Yellow
               # #C70A80 Red
               verticalTabPanel(
-                title ='Table 1', # Not translate
-                box_height = '4em',
+                title = "Table 1", # Not translate
+                box_height = "4em",
                 fluidRow(
                   column( # Result Area
                     width = 9,
@@ -279,56 +275,55 @@ app_ui <- function(request) {
                     actionButton( # Main action
                       inputId = "generateTable",
                       label = i18n_shiny$t("generate Table"),
-                      style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+                      style = "font-weight: bold;background: #3EC70B;color: white; width: 100%"
                     )
                   )
                 )
               ),
               verticalTabPanel(
                 title = i18n_shiny$t("PCA"),
-                box_height = '4em',
+                box_height = "4em",
                 mod_pcaModule_ui("pcaModule_1")
               ),
               verticalTabPanel(
                 title = i18n_shiny$t("Decision tree"),
-                box_height = '5em',
+                box_height = "5em",
                 mod_treeModule_ui("treeModule_1")
               ),
               verticalTabPanel(
                 title = i18n_shiny$t("Linear regression"),
-                box_height = '5em',
+                box_height = "5em",
                 mod_mlrModule_ui("mlrModule_1")
               ),
               verticalTabPanel(
                 title = i18n_shiny$t("K-means cluster"),
-                box_height = '5em',
+                box_height = "5em",
                 mod_kmsModule_ui("kmsModule_1")
               ),
               verticalTabPanel(
                 title = i18n_shiny$t("Group metrics"),
-                box_height = '5em',
+                box_height = "5em",
                 mod_groupStatModule_ui("groupStatModule_1")
               )
             )
-
           ),
           ## ML Panel
           conditionalPanel(
             condition = 'input.module == "ML"',
             verticalTabsetPanel(
               contentWidth = 11,
-              color= '#37E2D5', # SKY
+              color = "#37E2D5", # SKY
               # #37E2D5 SKY
               # #FBCB0A Yellow
               # #C70A80 Red
               verticalTabPanel(
                 title = "Data Setup",
-                box_height = '5em',
+                box_height = "5em",
                 mod_ttSplitModule_ui(id = "ttSplitModule_1")
               ),
               verticalTabPanel(
                 title = "Modeling",
-                box_height = '4em',
+                box_height = "4em",
                 mod_modelingModule_ui("modelingModule_1")
               )
             )

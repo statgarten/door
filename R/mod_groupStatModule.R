@@ -15,7 +15,7 @@ mod_groupStatModule_ui <- function(id) {
       width = 9,
       reactableOutput(
         outputId = ns("myTable"),
-        width = '100%'
+        width = "100%"
       )
     ),
     column( # options
@@ -25,18 +25,18 @@ mod_groupStatModule_ui <- function(id) {
         label = "",
         choices = NULL,
         multiple = TRUE,
-        width = '100%'
+        width = "100%"
       ),
       selectInput(
         inputId = ns("func"),
         label = "summary",
         choices = c("mean", "median", "sd", "iqr" = "IQR", "mad", "min", "max"),
-        width = '100%'
+        width = "100%"
       ), # not quantile, first, last, nth, n, n_distint
       actionButton( # Main Action
         inputId = ns("build"),
         label = "build",
-        style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+        style = "font-weight: bold;background: #3EC70B;color: white; width: 100%"
       )
     )
   )
@@ -48,7 +48,6 @@ mod_groupStatModule_ui <- function(id) {
   #   class = "btn btn-default shiny-download-link",
   #   onclick = "Reactable.downloadDataCSV('groupStatModule_1-myTable', 'downloads.csv')"
   # )
-
 }
 
 #' groupStatModule Server Functions

@@ -97,9 +97,10 @@ mod_variableModule_server <- function(id, inputData) {
             )
           )
         })
-      }
-      else{
-        output$distBox <- renderUI({tagList()})
+      } else {
+        output$distBox <- renderUI({
+          tagList()
+        })
       }
 
       output$distplot <- renderPlot({
@@ -109,7 +110,6 @@ mod_variableModule_server <- function(id, inputData) {
       output$distplot2 <- renderPlot({
         board::ggpie(inputData()[, input$variableDescription])
       })
-
     })
   })
 }

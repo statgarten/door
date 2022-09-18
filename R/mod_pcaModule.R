@@ -26,41 +26,40 @@ mod_pcaModule_ui <- function(id) {
         label = "",
         choices = NULL,
         multiple = TRUE,
-        width = '100%'
+        width = "100%"
       ),
       selectInput(
         inputId = ns("group"),
         label = "",
         choices = NULL,
-        width = '100%'
+        width = "100%"
       ),
       selectInput(
         inputId = ns("labels"),
         label = "",
         choices = NULL,
-        width = '100%'
+        width = "100%"
       ),
       sliderInput(
         inputId = ns("slotSize"),
         label = "height of plot",
         min = 400, max = 1000, step = 50, value = 400,
         ticks = FALSE,
-        width = '100%'
+        width = "100%"
       ),
       checkboxInput(
         inputId = ns("scale"),
         "variable normalize",
         value = TRUE,
-        width = '100%'
+        width = "100%"
       ),
       actionButton( # Main Action
         inputId = ns("pca"),
         label = "draw",
-        style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+        style = "font-weight: bold;background: #3EC70B;color: white; width: 100%"
       )
     )
   )
-
 }
 
 #' pcaModule Server Functions
@@ -90,7 +89,7 @@ mod_pcaModule_server <- function(id, inputData) {
       updateSelectizeInput(
         inputId = "labels",
         label = "Labels-Opt (Character)",
-        choices = c('NULL', names(Filter(is.character, data)))
+        choices = c("NULL", names(Filter(is.character, data)))
       )
 
       updateSelectInput(
@@ -111,14 +110,15 @@ mod_pcaModule_server <- function(id, inputData) {
       shinyjs::show(id = "biplotSlot")
 
       output$biplot <- renderPlotly({
-
         data <- data %>%
           select(input$columns) %>%
           replace(is.na(.), 0)
 
         pp <- prcomp(data, scale. = input$scale)
 
-        if(input$labels =='NULL'){labels <- NULL}
+        if (input$labels == "NULL") {
+          labels <- NULL
+        }
 
         ggbiplot(
           pp,
@@ -129,7 +129,7 @@ mod_pcaModule_server <- function(id, inputData) {
           circle = TRUE,
           groups = groups
         ) %>%
-        ggplotly()
+          ggplotly()
       })
     })
   })

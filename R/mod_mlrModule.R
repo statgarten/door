@@ -7,39 +7,39 @@
 #' @noRd
 #' @import caret
 #' @importFrom shiny NS tagList
-mod_mlrModule_ui <- function(id){
+mod_mlrModule_ui <- function(id) {
   ns <- NS(id)
   fluidRow(
     column( # Result Area
       width = 9,
       column(
         width = 6,
-        plotOutput(ns('plot'), width = '100%')
+        plotOutput(ns("plot"), width = "100%")
       ),
       column(
         width = 6,
-        verbatimTextOutput(ns('text'))
+        verbatimTextOutput(ns("text"))
       )
     ),
     column( # Options
       width = 3,
       selectInput(
-        ns('x'),
-        'x',
+        ns("x"),
+        "x",
         choices = NULL,
         multiple = TRUE,
-        width = '100%'
+        width = "100%"
       ),
       selectInput(
-        ns('y'),
-        'y',
+        ns("y"),
+        "y",
         choices = NULL,
-        width = '100%'
+        width = "100%"
       ),
       actionButton( # Main Action
-        ns('reg'),
-        'reg',
-        style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+        ns("reg"),
+        "reg",
+        style = "font-weight: bold;background: #3EC70B;color: white; width: 100%"
       )
     )
   )
@@ -54,15 +54,15 @@ mod_mlrModule_ui <- function(id){
 #' mlrModule Server Functions
 #'
 #' @noRd
-mod_mlrModule_server <- function(id, inputData){
-  moduleServer( id, function(input, output, session){
+mod_mlrModule_server <- function(id, inputData) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
     req(inputData)
 
-    observeEvent(inputData(),{
+    observeEvent(inputData(), {
       data <- inputData()
-      updateSelectizeInput(inputId = 'x',label = 'x',choices = colnames(data))
-      updateSelectizeInput(inputId = 'y',label = 'y',choices = colnames(data))
+      updateSelectizeInput(inputId = "x", label = "x", choices = colnames(data))
+      updateSelectizeInput(inputId = "y", label = "y", choices = colnames(data))
     })
 
     observeEvent(input$reg, {
@@ -71,25 +71,26 @@ mod_mlrModule_server <- function(id, inputData){
       f <- as.formula(paste0(input$y, " ~ ", x)) # 2
       model <- step(lm(f, data), trace = 0)
 
-      output$text <- renderPrint({summary(model)})
+      output$text <- renderPrint({
+        summary(model)
+      })
 
       vI <- caret::varImp(model)
       vI$Features <- rownames(vI)
-      colnames(vI)[1] <- 'Importance'
+      colnames(vI)[1] <- "Importance"
       rownames(vI) <- NULL
       output$plot <- renderPlot({
         ggplot(
           data = vI,
-          aes(y = reorder(Features, Importance), x = Importance, fill = Importance)) +
-          geom_bar(stat = 'identity') +
-          theme(legend.position = 'none') +
+          aes(y = reorder(Features, Importance), x = Importance, fill = Importance)
+        ) +
+          geom_bar(stat = "identity") +
+          theme(legend.position = "none") +
           xlab(NULL) +
           ylab(NULL) +
-          ggtitle('Feature Importance')
+          ggtitle("Feature Importance")
       })
-
     })
-
   })
 }
 

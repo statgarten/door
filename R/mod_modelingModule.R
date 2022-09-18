@@ -45,7 +45,6 @@ mod_modelingModule_ui <- function(id) {
           verbatimTextOutput(outputId = ns("EvalMatrix"))
         )
       ),
-
       column( # Options
         width = 3,
         selectInput(
@@ -53,7 +52,7 @@ mod_modelingModule_ui <- function(id) {
           label = "mode 지정",
           choices = c("classification", "regression", "clustering"),
           selected = NULL,
-          width = '100%'
+          width = "100%"
         ),
         selectInput(
           inputId = ns("algo"),
@@ -70,7 +69,7 @@ mod_modelingModule_ui <- function(id) {
             "lightGBM",
             "K Means Clustering" = "KMC"
           ),
-          width = '100%'
+          width = "100%"
         ),
         selectInput(
           inputId = ns("engine"),
@@ -86,35 +85,35 @@ mod_modelingModule_ui <- function(id) {
             "lightgbm", # Light GBM,
             "-" # KMC
           ),
-          width = '100%'
+          width = "100%"
         ),
         sliderInput(
           inputId = ns("fold"),
           label = "v 지정",
-          min = 1, max = 5, step = 1,value = 2,
-          width = '100%'
+          min = 1, max = 5, step = 1, value = 2,
+          width = "100%"
         ),
         selectInput(
           inputId = ns("metric"),
           label = "metric 지정",
           choices = c("roc_auc", "rmse"),
           selected = "roc_auc",
-          width = '100%'
+          width = "100%"
         ),
         actionButton(
-          ns('hyper'),
-          label = 'show hyper',
-          icon = icon('gear'),
-          style = 'font-weight:bold; background:#b2bec3; color:black; width:100%;'
+          ns("hyper"),
+          label = "show hyper",
+          icon = icon("gear"),
+          style = "font-weight:bold; background:#b2bec3; color:black; width:100%;"
         ),
         actionButton( # Main Action
           inputId = ns("applyModel"),
           label = "모델 생성 버튼",
-          style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+          style = "font-weight: bold;background: #3EC70B;color: white; width: 100%"
         ),
         shinyjs::hidden(
           div(
-            id = ns('models'),
+            id = ns("models"),
             shinycssloaders::withSpinner(
               verbatimTextOutput(
                 outputId = ns("obj")
@@ -129,7 +128,7 @@ mod_modelingModule_ui <- function(id) {
             actionButton(
               inputId = ns("generateReport"),
               label = "report 생성",
-              style = 'font-weight: bold;background: #00b894;color: white; width: 100%'
+              style = "font-weight: bold;background: #00b894;color: white; width: 100%"
             )
           )
         )
@@ -143,17 +142,17 @@ mod_modelingModule_ui <- function(id) {
 #'
 #' @noRd
 mod_modelingModule_server <- function(id, splitresult, models_list) {
-# mod_modelingModule_server <- function(id, splitresult, processresult, models_list) {
+  # mod_modelingModule_server <- function(id, splitresult, processresult, models_list) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    observeEvent(input$hyper,{
+    observeEvent(input$hyper, {
       # Hyper Parameters
       showModal(
         modalDialog(
           easyClose = TRUE,
           footer = NULL,
-          title = 'HyperParameter Options',
+          title = "HyperParameter Options",
 
           ## Penalty
           # Logistic / Linear / MLP
@@ -859,15 +858,12 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
           )
         )
       )
-
     })
 
     observeEvent(input$applyModel, {
-
-      shinyjs::show(id = 'models')
+      shinyjs::show(id = "models")
 
       if (input$algo == "logisticRegression") {
-
         modelObj <- reactive({
           Obj <- stove::logisticRegression(
             algo = input$algo,
@@ -895,7 +891,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         models_list(
           append(models_list(), list("logisticRegression_glmnet" = modelObj()))
         )
-
       }
 
       if (input$algo == "LinearR") {
@@ -995,19 +990,15 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-
             hiddenUnitsRangeMin = ifelse(is.null(input$hiddenUnitsRangeMin), 1, input$hiddenUnitsRangeMin),
             hiddenUnitsRangeMax = ifelse(is.null(input$hiddenUnitsRangeMax), 10, input$hiddenUnitsRangeMax),
             hiddenUnitsRangeLevels = ifelse(is.null(input$hiddenUnitsRangeLevels), 3, input$hiddenUnitsRangeLevels),
-
             penaltyRangeMin = ifelse(is.null(input$penaltyRangeMin), 0.001, input$penaltyRangeMin),
             penaltyRangeMax = ifelse(is.null(input$penaltyRangeMax), 1, input$penaltyRangeMax),
             penaltyRangeLevels = ifelse(is.null(input$penaltyRangeLevels), 3, input$penaltyRangeLevels),
-
             epochsRangeMin = ifelse(is.null(input$epochsRangeMin), 10, input$epochsRangeMin),
             epochsRangeMax = ifelse(is.null(input$epochsRangeMax), 100, input$epochsRangeMax),
             epochsRangeLevels = ifelse(is.null(input$epochsRangeLevels), 2, input$epochsRangeLevels),
-
             metric = input$metric
           )
 
@@ -1041,7 +1032,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             costComplexityRangeMin = ifelse(is.null(input$costComplexityRangeMin), -2, input$costComplexityRangeMin),
             costComplexityRangeMax = ifelse(is.null(input$costComplexityRangeMax), -1, input$costComplexityRangeMax),
             costComplexityRangeLevels = ifelse(is.null(input$costComplexityRangeLevels), 2, input$costComplexityRangeLevels),
-
             metric = input$metric
           )
 
@@ -1057,7 +1047,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
       if (input$algo == "randomForest") {
         modelObj <- reactive({
-
           Obj <- stove::randomForest(
             algo = input$algo,
             engine = input$engine,
@@ -1100,33 +1089,25 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-
             treeDepthRangeMin = ifelse(is.null(input$treeDepthRangeMin), 5, input$treeDepthRangeMin),
             treeDepthRangeMax = ifelse(is.null(input$treeDepthRangeMax), 15, input$treeDepthRangeMax),
             treeDepthRangeLevels = ifelse(is.null(input$treeDepthRangeLevels), 3, input$treeDepthRangeLevels),
-
             treesRangeMin = ifelse(is.null(input$treesRangeMin), 8, input$treesRangeMin),
             treesRangeMax = ifelse(is.null(input$treesRangeMax), 32, input$treesRangeMax),
             treesRangeLevels = ifelse(is.null(input$treesRangeLevels), 3, input$treesRangeLevels),
-
             learnRateRangeMin = ifelse(is.null(input$learnRateRangeMin), -2, input$learnRateRangeMin),
             learnRateRangeMax = ifelse(is.null(input$learnRateRangeMax), -1, input$learnRateRangeMax),
             learnRateRangeLevels = ifelse(is.null(input$learnRateRangeLevels), 2, input$learnRateRangeLevels),
-
             mtryRangeMin = ifelse(is.null(input$mtryRangeMin), 0, input$mtryRangeMin),
             minNRangeMax = ifelse(is.null(input$minNRangeMax), 1, input$minNRangeMax),
             minNRangeLevels = ifelse(is.null(input$minNRangeLevels), 3, input$minNRangeLevels),
-
             lossReductionRangeMin = ifelse(is.null(input$lossReductionRangeMin), -1, input$lossReductionRangeMin),
             lossReductionRangeMax = ifelse(is.null(input$lossReductionRangeMax), 1, input$lossReductionRangeMax),
             lossReductionRangeLevels = ifelse(is.null(input$lossReductionRangeLevels), 3, input$lossReductionRangeLevels),
-
             sampleSizeRangeMin = ifelse(is.null(input$sampleSizeRangeMin), 0, input$sampleSizeRangeMin),
             sampleSizeRangeMax = ifelse(is.null(input$sampleSizeRangeMax), 1, input$sampleSizeRangeMax),
             sampleSizeRangeLevels = ifelse(is.null(input$sampleSizeRangeLevels), 3, input$sampleSizeRangeLevels),
-
             stopIter = ifelse(is.null(input$stopIter), 30, input$stopIter),
-
             metric = input$metric
           )
 
@@ -1151,31 +1132,24 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-
             treeDepthRangeMin = ifelse(is.null(input$treeDepthRangeMin), 5, input$treeDepthRangeMin),
             treeDepthRangeMax = ifelse(is.null(input$treeDepthRangeMax), 15, input$treeDepthRangeMax),
             treeDepthRangeLevels = ifelse(is.null(input$treeDepthRangeLevels), 3, input$treeDepthRangeLevels),
-
             treesRangeMin = ifelse(is.null(input$treesRangeMin), 10, input$treesRangeMin),
             treesRangeMax = ifelse(is.null(input$treesRangeMax), 100, input$treesRangeMax),
             treesRangeLevels = ifelse(is.null(input$treesRangeLevels), 2, input$treesRangeLevels),
-
             learnRateRangeMin = ifelse(is.null(input$learnRateRangeMin), -2, input$learnRateRangeMin),
             learnRateRangeMax = ifelse(is.null(input$learnRateRangeMax), -1, input$learnRateRangeMax),
             learnRateRangeLevels = ifelse(is.null(input$learnRateRangeLevels), 2, input$learnRateRangeLevels),
-
             mtryRangeMin = ifelse(is.null(input$mtryRangeMin), 1, input$mtryRangeMin),
             mtryRangeMax = ifelse(is.null(input$mtryRangeMax), 20, input$mtryRangeMax),
             mtryRangeLevels = ifelse(is.null(input$mtryRangeLevels), 3, input$mtryRangeLevels),
-
             minNRangeMin = ifelse(is.null(input$minNRangeMin), 2, input$minNRangeMin),
             minNRangeMax = ifelse(is.null(input$minNRangeMax), 40, input$minNRangeMax),
             minNRangeLevels = ifelse(is.null(input$minNRangeLevels), 3, input$minNRangeLevels),
-
             lossReductionRangeMin = ifelse(is.null(input$lossReductionRangeMin), -1, input$lossReductionRangeMin),
             lossReductionRangeMax = ifelse(is.null(input$lossReductionRangeMax), 1, input$lossReductionRangeMax),
             lossReductionRangeLevels = ifelse(is.null(input$lossReductionRangeLevels), 3, input$lossReductionRangeLevels),
-
             metric = input$metric
           )
 
@@ -1223,16 +1197,14 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         choices = names(models_list()),
         selected = NULL
       )
-
-
     })
 
     observeEvent(input$generateReport, {
       req(input$reportML)
-      if(input$mode == 'clustering'){
+      if (input$mode == "clustering") {
 
 
-      # if (input$reportML == "KmeansClustering") {
+        # if (input$reportML == "KmeansClustering") {
         data <- rbind(splitresult()$train, splitresult()$test)
 
         Obj <- models_list()$KmeansClustering
@@ -1247,8 +1219,8 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
       }
 
       # Regression
-      if(input$mode == 'regression') {
-      #if (input$reportML == "LinearR_glmnet") {
+      if (input$mode == "regression") {
+        # if (input$reportML == "LinearR_glmnet") {
         vis_result <- stove::regressionPlot(
           modelName = input$reportML,
           modelsList = models_list(),
@@ -1266,8 +1238,8 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
       # Classification
       if (input$mode == "classification") {
-      # if (input$reportML %in%
-      # c("LogisticR_glmnet", "KNN_kknn", "decisionTree_rpart", "lightGBM_lightgbm", "MLP_nnet", "NB_klaR", "randomForest_ranger", "XGBoost_xgboost") ) {
+        # if (input$reportML %in%
+        # c("LogisticR_glmnet", "KNN_kknn", "decisionTree_rpart", "lightGBM_lightgbm", "MLP_nnet", "NB_klaR", "randomForest_ranger", "XGBoost_xgboost") ) {
 
         # Specific on Confusion Matrix
         output$confusionMatrix <- renderPlot({
@@ -1293,8 +1265,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
           )
         })
       }
-
-
     })
 
     observeEvent(input$mode, {
@@ -1352,7 +1322,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
         updateSelectInput(
           inputId = "algo",
           label = "algo 지정",
-          choices = ("K Means Clustering" = "KMC"),
+          choices = ("K Means Clustering" <- "KMC"),
           selected = NULL
         )
         shinyjs::disable("metric")

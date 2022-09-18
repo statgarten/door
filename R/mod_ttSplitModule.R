@@ -30,9 +30,9 @@ mod_ttSplitModule_ui <- function(id) {
         step = 0.05
       ),
       actionButton(
-        inputId = ns('split'),
-        label = 'Split',
-        style = 'font-weight: bold;background: #3EC70B;color: white; width: 100%'
+        inputId = ns("split"),
+        label = "Split",
+        style = "font-weight: bold;background: #3EC70B;color: white; width: 100%"
       )
     )
   )
@@ -59,7 +59,6 @@ mod_ttSplitModule_server <- function(id, inputData) {
           multiple = FALSE
         )
       })
-
     })
 
     observeEvent(input$split, {
@@ -86,7 +85,7 @@ mod_ttSplitModule_server <- function(id, inputData) {
         rec <- stove::prepForCV(
           data = result$train,
           formula = formula,
-          seed = '1234'
+          seed = "1234"
         )
 
         list(
@@ -100,7 +99,6 @@ mod_ttSplitModule_server <- function(id, inputData) {
       })
 
     return(splitresult)
-
   })
 }
 
