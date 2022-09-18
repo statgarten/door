@@ -16,6 +16,7 @@
 #' @importFrom tibble as_tibble
 #' @importFrom shinyglide glide screen
 #' @import datamods
+#' @import datatoys
 #' @import rmarkdown
 
 #' @noRd
@@ -227,7 +228,7 @@ app_server <- function(input, output, session) {
 
 
     ## Datatoys
-    require(datatoys, quietly = TRUE)
+
     if (input$lang == "en") {
       output$exampleDataset <- renderUI({
         Choices <- c(

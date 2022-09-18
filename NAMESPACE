@@ -3,6 +3,7 @@
 export(run_app)
 import(caret)
 import(datamods)
+import(datatoys)
 import(dplyr)
 import(esquisse)
 import(ggbiplot)
