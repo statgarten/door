@@ -19,6 +19,7 @@ Imports:
     DT (>= 0.24),
     esquisse (>= 1.1.1),
     factoextra (>= 1.0.7),
+    flexdashboard,
     GGally (>= 2.1.2),
     ggbiplot (>= 0.55),
     ggparty (>= 1.0.0),
