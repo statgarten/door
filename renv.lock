@@ -503,8 +503,14 @@
     "board": {
       "Package": "board",
       "Version": "0.0.1",
-      "Source": "unknown",
-      "Hash": "0449dc6b378274a3faf596325ea1059a",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "board",
+      "RemoteUsername": "statgarten",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "593f9e6255374b7625aac4f95f9b672c4e9ec05b",
+      "Hash": "72eefec8612677bee0b9d878638c78ec",
       "Requirements": [
         "dplyr",
         "ggplot2",
@@ -3646,8 +3652,14 @@
     "scissor": {
       "Package": "scissor",
       "Version": "0.1.0",
-      "Source": "unknown",
-      "Hash": "0bca8d4ff1224bcf163cd9eadf9b63c3",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "scissor",
+      "RemoteUsername": "statgarten",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "d09bd1b04e0cbb58ea419950d7ce29a13de7ba3f",
+      "Hash": "3886c756e0944d55cf464aa74c8af722",
       "Requirements": []
     },
     "selectr": {
