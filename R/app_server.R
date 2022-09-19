@@ -15,6 +15,7 @@
 #' @importFrom shinyjs hide show
 #' @importFrom tibble as_tibble
 #' @importFrom shinyglide glide screen
+#' @importFrom board mod_distributionModule_server
 #' @import datamods
 #' @import datatoys
 #' @import rmarkdown
@@ -800,7 +801,8 @@ app_server <- function(input, output, session) {
 
   ## EDA
 
-  mod_variableModule_server("variableModule_1", inputData)
+
+  mod_distributionModule_server("distModule_1", inputData)
 
   ## ML
 

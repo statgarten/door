@@ -9,6 +9,7 @@
 #' @import shinyWidgets
 #' @import esquisse
 #' @import shiny.i18n
+#' @importFrom board mod_distributionModule_ui
 #' @importFrom shinydashboard dashboardBody
 #' @importFrom shinydashboardPlus box dashboardHeader dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput
@@ -243,7 +244,7 @@ app_ui <- function(request) {
               verticalTabPanel(
                 title = i18n_shiny$t("Distribution"),
                 box_height = "4em",
-                mod_variableModule_ui("variableModule_1"),
+                mod_distributionModule_ui("distModule_1")
               )
             )
           ),
