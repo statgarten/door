@@ -769,58 +769,17 @@ app_server <- function(input, output, session) {
 
   ## observeEvent
 
-  ## Open and function change
-
-  opened <- reactiveVal(NULL)
-
-  observeEvent(input$ImportFunction, {
-    opened(input$ImportFunction)
-  })
-
-  observeEvent(input$EDAFunction, {
-    opened(input$EDAFunction)
-  })
-
-  observeEvent(input$VisFunction, {
-    opened(input$VisFunction)
-  })
-
   ## Import
 
   observeEvent(inputData(), {
     data_rv$data <- inputData()
   })
 
-
-  mod_filterModule_server(
-    id = "filterModule_1",
-    inputData = inputData,
-    opened = opened
-  )
-
-  mod_subsetModule_server(
-    id = "subsetModule_1",
-    inputData = inputData,
-    opened = opened
-  )
-
-  mod_mutateModule_server(
-    id = "mutateModule_1",
-    inputData = inputData,
-    opened = opened
-  )
-
-  mod_cleanModule_server("cleanModule_1", inputData, opened)
-
-  mod_reshapeModule_server("reshapeModule_1", inputData, opened)
-
   mod_exportModule_server("exportModule_1", inputData)
 
   ## Vis
 
   ## EDA
-
-
   mod_distributionModule_server("distModule_1", inputData)
 
   ## ML
