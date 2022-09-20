@@ -9,12 +9,15 @@
 #' @import shinyWidgets
 #' @import esquisse
 #' @import shiny.i18n
-#' @importFrom board mod_distributionModule_ui
-#' @importFrom colorpen mod_mapVisModule_ui
 #' @importFrom shinydashboard dashboardBody
 #' @importFrom shinydashboardPlus box dashboardHeader dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput
-#' @importFrom shinyBS bsTooltip bsPopover bsButton
+#' @importFrom board mod_distributionModule_ui
+#' @importFrom colorpen mod_mapVisModule_ui
+#' @importFrom soroban mod_pcaModule_ui
+#' @importFrom soroban mod_treeModule_ui
+#' @importFrom soroban mod_groupStatModule_ui
+#' @importFrom soroban mod_mlrStatModule_ui
 #' @noRd
 app_ui <- function(request) {
   i18n_shiny <- golem::get_golem_options(which = "translator")

@@ -25,7 +25,10 @@
 #' @importFrom scissor mod_splitModule_ui mod_splitModule_server
 #' @importFrom scissor mod_reorderModule_ui mod_reorderModule_server
 #' @importFrom scissor mod_exportModule_ui mod_exportModule_server
-#'
+#' @importFrom soroban mod_treeModule_server
+#' @importFrom soroban mod_pcaModule_server
+#' @importFrom soroban mod_groupStatModule_server
+#' @importFrom soroban mod_mlrModule_server
 #'
 #' @import datamods
 #' @import datatoys
