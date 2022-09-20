@@ -16,6 +16,7 @@
 #' @importFrom tibble as_tibble
 #' @importFrom shinyglide glide screen
 #' @importFrom board mod_distributionModule_server
+#' @importFrom colorpen mod_mapVisModule_server
 #' @import datamods
 #' @import datatoys
 #' @import rmarkdown

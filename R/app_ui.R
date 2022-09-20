@@ -10,6 +10,7 @@
 #' @import esquisse
 #' @import shiny.i18n
 #' @importFrom board mod_distributionModule_ui
+#' @importFrom colorpen mod_mapVisModule_ui
 #' @importFrom shinydashboard dashboardBody
 #' @importFrom shinydashboardPlus box dashboardHeader dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput

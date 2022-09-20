@@ -10,6 +10,7 @@ BugReports: https://github.com/statgarten/door/issues
 Imports: 
     board,
     caret (>= 6.0-93),
+    colorpen,
     colourpicker (>= 1.1.1),
     config (>= 0.3.1),
     data.table (>= 1.14.2),
@@ -28,7 +29,6 @@ Imports:
     haven (>= 2.5.1),
     htmlwidgets (>= 1.5.4),
     jstable (>= 1.0.7),
-    leaflet (>= 2.1.1),
     partykit (>= 1.2-16),
     phosphoricons (>= 0.1.2),
     plotly (>= 4.10.0),
@@ -60,6 +60,7 @@ VignetteBuilder:
     knitr
 Remotes:
     github::statgarten/board,
+    github::statgarten/colorpen,
     github::statgarten/datatoys,
     github::statgarten/scissor,
     github::statgarten/stove,
