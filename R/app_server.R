@@ -17,6 +17,16 @@
 #' @importFrom shinyglide glide screen
 #' @importFrom board mod_distributionModule_server
 #' @importFrom colorpen mod_mapVisModule_server
+#' @importFrom scissor mod_roundModule_server mod_roundModule_ui
+#' @importFrom scissor mod_etcModule_server mod_etcModule_ui
+#' @importFrom scissor mod_logModule_ui mod_logModule_server
+#' @importFrom scissor mod_replaceModule_ui mod_replaceModule_server
+#' @importFrom scissor mod_binarizeModule_ui mod_binarizeModule_server
+#' @importFrom scissor mod_splitModule_ui mod_splitModule_server
+#' @importFrom scissor mod_reorderModule_ui mod_reorderModule_server
+#' @importFrom scissor mod_exportModule_ui mod_exportModule_server
+#'
+#'
 #' @import datamods
 #' @import datatoys
 #' @import rmarkdown
@@ -178,7 +188,7 @@ app_server <- function(input, output, session) {
         ),
         tabPanel(
           title = i18n_shiny$t("ETC"),
-          mod_etcModlue_ui("etcModule_1")
+          mod_etcModule_ui("etcModule_1")
         ),
         tabPanel(
           title = i18n_shiny$t("Binarize"),
@@ -697,7 +707,7 @@ app_server <- function(input, output, session) {
 
   ## etc Module
 
-  res_trans <- mod_etcModlue_server(
+  res_trans <- mod_etcModule_server(
     id = "etcModule_1",
     inputData = reactive(data_rv$data)
   )
@@ -727,6 +737,11 @@ app_server <- function(input, output, session) {
     if (input$transformPanel == "ETC") {
       data_rv$data <- res_trans()
     }
+
+    if (input$transformPanel == "Split") {
+      data_rv$data <- res_split()
+    }
+
     inputData(data_rv$data) # then use isolated
   })
 

@@ -36,7 +36,6 @@ Imports:
     readr (>= 2.1.2),
     readxl (>= 1.4.1),
     rmarkdown (>= 2.16),
-    RSQLite (>= 2.1.16),
     scissor,
     shiny (>= 1.7.1),
     shiny.i18n (>= 0.2.0),
@@ -52,8 +51,7 @@ Imports:
     stove,
     tibble (>= 3.1.8),
     tidyr (>= 1.2.0),
-    utils,
-    writexl (>= 1.4.0)
+    utils
 Suggests:
     knitr
 VignetteBuilder: 
