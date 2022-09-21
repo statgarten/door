@@ -17,7 +17,7 @@
 #' @importFrom soroban mod_pcaModule_ui
 #' @importFrom soroban mod_treeModule_ui
 #' @importFrom soroban mod_groupStatModule_ui
-#' @importFrom soroban mod_mlrStatModule_ui
+#' @importFrom soroban mod_mlrModule_ui
 #' @noRd
 app_ui <- function(request) {
   i18n_shiny <- golem::get_golem_options(which = "translator")

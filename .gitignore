@@ -43,7 +43,6 @@ vignettes/*.pdf
 .Renviron
 .DS_Store
 inst/doc
-/doc/
 /Meta/
 EDA_prototype(NOT USED).R
 old_app.R
