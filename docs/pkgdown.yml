@@ -2,6 +2,10 @@ pandoc: '2.18'
 pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
+  Data-Import: Data-Import.html
   door: door.html
-last_built: 2022-09-21T08:27Z
+last_built: 2022-09-23T02:53Z
+urls:
+  reference: https://www.statgarten.com/door/reference
+  article: https://www.statgarten.com/door/articles
 

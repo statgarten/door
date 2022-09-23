@@ -1,5 +1,5 @@
 
-# :yellow_heart: door <img src="man/figures/logo-door.png" width="120" align="right"/>
+# :yellow_heart: door <img src="logo.png" width="120" align="right"/>
 
 Shiny application to data analysis.
 
