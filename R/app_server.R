@@ -29,6 +29,7 @@
 #' @importFrom soroban mod_pcaModule_server
 #' @importFrom soroban mod_groupStatModule_server
 #' @importFrom soroban mod_mlrModule_server
+#' @importFrom soroban mod_kmsModule_server
 #'
 #' @import datamods
 #' @import datatoys
