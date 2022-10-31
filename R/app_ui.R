@@ -33,7 +33,8 @@ app_ui <- function(request) {
         title = HTML(
           paste0(
             '<a href="https://github.com/statgarten/", target = "_blank">',
-            i18n_shiny$t("Statgarten"),
+            "Statgarten",
+            #i18n_shiny$t("Statgarten"),
             "</a>"
           )
         ),

@@ -6,6 +6,8 @@
     {"en": "Files", "ko": "파일"},
     {"en": "URL", "ko": "링크"},
     {"en": "Load Example data", "ko": "예시 데이터 불러오기"},
+    {"en": "Load Boston: Regression", "ko": "Boston: Regression 데이터 불러오기"},
+    {"en": "Load Boston: Classification", "ko": "Boston: Classification 데이터 불러오기"},
     {"en": "Google Sheet", "ko": "구글시트"},
     {"en": "Apply changes", "ko": "변경내용 저장"},
     {"en": "Update & select variables", "ko": "변수 업데이트"},
