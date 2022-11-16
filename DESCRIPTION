@@ -52,7 +52,8 @@ Remotes:
     github::statgarten/colorpen,
     github::statgarten/datatoys,
     github::statgarten/scissor,
-    github::statgarten/stove
+    github::statgarten/stove,
+    github::statgarten/soroban
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
