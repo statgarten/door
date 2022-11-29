@@ -6,7 +6,7 @@
 #' @importFrom haven read_sas read_sav read_dta
 #' @importFrom readxl read_xls read_xlsx
 #' @importFrom readr read_rds
-#' @importFrom reactable renderReactable
+#' @importFrom reactable renderReactable colDef
 #' @importFrom jstable CreateTableOneJS
 #' @importFrom shinydashboardPlus descriptionBlock
 #' @importFrom GGally ggcorr
