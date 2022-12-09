@@ -50,6 +50,7 @@ app_ui <- function(request) {
             selected = NULL,
             individual = TRUE
           ),
+          actionButton('defaultGuide', label = 'Quick Start', icon=icon('question')),
           uiOutput("guideButton") # Guide Button
         )
       ),
@@ -73,16 +74,18 @@ app_ui <- function(request) {
                 solidHeader = TRUE,
                 status = "purple",
                 width = 12,
-                reactable::reactableOutput(outputId = "DT"),
-                column(
-                  width = 12,
-                  align = "center",
-                  actionButton(inputId = "showUpdateModule", label = i18n_shiny$t("Update Data")), ## Update
-                  actionButton(inputId = "showFilterModule", label = i18n_shiny$t("Filter Data")), ## Filter
-                  actionButton(inputId = "showTransformModule", label = i18n_shiny$t("Transform Data")), ## Transform
-                  actionButton(inputId = "showReorderModule", label = i18n_shiny$t("Reorder Data")), ## Reorder
-                  actionButton(inputId = "showExportModule", label = i18n_shiny$t("Export Data")) ## Export
-                )
+                reactable::reactableOutput(outputId = "DT")
+              ),
+              shinydashboardPlus::box(
+                title = 'Data wrangling',
+                width = 12,
+                status = 'maroon',
+                icon = icon('gear'),
+                actionButton(inputId = "showUpdateModule", label = i18n_shiny$t("Update Data")), ## Update
+                actionButton(inputId = "showFilterModule", label = i18n_shiny$t("Filter Data")), ## Filter
+                actionButton(inputId = "showTransformModule", label = i18n_shiny$t("Transform Data")), ## Transform
+                actionButton(inputId = "showReorderModule", label = i18n_shiny$t("Reorder Data")), ## Reorder
+                actionButton(inputId = "showExportModule", label = i18n_shiny$t("Export Data")) ## Export
               )
             )
           ),
@@ -151,22 +154,6 @@ app_ui <- function(request) {
                 shinycssloaders::withSpinner(
                   uiOutput(outputId = "exampleDataset")
                 )
-              )
-            ),
-            br(),
-            shinyglide::glide( # Default Guide
-              controls_position = "bottom",
-              screen(
-                br(),
-                tags$img(src = "www/img/guide.001.png", style = "display: block;margin-left: auto;margin-right: auto;width: 50%;")
-              ),
-              screen(
-                br(),
-                tags$img(src = "www/img/guide.002.png", style = "display: block;margin-left: auto;margin-right: auto;width: 50%;")
-              ),
-              screen(
-                br(),
-                tags$img(src = "www/img/guide.003.png", style = "display: block;margin-left: auto;margin-right: auto;width: 50%;")
               )
             )
           ),

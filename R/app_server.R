@@ -63,6 +63,59 @@ app_server <- function(input, output, session) {
   })
 
   # Guide
+
+  # Default Guide
+  observeEvent(input$defaultGuide, {
+    showModal(modalDialog(
+      shinyglide::glide(
+        controls_position = "bottom",
+        screen(
+          h2("Statgarten user guide"),
+          hr(),
+          h4("Statgarten aims user to analysis data easily"),
+          h4("with utilize R and Shiny as Web page"),
+          h4("get more information in ", a("site", href = "https://www.statgarten.com/statgarten", target = "_blank"))
+        ),
+        screen(
+          h2("1. Load data"),
+          hr(),
+          h4("You can use your own file (from PC)"),
+          h4("or URL of data (from online)"),
+          h4("or public data from", tags$a("datatoys", href = "https://github.com/statgarten/datatoys", target = "_blank"), "package", )
+        ),
+        screen(
+          h2("2. Data Profile"),
+          hr(),
+          h4("After upload, in ", tags$b("EDA"), " tab"),
+          h4("You can see data descriptions."),
+          h4("Check them to further wrangling job")
+        ),
+        screen(
+          h2("3. Data Wrangling"),
+          hr(),
+          h4("in above panel ", tags$b("Data wrangling")),
+          h4("You may wrangle data like Select, Filter, Transform"),
+          h4("Also, after ", tags$b("Apply changes"), "you may see data changed in table")
+        ),
+        screen(
+          h2("4. Data Visualize"),
+          hr(),
+          h4("with ", tags$b("Vis"), " tab"),
+          h4("You can generate plots with data"),
+          h4("which can be customize and download Image"),
+          h4("or ", tags$b("export R code"), " to draw plot")
+        ),
+        screen(
+          h2("5. Stat and ML"),
+          hr(),
+          h4("This topic is considered as Advanced function so see external manual"),
+          h4("Manual for ", a("Stat", href = "https://www.statgarten.com/soroban/articles/usage-groupStat-Module.html", target = "_blank")),
+          h4("Manual for ", a("ML", href = "https://github.com/statgarten/stove/tree/main/quarto-doc", target = "_blank"))
+        )
+      )
+    ))
+  })
+
   # Default is in view module
   observeEvent(input$VisGuide, { # Vis
     showModal(
@@ -522,7 +575,7 @@ app_server <- function(input, output, session) {
   # Data loaded
   observeEvent(data_rv$data, {
     inputData(data_rv$data) # set data
-
+    # shinyjs::hide(id = "defaultGuide")
     # shinyjs::enable(id = "moduleSelector")
     shinyjs::hide(id = "importModule")
 
@@ -530,8 +583,8 @@ app_server <- function(input, output, session) {
       shinyWidgets::radioGroupButtons(
         inputId = "module",
         label = NULL,
-        choices = c("Vis", "EDA", "Stat", "ML"),
-        selected = "Vis",
+        choices = c("EDA", "Vis", "Stat", "ML"),
+        selected = "EDA",
         individual = FALSE,
         size = "lg", # xs (v), sm (v), normal (v), lg (v)
         width = "100%",
@@ -831,7 +884,6 @@ app_server <- function(input, output, session) {
       )
     },
     content = function(file) {
-
       # src <- normalizePath('report.Rmd')
       # owd <- setwd(tempdir())
 
