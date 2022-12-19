@@ -202,24 +202,41 @@ app_ui <- function(request) {
                 box_height = "5em",
                 fluidRow(
                   column(
-                    width = 4,
-                    uiOutput(outputId = "dataDimension")
+                    width = 8,
+                    h4('Data Structure'),
+                    verbatimTextOutput(outputId = 'dataStructure')
                   ),
                   column(
                     width = 4,
-                    uiOutput(outputId = "missingData")
-                  ),
-                  column(
-                    width = 4,
-                    radioButtons(
-                      "format",
-                      i18n_shiny$t("Document format"),
-                      c("PDF", "HTML", "Word", "Dashboard", "Paper"),
-                      inline = TRUE
+                    fluidRow(
+                      column(
+                        width = 6,
+                        uiOutput(outputId = "dataDimension"),
+                      ),
+                      column(
+                        width = 6,
+                        uiOutput(outputId = "missingData"),
+                      )
                     ),
-                    downloadButton(
-                      outputId = "downloadReport",
-                      style = "font-weight: bold;background: #3EC70B;color: white; width: 100%"
+                    hr(),
+                    fluidRow(
+                      style = 'margin-top: 1em;',
+                      column(
+                        width = 6,
+                        selectInput( # Options
+                          inputId = "format",
+                          label = i18n_shiny$t("Document format"),
+                          choices = c("PDF", "HTML", "Word", "Dashboard", "Paper"),
+                          selected = "PDF"
+                        )
+                      ),
+                      column(
+                        width = 6,
+                        downloadButton(
+                          outputId = "downloadReport",
+                          style = "font-weight: bold;background: #3EC70B;color: white; width: 100%; margin-top:25px"
+                        )
+                      )
                     )
                   )
                 )
