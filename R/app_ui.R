@@ -34,7 +34,7 @@ app_ui <- function(request) {
           paste0(
             '<a href="https://github.com/statgarten/", target = "_blank">',
             "Statgarten",
-            #i18n_shiny$t("Statgarten"),
+            # i18n_shiny$t("Statgarten"),
             "</a>"
           )
         ),
@@ -50,7 +50,7 @@ app_ui <- function(request) {
             selected = NULL,
             individual = TRUE
           ),
-          actionButton('defaultGuide', label = 'Quick Start', icon=icon('question')),
+          actionButton("defaultGuide", label = "Quick Start", icon = icon("question")),
           uiOutput("guideButton") # Guide Button
         )
       ),
@@ -77,10 +77,10 @@ app_ui <- function(request) {
                 reactable::reactableOutput(outputId = "DT")
               ),
               shinydashboardPlus::box(
-                title = 'Data wrangling',
+                title = "Data wrangling",
                 width = 12,
-                status = 'maroon',
-                icon = icon('gear'),
+                status = "maroon",
+                icon = icon("gear"),
                 actionButton(inputId = "showUpdateModule", label = i18n_shiny$t("Update Data")), ## Update
                 actionButton(inputId = "showFilterModule", label = i18n_shiny$t("Filter Data")), ## Filter
                 actionButton(inputId = "showTransformModule", label = i18n_shiny$t("Transform Data")), ## Transform
@@ -202,24 +202,41 @@ app_ui <- function(request) {
                 box_height = "5em",
                 fluidRow(
                   column(
-                    width = 4,
-                    uiOutput(outputId = "dataDimension")
+                    width = 8,
+                    h4("Data Structure"),
+                    verbatimTextOutput(outputId = "dataStructure")
                   ),
                   column(
                     width = 4,
-                    uiOutput(outputId = "missingData")
-                  ),
-                  column(
-                    width = 4,
-                    radioButtons(
-                      "format",
-                      i18n_shiny$t("Document format"),
-                      c("PDF", "HTML", "Word", "Dashboard", "Paper"),
-                      inline = TRUE
+                    fluidRow(
+                      column(
+                        width = 6,
+                        uiOutput(outputId = "dataDimension"),
+                      ),
+                      column(
+                        width = 6,
+                        uiOutput(outputId = "missingData"),
+                      )
                     ),
-                    downloadButton(
-                      outputId = "downloadReport",
-                      style = "font-weight: bold;background: #3EC70B;color: white; width: 100%"
+                    hr(),
+                    fluidRow(
+                      style = "margin-top: 1em;",
+                      column(
+                        width = 6,
+                        selectInput( # Options
+                          inputId = "format",
+                          label = i18n_shiny$t("Document format"),
+                          choices = c("PDF", "HTML", "Word", "Dashboard", "Paper"),
+                          selected = "PDF"
+                        )
+                      ),
+                      column(
+                        width = 6,
+                        downloadButton(
+                          outputId = "downloadReport",
+                          style = "font-weight: bold;background: #3EC70B;color: white; width: 100%; margin-top:25px"
+                        )
+                      )
                     )
                   )
                 )

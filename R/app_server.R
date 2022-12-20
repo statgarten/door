@@ -645,17 +645,21 @@ app_server <- function(input, output, session) {
       output$corplot <- renderPlot(GGally::ggcorr(obj$cors))
     } # if is not null, draw correlation plot
 
-    output$dataDimension <- renderUI(
-      descriptionBlock(
+    output$dataStructure <- renderPrint({
+      str(inputData())
+    })
+
+    output$dataDimension <- renderUI({
+      descriptionBlock( # data dimension
         header = paste0(obj$desc$nrow, " X ", obj$desc$ncol),
         numberIcon = icon("expand"),
         number = i18n_shiny$t("Data Dimension"),
         marginBottom = FALSE
       )
-    )
+    })
 
     output$missingData <- renderUI(
-      descriptionBlock(
+      descriptionBlock( # missing data
         header = paste0(obj$desc$missingCellCount, "(", obj$desc$missingCellRatio, "%)"),
         numberIcon = icon("question"),
         number = i18n_shiny$t("Missing Data"),
