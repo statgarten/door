@@ -59,7 +59,7 @@ mod_modelingModule_ui <- function(id) {
           label = "algo 지정",
           choices = c(
             "Logistic Regression" = "logisticRegression",
-            "Linear Regression" = "LinearR",
+            "Linear Regression" = "linearRegression",
             "K Nearest Neighbor" = "KNN",
             "Naive Bayes" = "naiveBayes",
             "MLP",
@@ -93,6 +93,24 @@ mod_modelingModule_ui <- function(id) {
           min = 1, max = 5, step = 1, value = 2,
           width = "100%"
         ),
+        sliderInput(
+          inputId = ns("gridNum"),
+          label = "gridNum 지정",
+          min = 1, max = 10, step = 1, value = 5,
+          width = "100%"
+        ),
+        sliderInput(
+          inputId = ns("iter"),
+          label = "iter 지정",
+          min = 5, max = 50, step = 5, value = 10,
+          width = "100%"
+        ),
+        numericInput(
+          inputId = ns("seed"),
+          label = "seed 지정",
+          min = 1, max = 9999, step = 1, value = 1234,
+          width = "100%"
+        ),
         selectInput(
           inputId = ns("metric"),
           label = "metric 지정",
@@ -100,12 +118,12 @@ mod_modelingModule_ui <- function(id) {
           selected = "roc_auc",
           width = "100%"
         ),
-        actionButton(
-          ns("hyper"),
-          label = "show hyper",
-          icon = icon("gear"),
-          style = "font-weight:bold; background:#b2bec3; color:black; width:100%;"
-        ),
+        #actionButton(
+        #  ns("hyper"),
+        #  label = "show hyper",
+        #  icon = icon("gear"),
+        #  style = "font-weight:bold; background:#b2bec3; color:black; width:100%;"
+        #),
         actionButton( # Main Action
           inputId = ns("applyModel"),
           label = "모델 생성 버튼",
@@ -156,8 +174,10 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
 
           ## Penalty
           # Logistic / Linear / MLP
+
           conditionalPanel(
-            "input.algo == 'logisticRegression' || input.algo == 'LinearR' || input.algo == 'MLP'",
+            "input.algo == 'logisticRegression' || input.algo == 'MLP'",
+            # "input.algo == 'logisticRegression' || input.algo == 'LinearR' || input.algo == 'MLP'",
             ns = ns,
             fluidRow(
               column(
@@ -199,7 +219,8 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
           ## Mixtures
           # Logistic / Linear Regression
           conditionalPanel(
-            "input.algo == 'logisticRegression' || input.algo == 'LinearR'",
+            "input.algo == 'logisticRegression'",
+            # "input.algo == 'logisticRegression' || input.algo == 'LinearR'",
             ns = ns,
             fluidRow(
               column(
@@ -892,8 +913,8 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
           append(models_list(), list("logisticRegression_glmnet" = modelObj()))
         )
       }
-
-      if (input$algo == "LinearR") {
+      # build model
+      if (input$algo == "linearRegression") {
         modelObj <- reactive({
           Obj <- stove::linearRegression(
             algo = input$algo,
@@ -904,20 +925,17 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = input$fold,
-            penaltyRangeMin = ifelse(is.null(input$penaltyRangeMin), 0.001, input$penaltyRangeMin),
-            penaltyRangeMax = ifelse(is.null(input$penaltyRangeMax), 1.0, input$penaltyRangeMax),
-            penaltyRangeLevels = ifelse(is.null(input$penaltyRangeLevels), 5, input$penaltyRangeLevels),
-            mixtureRangeMin = ifelse(is.null(input$mixtureRangeMin), 0, input$mixtureRangeMin),
-            mixtureRangeMax = ifelse(is.null(input$mixtureRangeMax), 1, input$mixtureRangeMax),
-            mixtureRangeLevels = ifelse(is.null(input$mixtureRangeLevels), 5, input$mixtureRangeLevels),
-            metric = input$metric
+            gridNum = input$gridNum, #
+            iter = input$iter, #
+            metric = input$metric,
+            seed = input$seed #
           )
           Obj <- Obj$finalFittedModel
 
           Obj
         })
         models_list(
-          append(models_list(), list("LinearR_glmnet" = modelObj()))
+          append(models_list(), list("linearRegression_glmnet" = modelObj()))
         )
       }
 
@@ -1202,8 +1220,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
     observeEvent(input$generateReport, {
       req(input$reportML)
       if (input$mode == "clustering") {
-
-
         # if (input$reportML == "KmeansClustering") {
         data <- rbind(splitresult()$train, splitresult()$test)
 
@@ -1298,7 +1314,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
           inputId = "algo",
           label = "algo 지정",
           choices = c(
-            "Linear Regression" = "LinearR",
+            "Linear Regression" = "linearRegression",
             "K Nearest Neighbor" = "KNN",
             "MLP",
             "Decision Tree" = "decisionTree",
@@ -1344,7 +1360,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list) {
           choices = "glmnet" # logitistic Regression, Linera Regression
         )
       }
-      if (input$algo == "LinearR") {
+      if (input$algo == "linearRegression") {
         updateSelectInput(
           inputId = "engine",
           label = "engine 지정",
