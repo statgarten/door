@@ -29,6 +29,12 @@ mod_ttSplitModule_ui <- function(id) {
         value = 0.7,
         step = 0.05
       ),
+      numericInput(
+        inputId = ns("seed"),
+        label = "seed 지정",
+        min = 1, max = 9999, step = 1, value = 1234,
+        width = "100%"
+      ),
       actionButton(
         inputId = ns("split"),
         label = "Split",
@@ -66,7 +72,8 @@ mod_ttSplitModule_server <- function(id, inputData) {
       result <- stove::trainTestSplit(
         data = data,
         target = input$cols,
-        prop = input$ratio
+        prop = input$ratio,
+        seed = input$seed
       )
 
       output$str <- renderPrint(utils::str(result$train))
