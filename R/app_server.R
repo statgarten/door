@@ -25,6 +25,7 @@
 #' @importFrom scissor mod_splitModule_ui mod_splitModule_server
 #' @importFrom scissor mod_reorderModule_ui mod_reorderModule_server
 #' @importFrom scissor mod_exportModule_ui mod_exportModule_server
+#' @importFrom scissor mod_gsubModule_ui mod_gsubModule_server
 #' @importFrom soroban mod_treeModule_server
 #' @importFrom soroban mod_pcaModule_server
 #' @importFrom soroban mod_groupStatModule_server
@@ -254,6 +255,10 @@ app_server <- function(input, output, session) {
         tabPanel(
           title = i18n_shiny$t("Split"),
           mod_splitModule_ui(id = "splitModule_1")
+        ),
+        tabPanel(
+          title = i18n_shiny$t("Subtext"),
+          mod_gsubModule_ui("gsubModule_1")
         )
       ),
       actionButton(
@@ -780,6 +785,13 @@ app_server <- function(input, output, session) {
     inputData = reactive(data_rv$data)
   )
 
+  ## Subtext Module
+
+  res_subtext <- mod_gsubModule_server(
+    id = "gsubModule_1",
+    inputData = reactive(data_rv$data)
+  )
+
   ## transform apply
 
   observeEvent(input$applyTransform, {
@@ -801,6 +813,10 @@ app_server <- function(input, output, session) {
 
     if (input$transformPanel == "Split") {
       data_rv$data <- res_split()
+    }
+
+    if(input$transformPanel == "Subtext"){
+      data_rv$data <- res_subtext
     }
 
     inputData(data_rv$data) # then use isolated

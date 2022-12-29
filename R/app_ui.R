@@ -10,7 +10,7 @@
 #' @import esquisse
 #' @import shiny.i18n
 #' @importFrom shinydashboard dashboardBody
-#' @importFrom shinydashboardPlus box dashboardHeader dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock todoList todoListItem
+#' @importFrom shinydashboardPlus box dashboardHeader dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput
 #' @importFrom board mod_distributionModule_ui
 #' @importFrom colorpen mod_mapVisModule_ui
@@ -80,7 +80,7 @@ app_ui <- function(request) {
                 title = "Data wrangling",
                 width = 12,
                 status = "maroon",
-                icon = icon("gear"),
+                icon = icon("scissors"),
                 actionButton(inputId = "showUpdateModule", label = i18n_shiny$t("Update Data")), ## Update
                 actionButton(inputId = "showFilterModule", label = i18n_shiny$t("Filter Data")), ## Filter
                 actionButton(inputId = "showTransformModule", label = i18n_shiny$t("Transform Data")), ## Transform
@@ -321,20 +321,6 @@ app_ui <- function(request) {
           ## ML Panel
           conditionalPanel(
             condition = 'input.module == "ML"',
-            shinydashboardPlus::box(
-              title = "Preprocess Checklist",
-              width = 12,
-              status = "warning",
-              icon = icon("check"),
-              todoList(
-                sortable = FALSE,
-                todoListItem("Data must not contain NA"),
-                todoListItem("Change string to factor"),
-                todoListItem("Column with Same value must removed"),
-                todoListItem("Datetime type Column must removed"),
-                todoListItem("Outcome for ML : Classification - Factor, Regression - Numeric")
-              )
-            ),
             verticalTabsetPanel(
               contentWidth = 11,
               color = "#37E2D5", # SKY

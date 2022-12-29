@@ -1,9 +1,9 @@
 Package: door
 Title: Shiny module for statgarten
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: 
     person("Jinhwan", "Kim", , "hwanistic@gmail.com", role = c("cre", "aut"))
-Description: PKG_DESC.
+Description: Main application for data analysis using statgarten packages.
 License: MIT + file LICENSE
 URL: https://github.com/statgarten/door
 BugReports: https://github.com/statgarten/door/issues
@@ -52,8 +52,8 @@ Remotes:
     github::statgarten/colorpen,
     github::statgarten/datatoys,
     github::statgarten/scissor,
-    github::statgarten/stove,
-    github::statgarten/soroban
+    github::statgarten/soroban,
+    github::statgarten/stove
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
