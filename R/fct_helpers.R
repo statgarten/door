@@ -6,13 +6,100 @@
 #' @importFrom DT datatable formatStyle
 #' @importFrom shinydashboardPlus box
 #' @importFrom htmlwidgets JS
-#' @importFrom reactable reactable
+#' @importFrom reactable reactable colGroup
 #' @noRd
-#' @export
 
-getDT <- function(inputData, all = FALSE) {
+getDT <- function(inputData, all = FALSE, columnGroups = NULL) {
+  if (!is.null(columnGroups)) {
+    cg <- list()
 
-  ### reactable Trial
+    tpl <- function(i) {
+      if (i == "numeric") {
+        return(
+          colGroup(
+            name = unname(i),
+            columns = names(i),
+            headerStyle =
+              "text-transform: uppercase;
+            color: #310D45;
+            background-color: #9F5AF6;
+            border-radius: 1.25rem;
+            font-size:1.1em;
+            -webkit-border-radius: 1.25rem;
+            -moz-border-radius: 1.25rem;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            -box-shadow: none;"
+          )
+        )
+      }
+      if (i == "character") {
+        return(
+          colGroup(
+            name = unname(i),
+            columns = names(i),
+            headerStyle = "text-transform: uppercase;
+            color: #310D45;
+            background-color: #EBA882;
+            border-radius: 1.25rem;
+            font-size:1.1em;
+            -webkit-border-radius: 1.25rem;
+            -moz-border-radius: 1.25rem;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            -box-shadow: none;"
+          )
+        )
+      }
+      if (i == "factor") {
+        return(
+          colGroup(
+            name = unname(i),
+            columns = names(i),
+            headerStyle = "text-transform: uppercase;
+            color: #310D45;
+            background-color: #E57DB9;
+            border-radius: 1.25rem;
+            font-size:1.1em;
+            -webkit-border-radius: 1.25rem;
+            -moz-border-radius: 1.25rem;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            -box-shadow: none;"
+          )
+        )
+      }
+      if (i == "date") {
+        return(
+          colGroup(
+            name = unname(i),
+            columns = names(i),
+            headerStyle = "text-transform: uppercase;
+            color: #310D45;
+            background-color: #53AD87;
+            border-radius: 1.25rem;
+            font-size:1.1em;
+            -webkit-border-radius: 1.25rem;
+            -moz-border-radius: 1.25rem;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            -box-shadow: none;"
+          )
+        )
+      } else {
+        (
+          print(i)
+        )
+      }
+    }
+
+    for (i in 1:length(columnGroups)) {
+      cg[[i]] <- tpl(columnGroups[i])
+    }
+
+    columnGroups <- cg
+  }
+
   if (!all) {
     return(
       reactable(
@@ -23,9 +110,9 @@ getDT <- function(inputData, all = FALSE) {
         defaultColDef = colDef(
           align = "right",
           headerClass = "my-header"
-        )
+        ),
+        columnGroups = columnGroups,
         # footer = function(values, name) htmltools::div(name, style = list(fontWeight = 600))
-        ,
         defaultPageSize = 10,
         minRows = 10,
         showPageSizeOptions = TRUE,
@@ -49,9 +136,9 @@ getDT <- function(inputData, all = FALSE) {
       defaultColDef = colDef(
         align = "right",
         headerClass = "my-header"
-      )
+      ),
       # footer = function(values, name) htmltools::div(name, style = list(fontWeight = 600))
-      ,
+      columnGroups = columnGroups,
       defaultPageSize = 10,
       minRows = 10,
       showPageSizeOptions = TRUE,

@@ -31,6 +31,10 @@ vignettes/*.pdf
 *_cache/
 /cache/
 
+# quarto files
+/inst/report_files
+/inst/*.html
+
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
@@ -39,5 +43,13 @@ vignettes/*.pdf
 .Renviron
 .DS_Store
 inst/doc
-/doc/
 /Meta/
+EDA_prototype(NOT USED).R
+old_app.R
+
+# guide image template
+/guide/
+
+# Report Caches
+/inst/figures
+/inst/report-paper.docx

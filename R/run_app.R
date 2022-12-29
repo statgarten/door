@@ -5,6 +5,7 @@
 #' @inheritParams shiny::shinyApp
 #'
 #' @export
+#' @import shiny.i18n
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
 run_app <- function(onStart = NULL,
@@ -21,6 +22,10 @@ run_app <- function(onStart = NULL,
       enableBookmarking = enableBookmarking,
       uiPattern = uiPattern
     ),
-    golem_opts = list(...)
+    golem_opts = list(
+      translator = shiny.i18n::Translator$new(
+        translation_json_path = paste0(system.file(package = "door"), "/app/www/translations/translation.json")
+      )
+    )
   )
 }

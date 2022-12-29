@@ -1,0 +1,222 @@
+---
+title: "Title"
+author: "(Author)$^{1,*}$"
+csl: nature.csl
+output:
+  word_document:
+    fig_height: 6
+    fig_width: 9
+    reference_docx: doc_ref.docx
+  html_document:
+    code_folding: hide
+    fig_height: 6
+    fig_width: 9
+    highlight: textmate
+    theme: cosmo
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: no
+    dev: jpeg
+  pdf_document:
+    fig_height: 6
+    fig_width: 9
+header-includes: \usepackage{kotex} \usepackage[doublespacing]{setspace}  \usepackage{multirow}
+bibliography: report-paper.bib
+editor_options: 
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+params:
+  inputData: NA
+  MLResult: "MLResult not Available"
+---
+
+```{=html}
+<style>
+   p {line-height: 2.5em;}
+</style>
+```
+```{r setup, include=FALSE}
+inputData <- params$inputData
+library(ggplot2);library(ggpie);library(GGally);library(naniar);library(dplyr)
+library(knitr);library(reshape2);library(grid);library(gridExtra)
+library(scales);library(dplyr);library(data.table)
+
+opts_chunk$set(echo = F,fig.align="center",message=FALSE, warning=FALSE,fig.height = 7,cache=T,dpi=300,fig.path = 'figures/')
+
+reverselog_trans <- function(base = exp(1)) {
+    trans <- function(x) -log(x, base)
+    inv <- function(x) base^(-x)
+    trans_new(paste0("reverselog-", format(base)), trans, inv, 
+              log_breaks(base = base), 
+              domain = c(1e-100, Inf))
+}
+```
+
+**1** (Affiliation)
+
+$\ast$ Correspondence:
+
+(Name, Degree)
+
+(Affiliation)
+
+* (Address)
+
+Tel: (Tel)
+
+Fax: (Fax)
+
+E-mail: [(Email)](mailto:<Email>){.email}
+
+**keywords** : (Keywords)
+
+## Abstract
+
+(Abstract)
+
+## Introduction
+
+(Introduction)
+
+## Data
+
+```{r}
+ignoreNA <- names(which(colSums(is.na(inputData)) == nrow(inputData)))
+if (length(ignoreNA) > 0) {
+  print("* Columns Below is removed because every rows are NA")
+  print(ignoreNA)
+  inputData <- inputData[, !(names(inputData) %in% ignoreNA)]
+}
+```
+
+### MissingData
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+missingData <- naniar::miss_var_summary(inputData) %>% filter(n_miss > 0)
+knitr::kable(missingData)
+```
+
+### Data Attributes
+```{r, results='asis', echo = FALSE, warning = FALSE, message = FALSE}
+for (i in 1:length(inputData)) {
+  count <- inputData %>%
+    group_by(inputData[, i]) %>%
+    summarise(n = n()) %>%
+    mutate(com_freq = cumsum(n)) %>%
+    mutate(percent = (n / sum(n)) * 100)
+
+  names(count)[1] <- c("cat")
+
+  colName <- names(inputData)[i]
+  uniqcnt <- c("Unique non-mission value count:", length(count[, 1][!is.na(count[, 1])]))
+  misscnt <- c("Missing value count:", sum(is.na(count[, 1])))
+  table <- data.frame()
+  table <- rbind(table, uniqcnt)
+  table <- rbind(table, misscnt)
+  names(table) <- c(paste(i, "Column name:"), colName)
+  print(kable(table, align = "ll"))
+
+  if (length(count[, 1][!is.na(count[, 1])]) <= 10) {
+    print(kable(count, align = "cccc"))
+  } else {
+    data <- data.frame()
+    summ <- c(
+      min(inputData[, i][!is.na(inputData[, i])], na.rm = TRUE),
+      mean(inputData[, i][!is.na(inputData[, i])], na.rm = TRUE),
+      median(inputData[, i][!is.na(inputData[, i])], na.rm = TRUE),
+      max(inputData[, i][!is.na(inputData[, i])], na.rm = TRUE),
+      sd(inputData[, i][!is.na(inputData[, i])], na.rm = TRUE) %>% as.Date(origin = .Date(0))
+    )
+    data <- rbind(data, summ)
+    names(data) <- c("Min", "Mean", "Median", "Max", "SD")
+    print(kable(data, align = "ccccc"))
+  }
+  # cat('---')
+  # cat('\n\n\n\n')
+  # cat('\n\n<!-- -->\n\n')
+}
+```
+
+## Body Paragraph 1
+
+### First Point about Topic
+
+(First Point about Topic)
+
+### Second Point about Topic
+
+(Second Point about Topic)
+
+## Body Paragraph 2
+
+### First Point about Topic
+
+(First Point about Topic)
+
+### Second Point about Topic
+
+(Second Point about Topic)
+
+## Discussion
+
+(Discussion)
+
+## Figures
+
+### Correlation
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+if (inputData %>% select(where(is.numeric)) %>% length() < 2) {
+  print("Correlation plot is ignored because less than 2 column is numeric")
+} else {
+  ggcorr(inputData)
+}
+```
+
+### MissingData
+
+```{r}
+naniar::gg_miss_var(inputData)
+```
+
+### Scatterplot
+```{r, results='asis', echo = FALSE, warning = FALSE, message = FALSE}
+if (!(inputData %>% select(where(is.numeric)) %>% length() > 0)) {
+  print("Non-numeric Variable ignored in Scatterplot below.")
+} 
+scatterData <- inputData %>% select(where(is.numeric))
+if(nrow(inputData)>1000){
+  print("Number of Row Reduced to 1000")
+  scatterData <- scatterData %>% sample_n(1000)
+}
+for (i in 1:(ncol(scatterData) %/% 5 + 1)) {
+  start <- i * 5 - 4
+  if (i == (ncol(scatterData) %/% 5) + 1) {
+    end <- ncol(scatterData)
+  } else {
+    end <- i * 5
+  }
+
+  if (start <= end) {
+    plot(scatterData[, c(start:end)])
+  }
+}
+
+```
+
+### Machine Learning Result
+
+Machine Learning Result is not available.
+```{r}
+# if(!is.na(MLResult)){
+#   print(MLResult)
+# } else {
+#   return("MLResult not available")
+# }
+```
+
+## Reference
+
+(Reference)
