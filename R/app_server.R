@@ -26,6 +26,7 @@
 #' @importFrom scissor mod_reorderModule_ui mod_reorderModule_server
 #' @importFrom scissor mod_exportModule_ui mod_exportModule_server
 #' @importFrom scissor mod_gsubModule_ui mod_gsubModule_server
+#' @importFrom scissor mod_createModule_ui mod_createModule_server
 #' @importFrom soroban mod_treeModule_server
 #' @importFrom soroban mod_pcaModule_server
 #' @importFrom soroban mod_groupStatModule_server
@@ -259,6 +260,10 @@ app_server <- function(input, output, session) {
         tabPanel(
           title = i18n_shiny$t("Subtext"),
           mod_gsubModule_ui("gsubModule_1")
+        ),
+        tabPanel(
+          title = i18n_shiny$t("Create"),
+          mod_createModule_ui("createModule_1")
         )
       ),
       actionButton(
@@ -792,6 +797,12 @@ app_server <- function(input, output, session) {
     inputData = reactive(data_rv$data)
   )
 
+  ## Create Module
+  res_create <- mod_createModule_server(
+    id = "createModule_1",
+    inputData = reactive(data_rv$data)
+  )
+
   ## transform apply
 
   observeEvent(input$applyTransform, {
@@ -816,18 +827,20 @@ app_server <- function(input, output, session) {
     }
 
     if(input$transformPanel == "Subtext"){
-      data_rv$data <- res_subtext
+      data_rv$data <- res_subtext()
+    }
+
+    if(input$transformPanel == "Create"){
+      data_rv$data <- res_create()
     }
 
     inputData(data_rv$data) # then use isolated
   })
 
-
   observeEvent(input$applySplit, {
     data_rv$data <- res_split() # reactive
     inputData(data_rv$data) # then use isolated
   })
-
 
   ## reorder Module
 

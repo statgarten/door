@@ -28,6 +28,7 @@ Imports:
     reactable (>= 0.3.0),
     readr (>= 2.1.2),
     readxl (>= 1.4.1),
+    remotes,
     rmarkdown (>= 2.16),
     scissor,
     shiny (>= 1.7.1),
