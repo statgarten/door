@@ -1,6 +1,6 @@
 Package: door
 Title: Shiny module for statgarten
-Version: 0.2.1
+Version: 0.3.0
 Authors@R: 
     person("Jinhwan", "Kim", , "hwanistic@gmail.com", role = c("cre", "aut"))
 Description: Main application for data analysis using statgarten packages.
@@ -13,7 +13,6 @@ Imports:
     config (>= 0.3.1),
     data.table (>= 1.14.2),
     datamods (>= 1.3.3),
-    datatoys,
     dplyr (>= 1.0.9),
     DT (>= 0.24),
     esquisse (>= 1.1.1),
@@ -51,7 +50,6 @@ VignetteBuilder:
 Remotes:
     github::statgarten/board,
     github::statgarten/colorpen,
-    github::statgarten/datatoys,
     github::statgarten/scissor,
     github::statgarten/soroban,
     github::statgarten/stove

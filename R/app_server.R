@@ -34,7 +34,6 @@
 #' @importFrom soroban mod_kmsModule_server
 #'
 #' @import datamods
-#' @import datatoys
 #' @import rmarkdown
 
 #' @noRd
@@ -148,8 +147,11 @@ app_server <- function(input, output, session) {
 
   # datatoy load data
   observeEvent(input$loadExample, {
-    eval(parse(text = paste0("data_rv$data <- datatoys::", input$datatoy)))
-    data_rv$name <- input$datatoy
+    githubURL <- paste0("https://github.com/statgarten/datatoys/raw/main/data/", input$datatoy, ".rda")
+    download.file(githubURL, "temp.Rda")
+    load("temp.Rda")
+    file.remove("temp.Rda")
+    eval(parse(text = paste0("data_rv$data <- ", input$datatoy)))
     inputData(data_rv$data)
   })
 
@@ -310,6 +312,7 @@ app_server <- function(input, output, session) {
 
     if (input$lang == "en") {
       output$exampleDataset <- renderUI({
+        # 22 version
         Choices <- c(
           "accident",
           "airport",
@@ -354,13 +357,6 @@ app_server <- function(input, output, session) {
             inputId = "datatoy",
             label = NULL,
             choices = Choices,
-            choicesOpt = list(
-              subtext = sapply(Choices, function(i) {
-                eval(parse(
-                  text = paste0("paste0( nrow(datatoys::", i, '), " x ", ncol(datatoys::', i, ") )")
-                ))
-              })
-            ),
             selected = NULL
           ),
           actionButton(inputId = "loadExample", label = i18n_shiny$t("Load Example data")),
@@ -414,13 +410,6 @@ app_server <- function(input, output, session) {
             inputId = "datatoy",
             label = NULL,
             choices = Choices,
-            choicesOpt = list(
-              subtext = sapply(Choices, function(i) {
-                eval(parse(
-                  text = paste0("paste0( nrow(datatoys::", i, '), " x ", ncol(datatoys::', i, ") )")
-                ))
-              })
-            ),
             selected = NULL
           ),
           actionButton(inputId = "loadExample", label = i18n_shiny$t("Load Example data")),

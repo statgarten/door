@@ -3,7 +3,6 @@
 export(init)
 export(run_app)
 import(datamods)
-import(datatoys)
 import(dplyr)
 import(esquisse)
 import(rmarkdown)
