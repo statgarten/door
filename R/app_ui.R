@@ -14,6 +14,7 @@
 #' @importFrom reactable reactableOutput
 #' @importFrom board mod_distributionModule_ui
 #' @importFrom colorpen mod_mapVisModule_ui
+#' @importFrom colorpen mod_pairModule_ui
 #' @importFrom soroban mod_pcaModule_ui
 #' @importFrom soroban mod_treeModule_ui
 #' @importFrom soroban mod_groupStatModule_ui
@@ -184,6 +185,11 @@ app_ui <- function(request) {
                 title = "Map",
                 box_height = "4em",
                 mod_mapVisModule_ui("mapVisModule_1", i18n = i18n_shiny)
+              ),
+              verticalTabPanel(
+                title = "Pair",
+                box_height = "4em",
+                mod_pairModule_ui("pairModule_1")
               )
             )
           ),
