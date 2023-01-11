@@ -1,117 +1,158 @@
-/*
-color theme
-*/
+/* color theme; Used https://www.cleancss.com/css-beautify/ */
 
-/* body background : FFF? FFFDEE*/
-.content-wrapper {
-    background-color: #FFF !important;
+/* fonts*/
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css");
 
+* {
+    font-family: "Pretendard";
 }
 
-.skin-black .main-header .navbar {
-    background-color: #FFFDEE;
+/* body background*/
+ .content-wrapper {
+     background-color: #FFF !important;
+}
+/* nav bar 우측 */
+ .skin-black .main-header .navbar {
+     background-color: #00C2CB;
+}
+/* not sure*/
+ .skin-black .main-header .navbar .sidebar-toggle:hover {
+     color: #999;
+     background: #FFF;
+}
+/* nav-bar radio Button border*/
+ #lang button, #defaultGuide{
+     background: #FFF;
+     border: none;
+     border-radius: 1em;
+}
+/* nav-bar left (Logo side)*/
+ .skin-black .main-header .logo {
+     background-color: #00C2CB;
+     color: #333;
+     border-bottom: 0 solid transparent;
+     border-right: 1px solid #eee;
+}
+/* nav-bar left (Logo side) hover*/
+ .skin-black .main-header .logo:hover {
+     background-color: #00C2CB;
+}
+/* module tabset */
+#importTabset, #visTabset, #statTabset, #mlTabset, #edaTabset{
+     border-bottom: solid 1px black;
 }
 
-/*
-#f7f1e3;
-*/
-
-.skin-black .main-header .navbar .sidebar-toggle:hover {
-    color: #999;
-    background: #FFFDEE;
+/* tab-set selected tab color*/
+ .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+     border-top-color: #004B4D;
+}
+/* tab-set selected tab color 2*/
+ .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+     color: #fff;
+     background-color: #004B4D;
 }
 
-.skin-black .main-header .logo {
-    background-color: #FFFDEE;
-    color: #333;
-    border-bottom: 0 solid transparent;
-    border-right: 1px solid #eee;
-}
-
-.skin-black .main-header .logo:hover {
-    background-color: #FFFDEE;
-}
-
-/*
-fileinput Selector (LEFT)
-*/
-
-body > div.wrapper > div.content-wrapper > section > div > div:nth-child(2) > div:nth-child(2) > div.input-group > input {
-  height:10em;
-}
-
-
-/*
-fileinput button
-*/
-
-body > div.wrapper > div.content-wrapper > section > div > div:nth-child(2) > div:nth-child(2) > div.input-group > label > span {
-
-  height: 10em;
-  border-top-left-radius: 2em;
-  border-bottom-left-radius: 2em;
-
-  display: table-cell; /*text vertical center*/
-
-  background: #00ACD6; /* font style*/
+/* actionButtons */
+#downloadReport, #showUpdateModule, #showFilterModule, #showTransformModule, #showReorderModule, #showExportModule{
+  background: #004B4D;
   color: white;
-  font-weight: bold;
+  border: 0;
+}
+/* Example data*/
+ #exampleURL, #exampleR, #exampleC, #exampleSheet, #exampleDataset > div > div > button {
+     background: #92BA92 !important;
+     color: #fff !important;
+     border: 0;
+}
+/* load aciton button */
+ #importModule_1-confirm, #importModule_2-confirm, #importModule_3-confirm, #loadExample{
+     width: 100%;
+     background: #004B4D;
+     border: none;
+     font-weight: normal;
+     color: white;
+}
+/* warnings & alert */
+ .alert-info, .bg-aqua, .callout.callout-info, .label-info, .modal-info .modal-body {
+     background-color: #B8906B !important;
+     border: none;
+}
+/* warnings - success */
+
+.alert-success, .bg-green, .callout.callout-success, .label-success, .modal-success .modal-body{
+     background-color: #0071F2 !important;
+     border: none;
 }
 
-/*
-react table header center align
-*/
-.rt-text-content{
-  margin:auto;
+#importModule_1-import-result, #importModule_2-import-result, #importModule_3-import-result, {
+     background-color: #0071F2 !important;
+     border: none;
+}
+/* fileinput Selector (LEFT) */
+ body > div.wrapper > div.content-wrapper > section > div > div:nth-child(2) > div:nth-child(2) > div.input-group > input {
+     height:10em;
+}
+/* fileinput button */
+ body > div.wrapper > div.content-wrapper > section > div > div:nth-child(2) > div:nth-child(2) > div.input-group > label > span {
+     height: 10em;
+     border-top-left-radius: 2em;
+     border-bottom-left-radius: 2em;
+     display: table-cell;
+    /*text vertical center*/
+     background: #00ACD6;
+    /* font style*/
+     color: white;
+     font-weight: bold;
+}
+/* react table header center align */
+ .rt-text-content{
+     margin:auto;
+}
+ .my-header{
+     background: #2c3c75;
+     color: #FFFFFF;
+     font-size: 15px;
+     text-align: center;
+}
+/* color of the year 2022 */
+/* sortable color */
+ .rank-list-container .custom-sortable {
+     background-color: #8A8 !important;
+}
+ .custom-sortable .rank-list-item {
+     background-color: #BDB !important;
+}
+/* shinydashboard sidebar width */
+/* .left-side{
+     width: 300px;
+}
+ */
+/* shinydashboard sidebar position fix */
+/* .main-sidebar{
+     position:fixed;
+}
+ */
+/* left ui */
+ .navbar-custom-menu{
+     margin-bottom: -1em;
 }
 
-.my-header{
-  background: #2c3c75;
-  color: #FFFFFF;
-  font-size: 15px;
-  text-align: center;
-}
+
+/* esquisse top buttons */
+
+/* module selector도 영향 받음, 일단 보류*/
 
 /*
-color of the year 2022
-
-*/
-
-
-/*
-sortable color
-*/
-.rank-list-container .custom-sortable {
-  background-color: #8A8 !important;
-}
-
-.custom-sortable .rank-list-item {
-  background-color: #BDB !important;
-}
-
-
-/*
-shinydashboard sidebar width
-*/
-
-/*
-.left-side{
-  width: 300px;
+.btn-group-justified>.btn-group .btn{
+  background: #92BA92;
+  border-right: 1px solid white;
+  color: white;
 }
 */
-
-/*
-shinydashboard sidebar position fix
-*/
-/*
-.main-sidebar{
-  position:fixed;
-}
-*/
-
-/*
-left ui
-*/
-.navbar-custom-menu{
-  margin-bottom: -1em;
+/* esquisse below buttons */
+#visModule_e-controls-controls-labs, #visModule_e-controls-controls-parameters, #visModule_e-controls-controls-appearance, #visModule_e-controls-controls-code{
+    background: #92BA92;
+    border-right: 1px solid white;
+    font-weight: normal;
+    color: white;
 }
