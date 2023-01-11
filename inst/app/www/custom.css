@@ -52,9 +52,10 @@
      background-color: #004B4D;
 }
 
-/* actionButtons */
+/* Data Wrangling actionButtons */
 #downloadReport, #showUpdateModule, #showFilterModule, #showTransformModule, #showReorderModule, #showExportModule{
   background: #004B4D;
+  border-radius: 0;
   color: white;
   border: 0;
 }
@@ -63,30 +64,36 @@
      background: #92BA92 !important;
      color: #fff !important;
      border: 0;
+     border-radius: 0;
 }
 /* load aciton button */
  #importModule_1-confirm, #importModule_2-confirm, #importModule_3-confirm, #loadExample{
      width: 100%;
      background: #004B4D;
+     opacity: 1 !important;
      border: none;
      font-weight: normal;
      color: white;
+     border-radius: 0;
 }
 /* warnings & alert */
  .alert-info, .bg-aqua, .callout.callout-info, .label-info, .modal-info .modal-body {
      background-color: #B8906B !important;
      border: none;
+     border-radius: 0;
 }
 /* warnings - success */
-
 .alert-success, .bg-green, .callout.callout-success, .label-success, .modal-success .modal-body{
      background-color: #0071F2 !important;
      border: none;
+     border-radius: 0;
 }
 
-#importModule_1-import-result, #importModule_2-import-result, #importModule_3-import-result, {
+/* IMPORT DATA BUTTON */
+#importModule_1-import-result, #importModule_2-import-result, #importModule_3-import-result {
      background-color: #0071F2 !important;
      border: none;
+     border-radius: 0;
 }
 /* fileinput Selector (LEFT) */
  body > div.wrapper > div.content-wrapper > section > div > div:nth-child(2) > div:nth-child(2) > div.input-group > input {
@@ -138,9 +145,17 @@
 }
 
 
-/* esquisse top buttons */
+/* module selector*/
+#module > div > div > button{
+  border-radius: 0;
+  font-weight: 600;
+  background: #B8906B;
+  color: white;
+}
 
-/* module selector도 영향 받음, 일단 보류*/
+#module > div > div > button.active{
+  background: #785330;
+}
 
 /*
 .btn-group-justified>.btn-group .btn{
@@ -149,6 +164,20 @@
   color: white;
 }
 */
+
+/* esquisse aesthetic options*/
+#aes > div > div > button{
+  border-radius: 0;
+  font-weight: 600;
+  background: #B8906B;
+  color: white;
+}
+
+#aes > div > div > button.active{
+  background: #785330;
+}
+
+
 /* esquisse below buttons */
 #visModule_e-controls-controls-labs, #visModule_e-controls-controls-parameters, #visModule_e-controls-controls-appearance, #visModule_e-controls-controls-code{
     background: #92BA92;
@@ -156,3 +185,42 @@
     font-weight: normal;
     color: white;
 }
+
+/* esquisse inside option buttons */
+
+#visModule_e-controls-labs_title_options,
+#visModule_e-controls-labs_subtitle_options,
+#visModule_e-controls-labs_caption_options,
+#visModule_e-controls-labs_x_options,
+#visModule_e-controls-labs_y_options{
+  background: #004B4D;
+  color: white;
+}
+
+#visModule_e-controls-legend_position > div > div > button{
+  background: #004B4D;
+  color: white;
+}
+#sw-content-visModule_e-controls-controls-appearance > div > div:nth-child(5) > div > button{
+  background: #92BA92 !important;
+  color: #fff !important;
+  border: 0;
+}
+
+/* esquisse auto chart background*/
+
+#visModule_e-geom > button{
+  color: white;
+  background: #162027;
+}
+
+
+/* code area*/
+pre{
+  color: #F2F8FF;
+  background-color: #162027;
+  border-radius: 1em;
+  border: none;
+}
+}
+

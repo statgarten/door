@@ -88,8 +88,8 @@ app_ui <- function(request) {
           fluidRow(
             id = "importModule",
             tabsetPanel(
-              type = 'pills',
-              id = 'importTabset',
+              type = "pills",
+              id = "importTabset",
               tabPanel( # File (Default)
                 title = i18n_shiny$t("Files"),
                 shinycssloaders::withSpinner(
@@ -143,7 +143,7 @@ app_ui <- function(request) {
                 br(),
                 fluidRow(
                   column(
-                    width = 3,
+                    width = 4,
                     shinyWidgets::actionBttn( # example data load
                       inputId = "exampleSheet",
                       label = i18n_shiny$t("Load Example Sheet"),
@@ -162,7 +162,7 @@ app_ui <- function(request) {
                 title = "Datatoys",
                 h4(HTML(paste0(
                   i18n_shiny$t("Example Dataset from"), " ",
-                  tags$a("datatoys", href = "https://statgarten.github.io/datatoys/")
+                  tags$a("datatoys", href = "https://statgarten.github.io/datatoys/", target = "_blank")
                 ))),
                 shinycssloaders::withSpinner(
                   uiOutput(outputId = "exampleDataset")
@@ -174,13 +174,17 @@ app_ui <- function(request) {
           ### EDA panel
           conditionalPanel(
             condition = 'input.module == "EDA"',
-            fluidRow(
-              tabsetPanel(
-                type = 'pills',
-                id = 'edaTabset',
-                tabPanel(
-                  title = i18n_shiny$t("Dataset Description"),
-                  fluidRow(
+            style = "margin-left: -15px; margin-right: -15px;",
+            shinydashboardPlus::box(
+              title = "EDA Panel",
+              width = 12,
+              status = "orange",
+              div(
+                tabsetPanel(
+                  type = "pills",
+                  id = "edaTabset",
+                  tabPanel(
+                    title = i18n_shiny$t("Dataset Description"),
                     column(
                       width = 8,
                       h4("Data Structure"),
@@ -219,19 +223,21 @@ app_ui <- function(request) {
                         )
                       )
                     )
+                  ),
+                  tabPanel(
+                    title = i18n_shiny$t("Correlation"),
+                    plotOutput(outputId = "corplot")
+                  ),
+                  tabPanel(
+                    title = i18n_shiny$t("Variables"),
+                    reactableOutput(outputId = "reactOutput")
+                  ),
+                  tabPanel(
+                    title = i18n_shiny$t("Distribution"),
+                    fluidPage(
+                      mod_distributionModule_ui("distModule_1")
+                    )
                   )
-                ),
-                tabPanel(
-                  title = i18n_shiny$t("Correlation"),
-                  plotOutput(outputId = "corplot")
-                ),
-                tabPanel(
-                  title = i18n_shiny$t("Variables"),
-                  reactableOutput(outputId = "reactOutput")
-                ),
-                tabPanel(
-                  title = i18n_shiny$t("Distribution"),
-                  mod_distributionModule_ui("distModule_1")
                 )
               )
             )
@@ -240,30 +246,36 @@ app_ui <- function(request) {
           ### Vis panel
           conditionalPanel(
             condition = 'input.module == "Vis"',
-            fluidRow(
-              tabsetPanel(
-                type = 'pills',
-                id = 'visTabset',
-                tabPanel(
-                  title = "General",
-                  shinyWidgets::checkboxGroupButtons(
-                    inputId = "aes",
-                    label = i18n_shiny$t("Aesthetic options"),
-                    choices = c("fill", "color", "size", "shape", "facet", "facet_row", "facet_col"),
-                    selected = c("fill", "color", "size", "facet"),
-                    justified = TRUE,
-                    checkIcon = list(yes = icon("ok", lib = "glyphicon"))
+            style = "margin-left: -15px; margin-right: -15px;",
+            shinydashboardPlus::box(
+              title = "Vis Panel",
+              width = 12,
+              status = "orange",
+              div(
+                tabsetPanel(
+                  type = "pills",
+                  id = "visTabset",
+                  tabPanel(
+                    title = "General",
+                    shinyWidgets::checkboxGroupButtons(
+                      inputId = "aes",
+                      label = i18n_shiny$t("Aesthetic options"),
+                      choices = c("fill", "color", "size", "shape", "facet", "facet_row", "facet_col"),
+                      selected = c("fill", "color", "size", "facet"),
+                      justified = TRUE,
+                      checkIcon = list(yes = icon("ok", lib = "glyphicon"))
+                    ),
+                    uiOutput(outputId = "esquisse_ui2")
                   ),
-                  uiOutput(outputId = "esquisse_ui2")
-                ),
-                tabPanel(
-                  title = "Map",
-                  mod_mapVisModule_ui("mapVisModule_1", i18n = i18n_shiny)
-                ),
-                tabPanel(
-                  title = "Pair",
-                  box_height = "4em",
-                  mod_pairModule_ui("pairModule_1")
+                  tabPanel(
+                    title = "Map",
+                    mod_mapVisModule_ui("mapVisModule_1", i18n = i18n_shiny)
+                  ),
+                  tabPanel(
+                    title = "Pair",
+                    box_height = "4em",
+                    mod_pairModule_ui("pairModule_1")
+                  )
                 )
               )
             )
@@ -273,8 +285,8 @@ app_ui <- function(request) {
             condition = 'input.module == "Stat"',
             fluidRow(
               tabsetPanel(
-                type = 'pills',
-                id = 'statTabset',
+                type = "pills",
+                id = "statTabset",
                 tabPanel(
                   title = "Table 1", # Not translate
                   fluidRow(
@@ -327,8 +339,8 @@ app_ui <- function(request) {
             condition = 'input.module == "ML"',
             fluidRow(
               tabsetPanel(
-                type = 'pills',
-                id = 'mlTabset',
+                type = "pills",
+                id = "mlTabset",
                 tabPanel(
                   title = "Data Setup",
                   mod_ttSplitModule_ui(id = "ttSplitModule_1")
