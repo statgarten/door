@@ -181,6 +181,15 @@ app_server <- function(input, output, session) {
     )
   })
 
+  # Example import in google sheet
+  observeEvent(input$exampleSheet, {
+    updateTextInputIcon(
+      session = session,
+      inputId = "importModule_3-link",
+      value = "https://docs.google.com/spreadsheets/d/1Fl_Lec7hZYRgPrLjrRf5kghJ1lDFP20wdXE0JA_H4DM/edit#gid=1751490021"
+    )
+  })
+
   # update
   observeEvent(input$showUpdateModule, {
     showModal(modalDialog(
