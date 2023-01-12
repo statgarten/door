@@ -82,19 +82,18 @@
 /* warnings & alert */
  .alert-info, .bg-aqua, .callout.callout-info, .label-info, .modal-info .modal-body {
      background-color: #B8906B !important;
-     border: none;
+     border: none;#785330
      border-radius: 0;
 }
 /* warnings - success */
 .alert-success, .bg-green, .callout.callout-success, .label-success, .modal-success .modal-body{
-     background-color: #0071F2 !important;
+     background-color: #785330 !important;
      border: none;
      border-radius: 0;
 }
 
 /* IMPORT DATA BUTTON */
 #importModule_1-import-result, #importModule_2-import-result, #importModule_3-import-result {
-     background-color: #0071F2 !important;
      border: none;
      border-radius: 0;
 }
@@ -102,6 +101,16 @@
  body > div.wrapper > div.content-wrapper > section > div > div:nth-child(2) > div:nth-child(2) > div.input-group > input {
      height:10em;
 }
+
+#datamods_import_file > div > div.datamods-file-import > div > div > div.input-group > label > span,
+#datamods_import_url > div > div.form-group.shiny-input-container > div > div,
+#datamods_import_googlesheets > div > div.form-group.shiny-input-container > div > div{
+    background: #E97407;
+    color: white;
+    border: 0;
+    border-radius: 0;
+}
+
 /* fileinput button */
  body > div.wrapper > div.content-wrapper > section > div > div:nth-child(2) > div:nth-child(2) > div.input-group > label > span {
      height: 10em;
@@ -183,7 +192,7 @@
 
 /* esquisse below buttons */
 #visModule_e-controls-controls-labs, #visModule_e-controls-controls-parameters, #visModule_e-controls-controls-appearance, #visModule_e-controls-controls-code{
-    background: #92BA92;
+    background: #004B4D;
     border-right: 1px solid white;
     font-weight: normal;
     color: white;
