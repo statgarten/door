@@ -92,80 +92,115 @@ app_ui <- function(request) {
               id = "importTabset",
               tabPanel( # File (Default)
                 title = i18n_shiny$t("Files"),
-                shinycssloaders::withSpinner(
-                  uiOutput(outputId = "datamods_import_file"),
+                fluidPage(
+                  column(
+                    width = 8,
+                    style = 'border-right: dotted 1px black',
+                    uiOutput(outputId = "datamods_import_file")
+                  ),
+                  column(
+                    width = 4,
+                    h4("Example Files"),
+                    actionButton(
+                      inputId = "exampleA",
+                      class = 'exampleButton',
+                      label = i18n_shiny$t("Titanic (Kaggle)"),
+                      onclick = "window.open('https://www.kaggle.com/competitions/titanic/data', '_blank')"
+                    ),
+                    actionButton(
+                      inputId = "exampleB",
+                      class = 'exampleButton',
+                      label = i18n_shiny$t("Iris (UCI)"),
+                      onclick = "window.open('https://archive.ics.uci.edu/ml/datasets/iris', '_blank')"
+                    ),
+                    actionButton(
+                      inputId = "exampleC",
+                      class = 'exampleButton',
+                      label = i18n_shiny$t("Palmerpenguins (LTER) "),
+                      onclick = "window.open('https://github.com/allisonhorst/palmerpenguins/', '_blank')"
+                    ),
+                    actionButton(
+                      inputId = "exampleD",
+                      class = 'exampleButton',
+                      label = i18n_shiny$t("Healthcare (NHIS Korea)"),
+                      onclick = "window.open('https://github.com/jinseob2kim/R-skku-biohrs/tree/main/data, '_blank')"
+                    )
+                  )
                 )
               ),
               tabPanel( # URL
                 title = i18n_shiny$t("URL"),
-                br(),
-                # Examples
-                fluidRow(
+                fluidPage(
+                  column(
+                    width = 8,
+                    style = 'border-right: dotted 1px black',
+                    uiOutput(outputId = "datamods_import_url")
+                  ),
                   column(
                     width = 4,
-                    shinyWidgets::actionBttn( # example data load
+                    h4("Example URL"),
+                    actionButton(
                       inputId = "exampleURL",
-                      label = i18n_shiny$t("Load Example data"),
-                      style = "bordered",
-                      size = "sm",
-                      block = TRUE,
-                      color = "royal"
-                    )
-                  ),
-                  column(
-                    width = 4,
-                    shinyWidgets::actionBttn( # example data load
+                      class = 'exampleButton',
+                      label = i18n_shiny$t("Healthcare (NHIS Korea)")
+                    ),
+                    actionButton(
                       inputId = "exampleR",
-                      label = i18n_shiny$t("Load Boston: Regression"),
-                      style = "bordered",
-                      size = "sm",
-                      block = TRUE,
-                      color = "royal"
-                    )
-                  ),
-                  column(
-                    width = 4,
-                    shinyWidgets::actionBttn( # example data load
+                      class = 'exampleButton',
+                      label = i18n_shiny$t("Boston House Price: Regression")
+                    ),
+                    actionButton(
                       inputId = "exampleC",
-                      label = i18n_shiny$t("Load Boston: Classification"),
-                      style = "bordered",
-                      size = "sm",
-                      block = TRUE,
-                      color = "royal"
+                      class = 'exampleButton',
+                      label = i18n_shiny$t("Boston House Price: Classification"),
                     )
                   )
-                ),
-                br(),
-                uiOutput(outputId = "datamods_import_url")
+                )
               ),
               tabPanel( # Google Sheet
                 title = i18n_shiny$t("Google Sheet"),
-                br(),
-                fluidRow(
+                fluidPage(
+                  column(
+                    width = 8,
+                    style = 'border-right: dotted 1px black',
+                    uiOutput(outputId = "datamods_import_googlesheets")
+                  ),
                   column(
                     width = 4,
-                    shinyWidgets::actionBttn( # example data load
+                    h4("Example Sheet"),
+                    actionButton(
                       inputId = "exampleSheet",
-                      label = i18n_shiny$t("Load Example Sheet"),
-                      style = "bordered",
-                      size = "sm",
-                      block = TRUE,
-                      color = "success"
+                      class = 'exampleButton',
+                      label = i18n_shiny$t("Online Retail Dataset")
                     )
                   )
-                ),
-                br(),
-                uiOutput(outputId = "datamods_import_googlesheets")
+                )
               ),
               tabPanel( # datatoys
-                id = "tabPanelDatatoys",
                 title = "Datatoys",
-                h4(HTML(paste0(
-                  i18n_shiny$t("Example Dataset from"), " ",
-                  tags$a("datatoys", href = "https://statgarten.github.io/datatoys/", target = "_blank")
-                ))),
-                shinycssloaders::withSpinner(
-                  uiOutput(outputId = "exampleDataset")
+                fluidPage(
+                  column(
+                    h4("Import Public data"),
+                    width = 8,
+                    style = 'border-right: dotted 1px black',
+                    uiOutput(outputId = "exampleDataset")
+                  ),
+                  column(
+                    width = 4,
+                    h4("More Info"),
+                    actionButton(
+                      inputId = "datatoysActionButton",
+                      class = "exampleButton",
+                      label = "Datatoys",
+                      onclick = "window.open('https://www.statgarten.com/datatoys/, '_blank')"
+                    ),
+                    actionButton(
+                      inputId = "datagokrActionButton",
+                      class = "exampleButton",
+                      label = "Data.go.kr",
+                      onclick = "window.open('https://www.data.go.kr/, '_blank')"
+                    )
+                  )
                 )
               )
             )
@@ -226,7 +261,23 @@ app_ui <- function(request) {
                   ),
                   tabPanel(
                     title = i18n_shiny$t("Correlation"),
-                    plotOutput(outputId = "corplot")
+                    column(
+                      width = 8,
+                      h4("Correlation between data"),
+                      plotOutput(outputId = "corplot"),
+                      br()
+                    ),
+                    column(
+                      width = 4,
+                      sliderInput(
+                        inputId = "corSize",
+                        label = "Height of plot",
+                        min = 400,
+                        max = 1000, step = 50, value = 400,
+                        ticks = FALSE,
+                        width = "100%"
+                      )
+                    )
                   ),
                   tabPanel(
                     title = i18n_shiny$t("Variables"),

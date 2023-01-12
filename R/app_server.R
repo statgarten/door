@@ -369,7 +369,11 @@ app_server <- function(input, output, session) {
             choices = Choices,
             selected = NULL
           ),
-          actionButton(inputId = "loadExample", label = i18n_shiny$t("Load Example data")),
+          actionButton(
+            inputId = "loadExample",
+            label = i18n_shiny$t("Import data"),
+            icon = icon('arrow-alt-circle-right')
+          ),
         )
       })
     }
@@ -434,6 +438,7 @@ app_server <- function(input, output, session) {
     output$datamods_import_file <- renderUI({
       datamods::import_file_ui(
         id = "importModule_1",
+        title = h4("Import file"),
         preview_data = FALSE,
         file_extensions = c(
           ".csv", ".dta", ".fst", ".rda", ".rds",
@@ -583,6 +588,7 @@ app_server <- function(input, output, session) {
     })
   })
 
+
   # Data loaded
   observeEvent(data_rv$data, {
     inputData(data_rv$data) # set data
@@ -656,6 +662,13 @@ app_server <- function(input, output, session) {
       output$corplot <- renderPlot(GGally::ggcorr(obj$cors))
     } # if is not null, draw correlation plot
 
+    observeEvent(input$corSize,{ # change correlation Plot Size
+      req(input$corSize)
+      if (!is.null(obj$cors)) {
+        output$corplot <- renderPlot(GGally::ggcorr(obj$cors), height = input$corSize)
+      } # if is not null, draw correlation plot
+    })
+
     output$dataStructure <- renderPrint({
       str(inputData())
     })
@@ -690,9 +703,12 @@ app_server <- function(input, output, session) {
     output$reactOutput <- renderReactable(
       reactable(
         EDAres,
+        defaultColDef = colDef(headerClass = "my-header"),
+        rowClass = "my-row",
         bordered = TRUE,
         compact = TRUE,
-        striped = TRUE
+        striped = TRUE,
+        highlight = TRUE
       )
     )
   })
@@ -704,16 +720,20 @@ app_server <- function(input, output, session) {
     if (nrow(data) > 1000) {
       data <- rbind(head(data, 500), tail(data, 500))
     }
+
     reactable::reactable(
       data,
       defaultColDef = reactable::colDef(header = function(value) {
         classes <- tags$div(style = "font-style: italic; font-weight: normal; font-size: small;", get_classes(data[, value, drop = FALSE]))
         tags$div(title = value, value, classes)
-      }),
+      },
+      headerClass = "my-header"),
       columns = list(),
+      rowClass = "my-row",
       bordered = TRUE,
       compact = TRUE,
-      striped = TRUE
+      striped = TRUE,
+      highlight = TRUE
     )
   })
 

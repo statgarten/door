@@ -62,13 +62,19 @@
   color: white;
   border: 0;
 }
-/* Example data*/
- #exampleURL, #exampleR, #exampleC, #exampleSheet, #exampleDataset > div > div > button {
-     background: #92BA92 !important;
+/* Example data button*/
+.exampleButton {
+  background: #F59B38;
      color: #fff !important;
      border: 0;
      border-radius: 0;
+     width : 100%;
 }
+.exampleButton:hover{
+  background-color: #E97407;
+}
+
+
 /* load aciton button */
  #importModule_1-confirm, #importModule_2-confirm, #importModule_3-confirm, #loadExample{
      width: 100%;
@@ -82,7 +88,7 @@
 /* warnings & alert */
  .alert-info, .bg-aqua, .callout.callout-info, .label-info, .modal-info .modal-body {
      background-color: #B8906B !important;
-     border: none;#785330
+     border: none;
      border-radius: 0;
 }
 /* warnings - success */
@@ -102,9 +108,21 @@
      height:10em;
 }
 
+/* file input grey */
+#datamods_import_file > div > div.datamods-file-import > div:nth-child(1) > div > div.input-group > input{
+  border: 0;
+}
+
+#datamods_import_file > div > div.datamods-file-import > div:nth-child(1) > div{
+  height: 59px;
+}
+
 #datamods_import_file > div > div.datamods-file-import > div > div > div.input-group > label > span,
 #datamods_import_url > div > div.form-group.shiny-input-container > div > div,
-#datamods_import_googlesheets > div > div.form-group.shiny-input-container > div > div{
+#datamods_import_googlesheets > div > div.form-group.shiny-input-container > div > div,
+#importModule_1-settings,
+#datamods_import_file > div > div.col-sm-8 > div > div.datamods-file-import > div:nth-child(1) > div > div.input-group > label > span
+{
     background: #E97407;
     color: white;
     border: 0;
@@ -112,6 +130,7 @@
 }
 
 /* fileinput button */
+
  body > div.wrapper > div.content-wrapper > section > div > div:nth-child(2) > div:nth-child(2) > div.input-group > label > span {
      height: 10em;
      border-top-left-radius: 2em;
@@ -123,17 +142,39 @@
      color: white;
      font-weight: bold;
 }
-/* react table header center align */
+
+/* file input option */
+#importModule_1-settings-template > div > div > div{
+  background: #004B4D;
+  color: white;
+  border: 0;
+}
+
+/* datatoy */
+#exampleDataset > div > div > button{
+  border: 0;
+}
+#exampleDataset > div > div > button > span > span{
+  color: #E97407;
+}
+
+/* reactable style*/
+/* reacttable header center align */
  .rt-text-content{
      margin:auto;
 }
  .my-header{
-     background: #2c3c75;
-     color: #FFFFFF;
-     font-size: 15px;
-     text-align: center;
+   background: white;
+   color: black;
+   border-bottom: solid 2px #785330;
+   font-size: 0.8em;
+   text-align: center;
 }
-/* color of the year 2022 */
+.my-row:hover{
+  background-color: #E7D6C5;
+}
+
+
 /* sortable color */
  .rank-list-container .custom-sortable {
      background-color: #8A8 !important;
@@ -260,3 +301,4 @@ pre{
 .selectize-input.focus{
   border-color: #92BA92;;
 }
+
