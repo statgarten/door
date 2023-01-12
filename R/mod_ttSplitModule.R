@@ -38,7 +38,7 @@ mod_ttSplitModule_ui <- function(id) {
       actionButton(
         inputId = ns("split"),
         label = "Split",
-        style = "font-weight: bold;background: #3EC70B;color: white; width: 100%"
+        style = "background: #004B4D;border-radius: 0;color: white;border: 0;"
       )
     )
   )

@@ -13,7 +13,7 @@
 }
 /* nav bar 우측 */
  .skin-black .main-header .navbar {
-     background-color: #00C2CB;
+     background-color: #004B4D;
 }
 /* not sure*/
  .skin-black .main-header .navbar .sidebar-toggle:hover {
@@ -28,14 +28,14 @@
 }
 /* nav-bar left (Logo side)*/
  .skin-black .main-header .logo {
-     background-color: #00C2CB;
+     background-color: #004B4D;
      color: #333;
      border-bottom: 0 solid transparent;
      border-right: 1px solid #eee;
 }
 /* nav-bar left (Logo side) hover*/
  .skin-black .main-header .logo:hover {
-     background-color: #00C2CB;
+     background-color: #004B4D;
 }
 /* module tabset */
 #importTabset, #visTabset, #statTabset, #mlTabset, #edaTabset{
@@ -53,7 +53,10 @@
 }
 
 /* Data Wrangling actionButtons */
-#downloadReport, #showUpdateModule, #showFilterModule, #showTransformModule, #showReorderModule, #showExportModule{
+#downloadReport, #showUpdateModule, #showFilterModule, #showTransformModule, #showReorderModule, #showExportModule,
+/* stat module actionButtons*/
+#generateTable, #mlrModule_1-reg, #kmsModule_1-cluster, #groupStatModule_1-build
+{
   background: #004B4D;
   border-radius: 0;
   color: white;
@@ -222,5 +225,29 @@ pre{
   border-radius: 1em;
   border: none;
 }
+
+
+/* slider bar */
+.irs--shiny .irs-bar--single, span.irs-single, span.irs-min, span.irs-max{
+  border-radius: 0;
+  border: 0;
+  background: #92BA92;
+  background-color: #92BA92 !important;
+  color: white;
 }
 
+/* slider bar handle*/
+.irs--shiny .irs-handle{
+  background-color: #004B4D;
+  border: 1px solid #fff;
+}
+
+/* slider bar handle hover*/
+.irs--shiny .irs-handle.state_hover, .irs--shiny .irs-handle:hover{
+  background: #E97407;
+}
+
+/* select active */
+.selectize-input.focus{
+  border-color: #92BA92;;
+}

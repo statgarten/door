@@ -91,12 +91,12 @@ mod_modelingModule_ui <- function(id) {
           ns("hyper"),
           label = "show hyper",
           icon = icon("gear"),
-          style = "font-weight:bold; background:#b2bec3; color:black; width:100%; margin-bottom: 0.5em;"
+          style = "font-weight:bold; background:#B8906B; color:black; width:100%; margin-bottom: 0.5em;"
         ),
         actionButton( # Main Action
           inputId = ns("applyModel"),
           label = "Build Model",
-          style = "font-weight:bold; background:#3EC70B; color:white; width:100%"
+          style = "background: #004B4D;border-radius: 0;color: white;border: 0; font-weight: bold; width: 100%"
         ),
         shinyjs::hidden(
           div(
@@ -115,7 +115,7 @@ mod_modelingModule_ui <- function(id) {
             actionButton(
               inputId = ns("generateReport"),
               label = "report 생성",
-              style = "font-weight: bold; background: #00b894; color: white; width: 100%"
+              style = "background: #004B4D;border-radius: 0;color: white;border: 0; font-weight: bold; width: 100%"
             )
           )
         )

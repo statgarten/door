@@ -283,7 +283,11 @@ app_ui <- function(request) {
           ## Stat Panel
           conditionalPanel(
             condition = 'input.module == "Stat"',
-            fluidRow(
+            style = "margin-left: -15px; margin-right: -15px;",
+            shinydashboardPlus::box(
+              title = "Stat Panel",
+              width = 12,
+              status = "orange",
               tabsetPanel(
                 type = "pills",
                 id = "statTabset",
@@ -305,7 +309,7 @@ app_ui <- function(request) {
                       actionButton( # Main action
                         inputId = "generateTable",
                         label = i18n_shiny$t("generate Table"),
-                        style = "font-weight: bold;background: #3EC70B;color: white; width: 100%"
+                        style = "font-weight: bold; width: 100%"
                       )
                     )
                   )
@@ -337,7 +341,11 @@ app_ui <- function(request) {
           ## ML Panel
           conditionalPanel(
             condition = 'input.module == "ML"',
-            fluidRow(
+            style = "margin-left: -15px; margin-right: -15px;",
+            shinydashboardPlus::box(
+              title = "ML Panel",
+              width = 12,
+              status = "orange",
               tabsetPanel(
                 type = "pills",
                 id = "mlTabset",
