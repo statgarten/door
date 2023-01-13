@@ -55,12 +55,12 @@
 /* Data Wrangling actionButtons */
 #downloadReport, #showUpdateModule, #showFilterModule, #showTransformModule, #showReorderModule, #showExportModule,
 /* stat module actionButtons*/
-#generateTable, #mlrModule_1-reg, #kmsModule_1-cluster, #groupStatModule_1-build
-{
+#generateTable, #mlrModule_1-reg, #kmsModule_1-cluster, #groupStatModule_1-build, .myButton, .myButton:hover, .myButton:active{
   background: #004B4D;
   border-radius: 0;
   color: white;
   border: 0;
+  font-weight: bold;
 }
 /* Example data button*/
 .exampleButton {

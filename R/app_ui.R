@@ -2,7 +2,9 @@
 #'
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
-#' @import shiny dplyr tidyr
+#' @import shiny
+#' @import dplyr
+#' @import tidyr
 #' @import datamods
 #' @importFrom shinyjs hidden useShinyjs
 #' @importFrom DT DTOutput
@@ -13,13 +15,8 @@
 #' @importFrom shinydashboardPlus box dashboardHeader dashboardSidebar dashboardPage dashboardFooter dashboardControlbar descriptionBlock
 #' @importFrom reactable reactableOutput
 #' @importFrom board mod_distributionModule_ui
-#' @importFrom colorpen mod_mapVisModule_ui
-#' @importFrom colorpen mod_pairModule_ui
-#' @importFrom soroban mod_pcaModule_ui
-#' @importFrom soroban mod_treeModule_ui
-#' @importFrom soroban mod_groupStatModule_ui
-#' @importFrom soroban mod_mlrModule_ui
-#' @importFrom soroban mod_kmsModule_ui
+#' @importFrom colorpen mod_mapVisModule_ui mod_pairModule_ui mod_mosaicModule_ui
+#' @importFrom soroban mod_pcaModule_ui mod_treeModule_ui mod_groupStatModule_ui mod_mlrModule_ui mod_kmsModule_ui
 #' @noRd
 app_ui <- function(request) {
   i18n_shiny <- golem::get_golem_options(which = "translator")
@@ -327,8 +324,11 @@ app_ui <- function(request) {
                   ),
                   tabPanel(
                     title = "Pair",
-                    box_height = "4em",
                     mod_pairModule_ui("pairModule_1")
+                  ),
+                  tabPanel(
+                    title = "Mosaic",
+                    mod_mosaicModule_ui("mosaicModule_1")
                   )
                 )
               )
@@ -382,7 +382,7 @@ app_ui <- function(request) {
                   mod_pcaModule_ui("pcaModule_1")
                 ),
                 tabPanel(
-                  title = i18n_shiny$t("Decision tree"),
+                  title = i18n_shiny$t("Regression tree"),
                   mod_treeModule_ui("treeModule_1")
                 ),
                 tabPanel(

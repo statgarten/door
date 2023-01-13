@@ -17,7 +17,8 @@
 #' @importFrom shinyglide glide screen
 #' @importFrom board mod_distributionModule_server
 #' @importFrom colorpen mod_mapVisModule_server
-#' @importFrom colorpen mod_pairModule_server
+#' @importFrom colorpen mod_pairModule_server mod_mosaicModule_server
+#'
 #' @importFrom scissor mod_roundModule_server mod_roundModule_ui
 #' @importFrom scissor mod_etcModule_server mod_etcModule_ui
 #' @importFrom scissor mod_logModule_ui mod_logModule_server
@@ -495,6 +496,8 @@ app_server <- function(input, output, session) {
   }))
 
   mod_pairModule_server(id = "pairModule_1", inputData)
+
+  mod_mosaicModule_server(id = "mosaicModule_1", inputData)
 
   # Stat Panel
   mod_pcaModule_server("pcaModule_1", inputData)
