@@ -8,7 +8,7 @@
 #' @importFrom remotes install_github
 #' @export
 
-init <- function(){
+init <- function() {
   # Install datatoys, board, scissor, colorpen, soroban, stove
   remotes::install_github("statgarten/datatoys")
   remotes::install_github("statgarten/board")

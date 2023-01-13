@@ -95,7 +95,7 @@ app_ui <- function(request) {
                 fluidPage(
                   column(
                     width = 8,
-                    style = 'border-right: dotted 1px black',
+                    style = "border-right: dotted 1px black",
                     uiOutput(outputId = "datamods_import_file")
                   ),
                   column(
@@ -103,25 +103,25 @@ app_ui <- function(request) {
                     h4("Example Files"),
                     actionButton(
                       inputId = "exampleA",
-                      class = 'exampleButton',
+                      class = "exampleButton",
                       label = i18n_shiny$t("Titanic (Kaggle)"),
                       onclick = "window.open('https://www.kaggle.com/competitions/titanic/data', '_blank')"
                     ),
                     actionButton(
                       inputId = "exampleB",
-                      class = 'exampleButton',
+                      class = "exampleButton",
                       label = i18n_shiny$t("Iris (UCI)"),
                       onclick = "window.open('https://archive.ics.uci.edu/ml/datasets/iris', '_blank')"
                     ),
                     actionButton(
                       inputId = "exampleC",
-                      class = 'exampleButton',
+                      class = "exampleButton",
                       label = i18n_shiny$t("Palmerpenguins (LTER) "),
                       onclick = "window.open('https://github.com/allisonhorst/palmerpenguins/', '_blank')"
                     ),
                     actionButton(
                       inputId = "exampleD",
-                      class = 'exampleButton',
+                      class = "exampleButton",
                       label = i18n_shiny$t("Healthcare (NHIS Korea)"),
                       onclick = "window.open('https://github.com/jinseob2kim/R-skku-biohrs/tree/main/data, '_blank')"
                     )
@@ -133,7 +133,7 @@ app_ui <- function(request) {
                 fluidPage(
                   column(
                     width = 8,
-                    style = 'border-right: dotted 1px black',
+                    style = "border-right: dotted 1px black",
                     uiOutput(outputId = "datamods_import_url")
                   ),
                   column(
@@ -141,17 +141,17 @@ app_ui <- function(request) {
                     h4("Example URL"),
                     actionButton(
                       inputId = "exampleURL",
-                      class = 'exampleButton',
+                      class = "exampleButton",
                       label = i18n_shiny$t("Healthcare (NHIS Korea)")
                     ),
                     actionButton(
                       inputId = "exampleR",
-                      class = 'exampleButton',
+                      class = "exampleButton",
                       label = i18n_shiny$t("Boston House Price: Regression")
                     ),
                     actionButton(
                       inputId = "exampleC",
-                      class = 'exampleButton',
+                      class = "exampleButton",
                       label = i18n_shiny$t("Boston House Price: Classification"),
                     )
                   )
@@ -162,7 +162,7 @@ app_ui <- function(request) {
                 fluidPage(
                   column(
                     width = 8,
-                    style = 'border-right: dotted 1px black',
+                    style = "border-right: dotted 1px black",
                     uiOutput(outputId = "datamods_import_googlesheets")
                   ),
                   column(
@@ -170,7 +170,7 @@ app_ui <- function(request) {
                     h4("Example Sheet"),
                     actionButton(
                       inputId = "exampleSheet",
-                      class = 'exampleButton',
+                      class = "exampleButton",
                       label = i18n_shiny$t("Online Retail Dataset")
                     )
                   )
@@ -182,7 +182,7 @@ app_ui <- function(request) {
                   column(
                     h4("Import Public data"),
                     width = 8,
-                    style = 'border-right: dotted 1px black',
+                    style = "border-right: dotted 1px black",
                     uiOutput(outputId = "exampleDataset")
                   ),
                   column(
@@ -263,12 +263,14 @@ app_ui <- function(request) {
                     title = i18n_shiny$t("Correlation"),
                     column(
                       width = 8,
+                      style = "border-right: dotted 1px black",
                       h4("Correlation between data"),
                       plotOutput(outputId = "corplot"),
                       br()
                     ),
                     column(
                       width = 4,
+                      h4("Options"),
                       sliderInput(
                         inputId = "corSize",
                         label = "Height of plot",
@@ -281,6 +283,7 @@ app_ui <- function(request) {
                   ),
                   tabPanel(
                     title = i18n_shiny$t("Variables"),
+                    br(),
                     reactableOutput(outputId = "reactOutput")
                   ),
                   tabPanel(
@@ -346,14 +349,23 @@ app_ui <- function(request) {
                   title = "Table 1", # Not translate
                   fluidRow(
                     column( # Result Area
-                      width = 9,
+                      width = 8,
+                      style = "border-right: dotted 1px black",
+                      h4("Table 1"),
                       reactableOutput(outputId = "tableOne")
                     ),
                     column(
-                      width = 3,
+                      width = 4,
+                      br(),
+                      h4(
+                        "❓ Table 1 presents descriptive statistics of baseline characteristics of the data stratified by specific variable"
+                      ),
+                      h4(
+                        "only Factor column will be available as strata"
+                      ),
                       selectInput( # Options
                         inputId = "tableOneStrata",
-                        label = i18n_shiny$t("Group by"),
+                        label = i18n_shiny$t("Strata"),
                         choices = NULL,
                         selected = NULL
                       ),

@@ -372,7 +372,7 @@ app_server <- function(input, output, session) {
           actionButton(
             inputId = "loadExample",
             label = i18n_shiny$t("Import data"),
-            icon = icon('arrow-alt-circle-right')
+            icon = icon("arrow-alt-circle-right")
           ),
         )
       })
@@ -494,7 +494,7 @@ app_server <- function(input, output, session) {
     input$lang
   }))
 
-  mod_pairModule_server(id = "pairModule_1",inputData)
+  mod_pairModule_server(id = "pairModule_1", inputData)
 
   # Stat Panel
   mod_pcaModule_server("pcaModule_1", inputData)
@@ -570,10 +570,23 @@ app_server <- function(input, output, session) {
 
       tbl <- tbl[, -c(ncol(tbl) - 1, ncol(tbl))] # remove test / sig column
 
-      reactable::reactable(
+      tbl[, 1] <- rownames(tbl)
+      rownames(tbl) <- NULL
+      reactable(
+        rownames = FALSE,
         tbl,
+        defaultColDef = colDef(
+          headerClass = "my-header",
+          align = "right"
+        ),
+        rowClass = "my-row",
+        bordered = TRUE,
+        compact = TRUE,
+        striped = TRUE,
+        highlight = TRUE,
         columns = list(
           p = colDef(
+            name = "P value",
             style = function(value) {
               value <- gsub(" ", "", value) # remove empty space
               color <- "#1e3799"
@@ -582,6 +595,10 @@ app_server <- function(input, output, session) {
               }
               list(color = color, fontWeight = "bold")
             }
+          ),
+          level = colDef(
+            align = "center",
+            style = "font-weight: bold; border-right: solid 0.5em #785330"
           )
         )
       )
@@ -613,8 +630,8 @@ app_server <- function(input, output, session) {
     # tableone update
     updateSelectInput(
       inputId = "tableOneStrata",
-      label = "Group by",
-      choices = c("NULL", colnames(data_rv$data)),
+      label = "Strata",
+      choices = names(Filter(is.factor, data_rv$data)),
       selected = numeric(0)
     )
 
@@ -662,7 +679,7 @@ app_server <- function(input, output, session) {
       output$corplot <- renderPlot(GGally::ggcorr(obj$cors))
     } # if is not null, draw correlation plot
 
-    observeEvent(input$corSize,{ # change correlation Plot Size
+    observeEvent(input$corSize, { # change correlation Plot Size
       req(input$corSize)
       if (!is.null(obj$cors)) {
         output$corplot <- renderPlot(GGally::ggcorr(obj$cors), height = input$corSize)
@@ -704,6 +721,14 @@ app_server <- function(input, output, session) {
       reactable(
         EDAres,
         defaultColDef = colDef(headerClass = "my-header"),
+        columns = list(
+          Name = colDef(align = "center", style = "font-weight: bold; border-right: solid 0.5em #785330"),
+          UniqueValues = colDef(name = "Unique Values", align = "center"),
+          Zero = colDef(name = "Zero Values", align = "center"),
+          Missing = colDef(name = "Missing Values", align = "center"),
+          isUniform = colDef(name = "Uniformly distributed", align = "center"),
+          isUnique = colDef(name = "Unique values", align = "center")
+        ),
         rowClass = "my-row",
         bordered = TRUE,
         compact = TRUE,
@@ -723,11 +748,13 @@ app_server <- function(input, output, session) {
 
     reactable::reactable(
       data,
-      defaultColDef = reactable::colDef(header = function(value) {
-        classes <- tags$div(style = "font-style: italic; font-weight: normal; font-size: small;", get_classes(data[, value, drop = FALSE]))
-        tags$div(title = value, value, classes)
-      },
-      headerClass = "my-header"),
+      defaultColDef = reactable::colDef(
+        header = function(value) {
+          classes <- tags$div(style = "font-style: italic; font-weight: normal; font-size: small;", get_classes(data[, value, drop = FALSE]))
+          tags$div(title = value, value, classes)
+        },
+        headerClass = "my-header"
+      ),
       columns = list(),
       rowClass = "my-row",
       bordered = TRUE,
@@ -847,11 +874,11 @@ app_server <- function(input, output, session) {
       data_rv$data <- res_split()
     }
 
-    if(input$transformPanel == "Subtext"){
+    if (input$transformPanel == "Subtext") {
       data_rv$data <- res_subtext()
     }
 
-    if(input$transformPanel == "Create"){
+    if (input$transformPanel == "Create") {
       data_rv$data <- res_create()
     }
 

@@ -121,7 +121,7 @@
 #datamods_import_url > div > div.form-group.shiny-input-container > div > div,
 #datamods_import_googlesheets > div > div.form-group.shiny-input-container > div > div,
 #importModule_1-settings,
-#datamods_import_file > div > div.col-sm-8 > div > div.datamods-file-import > div:nth-child(1) > div > div.input-group > label > span
+#datamods_import_file > div > col-sm-8 > div > div.datamods-file-import > div:nth-child(1) > div > div.input-group > label > span
 {
     background: #E97407;
     color: white;
