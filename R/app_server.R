@@ -54,6 +54,27 @@ app_server <- function(input, output, session) {
     i18n_shiny
   })
 
+  require(tibble, quietly = TRUE)
+
+  ## reactive data declare
+
+  # import
+  data_rv <- reactiveValues(data = NULL)
+  inputData <- reactiveVal(NULL)
+  columnTypes <- reactiveVal(NULL)
+
+  # ML
+  data_ml <- reactiveValues(train = NULL, test = NULL)
+  trainData <- reactiveVal(NULL)
+  testData <- reactiveVal(NULL)
+  models_list <- reactiveVal(list())
+
+  # Stats
+
+  # Reports
+  rmarkdownParams <- reactiveVal(NULL)
+
+
   # guideButton render
   observeEvent(input$module, {
     output$guideButton <- renderUI({
@@ -146,16 +167,6 @@ app_server <- function(input, output, session) {
   })
 
   ## import Panel
-
-  # datatoy load data
-  observeEvent(input$loadExample, {
-    githubURL <- paste0("https://github.com/statgarten/datatoys/raw/main/data/", input$datatoy, ".rda")
-    download.file(githubURL, "temp.Rda")
-    load("temp.Rda")
-    file.remove("temp.Rda")
-    eval(parse(text = paste0("data_rv$data <- ", input$datatoy)))
-    inputData(data_rv$data)
-  })
 
   # EXAMPLE IMPORT IN URL
   observeEvent(input$exampleURL, {
@@ -467,25 +478,6 @@ app_server <- function(input, output, session) {
     })
   })
 
-  require(tibble, quietly = TRUE)
-
-  ## reactive data declare
-
-  # import
-  data_rv <- reactiveValues(data = NULL)
-  inputData <- reactiveVal(NULL)
-  columnTypes <- reactiveVal(NULL)
-
-  # ML
-  data_ml <- reactiveValues(train = NULL, test = NULL)
-  trainData <- reactiveVal(NULL)
-  testData <- reactiveVal(NULL)
-  models_list <- reactiveVal(list())
-
-  # Stats
-
-  # Reports
-  rmarkdownParams <- reactiveVal(NULL)
 
   # Vis Panel
   plotlyobj <- reactiveVal(NULL)
@@ -543,6 +535,7 @@ app_server <- function(input, output, session) {
   observeEvent(from_url$data(), {
     data_rv$data <- from_url$data()
     data_rv$name <- from_url$name()
+
     inputData(data_rv$data)
   })
 
@@ -606,6 +599,18 @@ app_server <- function(input, output, session) {
         )
       )
     })
+  })
+
+  # datatoy load data
+  observeEvent(input$loadExample, {
+    githubURL <- paste0("https://github.com/statgarten/datatoys/raw/main/data/", input$datatoy, ".rda")
+    download.file(githubURL, "temp.Rda")
+    load("temp.Rda")
+    file.remove("temp.Rda")
+
+    eval(parse(text = paste0("data_rv$data <- ", input$datatoy)))
+    eval(parse(text = paste0("data_rv$name <- '", input$datatoy, "'")))
+    inputData(data_rv$data)
   })
 
 
@@ -702,14 +707,14 @@ app_server <- function(input, output, session) {
       )
     })
 
-    output$missingData <- renderUI(
+    output$missingData <- renderUI({
       descriptionBlock( # missing data
         header = paste0(obj$desc$missingCellCount, "(", obj$desc$missingCellRatio, "%)"),
         numberIcon = icon("question"),
         number = i18n_shiny$t("Missing Data"),
         marginBottom = FALSE
       )
-    )
+    })
 
     updateSelectInput(
       inputId = "variableSelect",
@@ -720,7 +725,7 @@ app_server <- function(input, output, session) {
       selected = NULL
     )
 
-    output$reactOutput <- renderReactable(
+    output$reactOutput <- renderReactable({
       reactable(
         EDAres,
         defaultColDef = colDef(headerClass = "my-header"),
@@ -738,7 +743,7 @@ app_server <- function(input, output, session) {
         striped = TRUE,
         highlight = TRUE
       )
-    )
+    })
   })
 
   ## Main table (View)
