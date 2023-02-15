@@ -315,7 +315,7 @@ app_server <- function(input, output, session) {
     req(input$lang)
 
     ## Custom
-    shiny.i18n::update_lang(session, input$lang)
+    shiny.i18n::update_lang(language = input$lang, session)
     i18n_r()$set_translation_language(input$lang)
 
 
