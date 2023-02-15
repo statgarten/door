@@ -750,8 +750,8 @@ app_server <- function(input, output, session) {
 
   output$DT <- reactable::renderReactable({
     data <- req(data_rv$data)
-    if (nrow(data) > 1000) {
-      data <- rbind(head(data, 500), tail(data, 500))
+    if (nrow(data) > 100000) {
+      data <- rbind(head(data, 50000), tail(data, 50000))
     }
 
     reactable::reactable(

@@ -22,21 +22,20 @@ app_sys <- function(...) {
 #' @param file Location of the config file
 #'
 #' @noRd
-get_golem_config <- function(value,
-                             config = Sys.getenv(
-                               "GOLEM_CONFIG_ACTIVE",
-                               Sys.getenv(
-                                 "R_CONFIG_ACTIVE",
-                                 "default"
-                               )
-                             ),
-                             use_parent = TRUE,
-                             # Modify this if your config file is somewhere else
-                             file = app_sys("golem-config.yml")) {
-  config::get(
-    value = value,
-    config = config,
-    file = file,
-    use_parent = use_parent
-  )
+get_golem_config <-
+  function(
+    value,
+    config = Sys.getenv(
+      "GOLEM_CONFIG_ACTIVE",
+      Sys.getenv("R_CONFIG_ACTIVE", "default")
+    ),
+    use_parent = TRUE,
+    # Modify this if your config file is somewhere else
+    file = app_sys("golem-config.yml")) {
+      config::get(
+      value = value,
+      config = config,
+      file = file,
+      use_parent = use_parent
+    )
 }
