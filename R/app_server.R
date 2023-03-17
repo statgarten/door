@@ -456,7 +456,7 @@ app_server <- function(input, output, session) {
           ".csv", ".dta", ".fst", ".rda", ".rds",
           ".rdata", ".sas7bcat", ".sas7bdat",
           ".sav", ".tsv", ".txt", ".xls", ".xlsx",
-          ".xml"
+          ".xml", ".json"
         )
       )
     })
@@ -540,6 +540,9 @@ app_server <- function(input, output, session) {
       },
       xml = function(file){
         xml_to_dataframe(file$datapath)
+      },
+      json = function(file){
+        jsonlite::fromJSON(file$datapath)
       }
     )
   )
@@ -777,7 +780,6 @@ app_server <- function(input, output, session) {
 
     # XML Handler
     if(!is.null(rownames(data))) rownames(data) <- NULL
-
 
     reactable::reactable(
       data,
