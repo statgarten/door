@@ -455,7 +455,8 @@ app_server <- function(input, output, session) {
         file_extensions = c(
           ".csv", ".dta", ".fst", ".rda", ".rds",
           ".rdata", ".sas7bcat", ".sas7bdat",
-          ".sav", ".tsv", ".txt", ".xls", ".xlsx"
+          ".sav", ".tsv", ".txt", ".xls", ".xlsx",
+          ".xml"
         )
       )
     })
@@ -498,6 +499,23 @@ app_server <- function(input, output, session) {
   mod_mlrModule_server("mlrModule_1", inputData)
   mod_groupStatModule_server("groupStatModule_1", inputData)
 
+  # XML handler
+  xml_to_dataframe <- function(path){
+    xml <- xml2::read_xml(path)
+    nodeset <- xml2::xml_children(xml)
+    lst <- lapply(nodeset, function(x){
+      tmp <- xml2::xml_text(xml2::xml_children(x))
+      names(tmp) <- xml2::xml_name(xml2::xml_children(x))
+      return(as.list(tmp))
+    })
+    result <- as.data.frame(do.call(rbind, lst))
+
+    #result <- do.call(rbind, lapply(lst, function(x) as.data.frame(x, stringsAsFactors = F)))
+
+    print(summary(result))
+
+    return(tibble::as_tibble(result))
+  }
 
   ## after data uploaded
 
@@ -519,6 +537,9 @@ app_server <- function(input, output, session) {
       },
       rdata = function(file) {
         load(file$datapath)
+      },
+      xml = function(file){
+        xml_to_dataframe(file$datapath)
       }
     )
   )
@@ -753,6 +774,10 @@ app_server <- function(input, output, session) {
     if (nrow(data) > 100000) {
       data <- rbind(head(data, 50000), tail(data, 50000))
     }
+
+    # XML Handler
+    if(!is.null(rownames(data))) rownames(data) <- NULL
+
 
     reactable::reactable(
       data,
