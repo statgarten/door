@@ -1006,25 +1006,46 @@ app_server <- function(input, output, session) {
       # on.exit(setwd(owd))
       # file.copy(src, 'report.Rmd', overwrite = TRUE)
 
-      setwd(app_sys())
-
       out <- rmarkdown::render(
-        params = list(
-          inputData = data_rv$data
-        ),
         input = switch(input$format,
-          PDF = "report.Rmd",
-          HTML = "report.Rmd",
-          Word = "report.Rmd",
-          Dashboard = "report-dashboard.Rmd",
-          Paper = "report-paper.Rmd"
+                       PDF = paste0(app_sys(), "/report-pdf.rmd"), # rmd
+                       HTML = paste0(app_sys(), "/report2.rmd"), # rmd
+                       Word = "report.Rmd",
+                       Dashboard = "report-dashboard.Rmd",
+                       Paper = "report-paper.Rmd"
         ),
         output_format = switch(input$format,
-          PDF = pdf_document(),
-          HTML = html_document(),
-          Word = word_document(),
-          Dashboard = flexdashboard::flex_dashboard(orientation = "rows", vertical_layout = "scroll"),
-          Paper = word_document()
+          PDF = pdf_document(
+            toc = TRUE,
+            toc_depth = 3,
+            number_sections = TRUE,
+            highlight = "zenburn"
+          ),
+          HTML = html_document(
+            includes = includes(
+              # in_header = paste0(app_sys(), "/header.html"),
+              after_body = paste0(app_sys(), "/footer.html")
+              ),
+              toc = TRUE,
+              toc_depth = 3,
+              toc_float = list(
+                collapsed = FALSE,
+                smooth_scroll = FALSE
+              ),
+              number_sections = TRUE,
+              theme = "sandstone",
+              highlight = "zenburn"
+            ),
+            Word = word_document(),
+            Dashboard = flexdashboard::flex_dashboard(orientation = "rows", vertical_layout = "scroll"),
+            Paper = word_document()
+        ),
+        params = list(
+          inputData = data_rv$data
+          #vec.len= 4
+          #positive= NA
+          #negative= NA
+          #email: NA
         )
       )
       file.rename(out, file)

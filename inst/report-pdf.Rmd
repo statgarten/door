@@ -1,0 +1,361 @@
+---
+layout: page
+title: 'Statgarten Data Profile Report'
+date: "Report built : `r format(Sys.Date())`"
+output: pdf_document
+tables: true
+params:
+  inputData: NA
+  vec.len: 4
+  positive: NA
+  negative: NA
+  email: NA
+---
+
+\newpage
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: pre
+
+# pass parameter 
+inputData <- params$inputData
+
+# library
+library(knitr)
+library(kableExtra)
+library(dplyr)
+library(shiny)
+
+# environment 
+options(digits = 3)
+
+# function define
+
+hasNeg <- function(i) {
+  length(which(i < 0)) > 0
+}
+
+hasPos <- function(i) {
+  length(which(i > 0)) > 0
+}
+
+isValidEmail <- function(i) {
+  grepl("\\<[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\>", as.character(i), ignore.case = TRUE)
+}
+
+isUniform <- function(i) {
+  return(length(unique(table(i))) == 1)
+}
+
+isUnique <- function(i) {
+  return(length(which(duplicated(i))) == 0)
+}
+```
+
+# Data description
+
+> Preview of data - Top 5
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: top
+
+if(ncol(inputData) > 7){
+  kable(
+    t(head(inputData, 5)),
+    format = 'latex', 
+    longtable = TRUE 
+    # booktabs = TRUE
+  ) |> 
+  kableExtra::kable_styling(
+    latex_options = c("scale_down", "repeat_header"),
+    repeat_header_continued = "\\textit{(Continued on Next Page...)}"
+  )
+  
+} else{
+  head(inputData, 5) |>
+  kable()
+}
+
+
+```
+
+
+> Preview of data - Last 5
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: tail
+
+if(ncol(inputData) > 7){
+  kable(
+    t(tail(inputData, 5)),
+    format = 'latex', 
+    longtable = TRUE 
+  ) |> 
+  kableExtra::kable_styling(
+    latex_options = c("scale_down", "repeat_header"),
+    repeat_header_continued = "\\textit{(Continued on Next Page...)}"
+  )
+    
+} else{
+  tail(inputData, 5) |>
+  kable()
+}
+
+```
+
+\newpage
+
+# Structure of data
+
+- Data dimension and structure (with example values)
+
+```{r}
+#| echo: false
+#| label: structure of data using str
+
+data.frame(
+  variable = names(inputData),
+  class = sapply(inputData, typeof),
+  levels = sapply(inputData, class),
+  first_values = sapply(inputData, function(x) paste0(head(x, 10), collapse = ", ")),
+  row.names = NULL
+) |>
+  reactable(
+    defaultColDef = colDef(format = colFormat(digits = 3))
+  )
+```
+
+\newpage
+
+# Missing Data Infomation
+
+```{r}
+#| label: missing
+#| echo: false
+#| warning: false
+#| message: false
+
+naniar::gg_miss_var(inputData)
+
+ss <- naniar::miss_var_summary(inputData) |> 
+  filter(n_miss > 0) 
+
+colnames(ss) <- colnames(ss) |>
+  gsub(pattern = "variable", replacement = "Name") |>
+  gsub(pattern = "n_miss", replacement = "Count") |>
+  gsub(pattern = "pct_miss", replacement = "Percent")
+
+ss |>
+  reactable(
+    columns = list(
+       Percent = colDef(format = colFormat(digits = 2))
+    )
+  )
+```
+
+\newpage
+
+## Removed Data
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+ignoreNA <- names(which(colSums(is.na(inputData)) == nrow(inputData)))
+
+if (length(ignoreNA) > 0) {
+  HTML(markdown("
+    > Columns Below is removed because every rows are NA
+  "))
+  
+  print(ignoreNA)
+  inputData <- inputData[, !(names(inputData) %in% ignoreNA)]
+} else {
+  markdown("> There is not removed Columns")
+}
+```
+
+\newpage
+
+## Statistics of data
+
+```{r}
+#| echo: false
+#| label: type for each column
+
+ss <- inputData |>
+  skimr::skim() |>
+  select(-"n_missing", -"complete_rate")
+
+# rename columns
+colnames(ss) <- colnames(ss) |>
+  gsub(pattern = "skim_type", replacement = "Variable Type") |>
+  gsub(pattern = "skim_variable", replacement = "Variable Name")
+
+ss |>
+  reactable(
+    defaultColDef = colDef(format = colFormat(digits = 1))
+  )
+```
+
+\newpage
+
+## Validity
+
+-   email
+
+```{r, echo=FALSE}
+if(params$email != "NA"){
+  inputData |> 
+  dplyr::select(params$emails) |> 
+  sapply(isValidEmail)
+} else{
+  markdown("> There is no input for check Email value")
+}
+```
+
+-   positive
+
+```{r, echo=FALSE}
+#| label: positive
+#| echo: false
+
+if(params$positive != "NA"){
+  inputData |>
+  select(params$positive) |>
+  sapply(hasNeg)
+} else{
+  markdown("> There is no input for check Positive value")
+}
+```
+
+-   negative
+
+```{r}
+#| label: negative
+#| echo: false
+
+if(params$negative != "NA"){
+  inputData |>
+  select(params$negative) |>
+  sapply(hasPos)
+} else{
+  markdown("> There is no input for check Negative value")
+} 
+```
+
+\newpage
+
+## Distribution
+
+-   unique
+
+```{r, echo=FALSE}
+#| label: isUnique
+  ss <- inputData |>
+  select(everything()) |>
+  sapply(isUnique) 
+
+if(length(which(ss))){
+  data.frame(
+  Variable = names(ss),
+  Unique = unname(ss)
+  ) |>
+  reactable()
+} else{
+  markdown("> There is not column without duplicated values")
+}
+
+
+
+```
+
+-   uniform
+
+```{r, echo=FALSE}
+
+  ss <- inputData |>
+  select(everything()) |>
+  sapply(isUniform) 
+
+if(length(which(ss))){
+  data.frame(
+  Variable = names(ss),
+  Uniform = unname(ss)
+) |>
+  reactable()
+} else{
+  markdown("> There is not column without uniformly distributed")
+}
+```
+
+\newpage
+
+## Correlation
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+if (inputData %>% select(where(is.numeric)) %>% length() < 2) {
+  markdown("> Correlation plot ignored, because less than 2 column is numeric")
+} else {
+  ggcorr(inputData)
+}
+```
+
+\newpage
+
+## Pairplot
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: pair
+
+infer.numeric <- function(i, count = 10) {
+  length(unique(i)) > count
+}
+
+
+scatterData <- inputData |> select(where(is.numeric) & where(infer.numeric))
+
+if(ncol(scatterData)> 10){
+  markdown("> Most various 10 column selected")
+  scatterData <- scatterData |> select(
+    names(head(sort(sapply(scatterData, function(i){length(unique(i))}), decreasing = TRUE), 10))
+  )
+}
+
+if (!(scatterData |> length() > 0)) {
+  markdown("> Data is not appropriate for Pairplot")
+} else {
+  if (nrow(inputData) > 100) {
+    markdown("> Number of Row Reduced to 1000")
+    scatterData <- scatterData |>
+      sample_n(1000)
+  }
+  scatterData |>
+    GGally::ggpairs()
+}
+
+
+```
+
+\newpage
+
+## suggestion
+
+-   check
+-   change
+-   remove...
+
+
