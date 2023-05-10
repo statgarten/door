@@ -68,6 +68,7 @@ app_server <- function(input, output, session) {
   trainData <- reactiveVal(NULL)
   testData <- reactiveVal(NULL)
   models_list <- reactiveVal(list())
+  tuned_results_list <- reactiveVal(list())
 
   # Stats
 
@@ -977,12 +978,16 @@ app_server <- function(input, output, session) {
   # )
 
   ### model
-  models_list <- mod_modelingModule_server(
+
+  mms <- mod_modelingModule_server(
     id = "modelingModule_1",
     splitresult = splitresult,
     # processresult = processresult,
-    models_list = models_list
+    models_list = models_list,
+    tuned_results_list = tuned_results_list
   )
+  models_list <- mms$models_list
+  tuned_results_list <- mms$tuned_results_list
 
   ## Report
 

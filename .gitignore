@@ -53,3 +53,5 @@ old_app.R
 # Report Caches
 /inst/figures
 /inst/report-paper.docx
+bloodtest1000.csv
+stove2.R

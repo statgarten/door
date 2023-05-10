@@ -1,6 +1,6 @@
 Package: door
 Title: Shiny module for statgarten
-Version: 0.3.2
+Version: 0.3.3
 Authors@R: 
     person("Jinhwan", "Kim", , "hwanistic@gmail.com", role = c("cre", "aut"))
 Description: Main application for data analysis using statgarten packages.
@@ -32,14 +32,14 @@ Imports:
     scissor,
     shiny (>= 1.7.1),
     shiny.i18n (>= 0.2.0),
-    shinycssloaders (>= 1.0.0.9000),
+    shinycssloaders,
     shinydashboard (>= 0.7.2),
     shinydashboardPlus (>= 2.0.3),
     shinyglide,
     shinyjs (>= 2.1.0),
     shinyWidgets (>= 0.7.2),
     soroban,
-    stove,
+    stove (>= 1.1),
     tibble (>= 3.1.8),
     tidyr (>= 1.2.0),
     utils
