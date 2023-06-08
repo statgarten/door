@@ -1000,7 +1000,7 @@ app_server <- function(input, output, session) {
           HTML = "html",
           Word = "docx",
           Dashboard = "html",
-          Paper = "docx"
+          Paper = "pdf"
         )
       )
     },
@@ -1017,7 +1017,7 @@ app_server <- function(input, output, session) {
                        HTML = paste0(app_sys(), "/report2.rmd"), # rmd
                        Word = "report.Rmd",
                        Dashboard = "report-dashboard.Rmd",
-                       Paper = "report-paper.Rmd"
+                       Paper = paste0(app_sys(), "/rmarkdown/arxiv/arxiv.rmd")
         ),
         output_format = switch(input$format,
           PDF = pdf_document(
@@ -1043,7 +1043,7 @@ app_server <- function(input, output, session) {
             ),
             Word = word_document(),
             Dashboard = flexdashboard::flex_dashboard(orientation = "rows", vertical_layout = "scroll"),
-            Paper = word_document()
+            Paper = arxiv_article()
         ),
         params = list(
           inputData = data_rv$data

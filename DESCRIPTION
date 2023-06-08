@@ -1,6 +1,6 @@
 Package: door
 Title: Shiny module for statgarten
-Version: 0.3.3
+Version: 0.3.4
 Authors@R: 
     person("Jinhwan", "Kim", , "hwanistic@gmail.com", role = c("cre", "aut"))
 Description: Main application for data analysis using statgarten packages.
@@ -16,12 +16,14 @@ Imports:
     dplyr (>= 1.0.9),
     DT (>= 0.24),
     esquisse (>= 1.1.1),
-    flexdashboard,
+    flexdashboard (>= 0.6.1),
     GGally (>= 2.1.2),
+    ggpie (>= 0.2.5),
     golem (>= 0.3.2),
     haven (>= 2.5.1),
     htmlwidgets (>= 1.5.4),
     jstable (>= 1.0.7),
+    naniar (>= 1.0.0),
     phosphoricons (>= 0.1.2),
     plotly (>= 4.10.0),
     reactable (>= 0.3.0),
@@ -29,6 +31,7 @@ Imports:
     readxl (>= 1.4.1),
     remotes,
     rmarkdown (>= 2.16),
+    rticles (>= 0.25), 
     scissor,
     shiny (>= 1.7.1),
     shiny.i18n (>= 0.2.0),
@@ -42,6 +45,7 @@ Imports:
     stove (>= 1.1),
     tibble (>= 3.1.8),
     tidyr (>= 1.2.0),
+    tinytex (>= 0.45),
     utils
 Suggests:
     knitr
