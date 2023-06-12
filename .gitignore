@@ -53,6 +53,11 @@ old_app.R
 # Report Caches
 /inst/figures
 /inst/report-paper.docx
+
 bloodtest1000.csv
 stove2.R
+
+# arxiv temporary files
 inst/rmarkdown/arxiv/arxiv_files
+inst/rmarkdown/arxiv/arxiv.html
+inst/rmarkdown/arxiv/arxiv.tex

@@ -1041,12 +1041,13 @@ app_server <- function(input, output, session) {
               theme = "sandstone",
               highlight = "zenburn"
             ),
-            Word = word_document(),
-            Dashboard = flexdashboard::flex_dashboard(orientation = "rows", vertical_layout = "scroll"),
-            Paper = arxiv_article()
+          Word = word_document(),
+          Dashboard = flexdashboard::flex_dashboard(orientation = "rows", vertical_layout = "scroll"),
+          Paper = rticles::arxiv_article()
         ),
         params = list(
-          inputData = data_rv$data
+          inputData = data_rv$data,
+          authorName = 'asdf'
           #vec.len= 4
           #positive= NA
           #negative= NA

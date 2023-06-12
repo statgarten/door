@@ -1,7 +1,8 @@
 ---
-title: A template for the *arxiv* style
+title: Data Profile report
+date: !r Sys.Date()
 authors:
-  - name: David S. Hippocampus
+  - name: "name is `r params$authorName`"
     thanks: Use footnote for providing further information about author (webpage, alternative address)---*not* for acknowledging funding agencies. Optional.
     department: Department of Computer Science
     affiliation: Cranberry-Lemon University
@@ -22,6 +23,9 @@ keywords:
 bibliography: references.bib
 biblio-style: unsrt
 output: rticles::arxiv_article
+params: 
+  inputData: NA
+  authorName: NA
 ---
 
 # Introduction
