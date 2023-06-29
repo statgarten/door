@@ -61,3 +61,5 @@ stove2.R
 inst/rmarkdown/arxiv/arxiv_files
 inst/rmarkdown/arxiv/arxiv.html
 inst/rmarkdown/arxiv/arxiv.tex
+inst/rmarkdown/arxiv/arxiv.log
+inst/rmarkdown/arxiv/arxiv.pdf

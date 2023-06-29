@@ -1,147 +1,435 @@
 ---
-title: Data Profile report
-date: !r Sys.Date()
+title: "`r params$title`"
+date: "Report built : `r format(Sys.Date())`"
 authors:
-  - name: "name is `r params$authorName`"
-    thanks: Use footnote for providing further information about author (webpage, alternative address)---*not* for acknowledging funding agencies. Optional.
-    department: Department of Computer Science
-    affiliation: Cranberry-Lemon University
-    location: Pittsburgh, PA 15213
-    email: hippo@cs.cranberry-lemon.edu
-  - name: Elias D. Striatum
-    department: Department of Electrical Engineering
-    affiliation: Mount-Sheikh University
-    location: Santa Narimana, Levand
-    email: stariate@ee.mount-sheikh.edu
-abstract: |
-  Enter the text of your abstract here.
-keywords:
-  - blah
-  - blee
-  - bloo
-  - these are optional and can be removed
-bibliography: references.bib
-biblio-style: unsrt
+  - name: "`r params$authorName`"
+    department: "`r params$department`"
+    affiliation: "`r params$affiliation`"
+    location: "`r params$location`"
+    email: "`r params$email`"
+abstract: "`r params$abstract`"
 output: rticles::arxiv_article
+latex_engine: pdflatex
+classoption: landscape
+
+header-includes:
+  - \usepackage{longtable}
+
 params: 
   inputData: NA
+  vec.len: 4
+  positive: NA
+  negative: NA
+  title: NA
   authorName: NA
+  abstract: NA
+  department: NA
+  affiliation: NA
+  location: NA
+  email: NA
+  
+
+  
+keywords:
+  - data profiling
+  - data quality
+  - data analysis
+  - descriptive statistics 
+  - data preprocessing 
+  - data-driven decision-making.
 ---
 
-# Introduction
+<!--  ADDITIONAL YAML
+abstract: |
+  "`r params$abstract`"
+bibliography: references.bib
+biblio-style: unsrt
+-->
 
-Here goes an introduction text
-
-# Headings: first level
-\label{sec:headings}
-
-You can use directly LaTeX command or Markdown text. 
-
-LaTeX command can be used to reference other section. See Section \ref{sec:headings}.
-However, you can also use **bookdown** extensions mechanism for this.
-
-## Headings: second level
-
-You can use equation in blocks
-
-$$
-\xi _{ij}(t)=P(x_{t}=i,x_{t+1}=j|y,v,w;\theta)= {\frac {\alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}{\sum _{i=1}^{N} \sum _{j=1}^{N} \alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}}
-$$
-
-But also inline i.e $z=x+y$
-
-### Headings: third level
-
-Another paragraph. 
-
-
-# Examples of citations, figures, tables, references
-\label{sec:others}
-
-You can insert references. Here is some text [@kour2014real; @kour2014fast] and see @hadash2018estimate.
-
-The documentation for \verb+natbib+ may be found at
-
-You can use custom blocks with LaTeX support from **rmarkdown** to create environment.
-
-::: {.center latex=true}
-  <http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}>
-:::
-
-Of note is the command \verb+\citet+, which produces citations
-appropriate for use in inline text.  
-
-You can insert LaTeX environment directly too.
-
-\begin{verbatim}
-   \citet{hasselmo} investigated\dots
-\end{verbatim}
-
-produces
-
-\begin{quote}
-  Hasselmo, et al.\ (1995) investigated\dots
-\end{quote}
-
-\begin{center}
-  \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-
-
-## Figures
-
-You can insert figure using LaTeX directly. 
-
-See Figure \ref{fig:fig1}. Here is how you add footnotes. [^Sample of the first footnote.]
-
-\begin{figure}
-  \centering
-  \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
-  \label{fig:fig1}
-\end{figure}
-
-But you can also do that using R.
-
-```{r fig2, fig.cap = "Another sample figure"}
-plot(mtcars$mpg)
-```
-
-You can use **bookdown** to allow references for Tables and Figures.
-
-
-## Tables
-
-Below we can see how to use tables. 
-
-See awesome Table~\ref{tab:table} which is written directly in LaTeX in source Rmd file.
-
-\begin{table}
- \caption{Sample table title}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule(r){1-2}
-    Name     & Description     & Size ($\mu$m) \\
-    \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
-    \bottomrule
-  \end{tabular}
-  \label{tab:table}
-\end{table}
-
-You can also use R code for that.
+\newpage
 
 ```{r}
-knitr::kable(head(mtcars), caption = "Head of mtcars table")
+#| echo: false
+#| warning: false
+#| message: false
+#| label: pre
+
+# pass parameter 
+inputData <- params$inputData
+
+# library
+library(knitr)
+library(kableExtra)
+library(dplyr)
+library(shiny)
+library(naniar)
+library(skimr)
+
+# environment 
+options(digits = 3)
+options(knitr.kable.NA = '') 
+
+# function define
+
+hasNeg <- function(i) {
+  length(which(i < 0)) > 0
+}
+
+hasPos <- function(i) {
+  length(which(i > 0)) > 0
+}
+
+isValidEmail <- function(i) {
+  grepl("\\<[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\>", 
+        as.character(i), ignore.case = TRUE)
+}
+
+isUniform <- function(i) {
+  return(length(unique(table(i))) == 1)
+}
+
+isUnique <- function(i) {
+  return(length(which(duplicated(i))) == 0)
+}
 ```
 
+# Data description
 
-## Lists
+> Preview of data - First 5 Rows
 
-- Item 1
-- Item 2 
-- Item 3
+If the data has more than 7 columns, the rows and columns will be swapped.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: top
+
+if(ncol(inputData) > 7){
+  kable(
+    t(head(inputData, 5)),
+    format = 'latex', 
+    longtable = TRUE
+  ) |> 
+  kableExtra::kable_styling(
+    latex_options = c("repeat_header"),
+    repeat_header_continued = "\\textit{(Continued on Next Page...)}"
+  )
+} else{
+  head(inputData, 5) |>
+  kable()
+}
+```
+
+> Preview of data - Last 5 Rows
+
+If the data has more than 7 columns, the rows and columns will be swapped.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: tail
+
+if(ncol(inputData) > 7){
+  kable(
+    t(tail(inputData, 5)),
+    format = 'latex', 
+    longtable = TRUE
+  ) |> 
+  kableExtra::kable_styling(
+    latex_options = c("repeat_header"),
+    repeat_header_continued = "\\textit{(Continued on Next Page...)}"
+  )
+} else{
+  tail(inputData, 5) |>
+  kable()
+}
+```
+
+\newpage
+
+# Structure of data
+
+- Data dimension and structure (with first 5 values)
+
+```{r}
+#| echo: false
+#| label: structure of data using str
+
+str(inputData, vec.len = params$vec.len)
+
+# data.frame(
+#   variable = names(inputData),
+#   class = sapply(inputData, typeof),
+#   levels = sapply(inputData, class),
+#   first_values = sapply(inputData, function(x) paste0(head(x, 5), collapse = ", ")),
+#   row.names = NULL
+# ) |>
+#   kable()
+```
+
+\newpage
+
+# Missing Data Infomation
+
+Percentage of missing Data for each column 
+
+```{r}
+#| label: missing
+#| echo: false
+#| warning: false
+#| message: false
+
+naniar::gg_miss_var(inputData, show_pct = TRUE)
+
+```
+
+Detailed information for column, that has at least one missing data 
+
+```{r}
+#| label: missing2
+#| echo: false
+#| warning: false
+#| message: false
+
+ss <- naniar::miss_var_summary(inputData) |> 
+  filter(n_miss > 0) |>
+  rename(Name = variable) |>
+  rename(Count = n_miss) |>
+  rename(Percent = pct_miss) |>
+  as.data.frame()
+
+knitr::kable(ss, format = 'latex') |>
+  kableExtra::kable_styling(
+    position = "center"
+  )
+
+```
+
+\newpage
+
+## Removed Data
+
+
+```{r}
+#| label: removed
+#| echo: false
+#| warning: false
+#| message: false
+
+ignoreNA <- names(which(colSums(is.na(inputData)) == nrow(inputData)))
+
+cat("Columns with Every row consisted with NA will be removed.")
+
+if (length(ignoreNA) > 0) {
+  cat("Columns below is removed")
+  print(ignoreNA)
+  inputData <- inputData[, !(names(inputData) %in% ignoreNA)]
+} else {
+  cat("There is not any removed columns")
+}
+```
+
+\newpage
+
+## Statistics of data
+
+```{r}
+#| echo: false
+#| label: type for each column
+
+ss <- inputData |>
+  skimr::skim() |>
+  select(-"n_missing", -"complete_rate", -"numeric.hist") |>
+  rename(Type = skim_type) |>
+  rename(Name = skim_variable) |>
+  rename(Mean = numeric.mean) |>
+  rename(SD = numeric.sd) |>
+  rename(Min = numeric.p0) |>
+  rename("1Q" = numeric.p25) |>
+  rename(Median = numeric.p50) |>
+  rename("3Q" = numeric.p75) |>
+  rename(Max = numeric.p100)
+#  rename(Max = numeric.p100) |>
+
+knitr::kable(ss, format = 'latex', longtable = TRUE) |>
+  kableExtra::kable_styling(
+    position = "center"
+  )
+  
+```
+
+\newpage
+
+## Validity
+
+<!-- 
+- email
+NOT PREPARED YET
+-->
+
+```{r}
+#| echo: false
+# if(params$email != "NA"){
+#   inputData |> 
+#   dplyr::select(params$emails) |> 
+#   sapply(isValidEmail)
+# } else{
+#   cat("> There is no input for check Email value")
+# }
+```
+
+- positive: check column has positive value (expected all negatives)
+
+```{r}
+#| label: positive
+#| echo: false
+
+if(params$positive != "NA"){
+  inputData |>
+  select(params$positive) |>
+  sapply(hasNeg)
+} else{
+  cat("There is no input for check Positive value")
+}
+```
+
+- negative: check column has negative value (expected all positives)
+
+```{r}
+#| label: negative
+#| echo: false
+
+if(params$negative != "NA"){
+  inputData |>
+  select(params$negative) |>
+  sapply(hasPos)
+} else{
+  cat("There is no input for check Negative value")
+} 
+```
+
+\newpage
+
+## Distribution
+
+- unique
+
+```{r}
+#| label: isUnique
+#| echo: false
+  ss <- inputData |>
+  select(everything()) |>
+  sapply(isUnique) 
+
+if(length(which(ss))){
+  data.frame(
+    Variable = names(ss),
+    Unique = unname(ss)
+  ) |>
+  kable()
+} else{
+  cat("There is not column without duplicated values")
+}
+```
+
+- uniform
+
+```{r}
+#| echo: false
+  ss <- inputData |>
+  select(everything()) |>
+  sapply(isUniform) 
+
+if(length(which(ss))){
+  data.frame(
+    Variable = names(ss),
+    Uniform = unname(ss)
+  ) |>
+  kable()
+} else{
+  cat("There is not column without uniformly distributed")
+}
+```
+
+\newpage
+
+## Correlation
+
+- Considered only **Numeric** values.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+if (inputData %>% select(where(is.numeric)) %>% length() < 2) {
+  cat("Correlation plot ignored, because less than 2 column is numeric")
+} else {
+  ggcorr(inputData)
+}
+```
+
+\newpage
+
+## Pairplot
+
+- see distribution and correlation along values.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: pair
+
+infer.numeric <- function(i, count = 10) {
+  length(unique(i)) > count
+}
+
+scatterData <- inputData |> 
+  select(where(is.numeric) & where(infer.numeric))
+
+if(ncol(scatterData)> 10){
+  cat("Data has more than 10 colums, so most various 10 column selected to plot")
+  scatterData <- scatterData |> 
+    select(
+      names(head(sort(sapply(scatterData, function(i){
+        length(unique(i))}), decreasing = TRUE), 10))
+    )
+}
+
+if (!(scatterData |> length() > 0)) {
+  cat("Data is not appropriate for Pairplot")
+} else {
+  if (nrow(inputData) > 100) {
+    cat("Number of Row Reduced to 1000")
+    scatterData <- scatterData |>
+      sample_n(1000)
+  }
+  scatterData |>
+    GGally::ggpairs()
+}
+```
+
+\newpage
+
+## suggestion
+
+1. Check value types: 
+
+- Some **Numeric** value should be change into **Factor** type.
+
+2. Remove unusable values. 
+
+- Identifying values (ID, Name...)
+
+- Outlier / Missing values
+
+- Duplicated values.
+
+- Too various values. (that doesn't show any trend)
+
+3. Define new features with feature engineering.
+
+

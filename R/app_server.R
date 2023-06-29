@@ -1046,12 +1046,17 @@ app_server <- function(input, output, session) {
           Paper = rticles::arxiv_article()
         ),
         params = list(
-          inputData = data_rv$data,
-          authorName = 'asdf'
+          inputData = data_rv$data, # REQUIRED
+          title = "Statgarten Data Profile Report",
+          authorName = 'John Doe',
+          abstract = "This data profiling report provides a high-level summary and analysis of your data. The report includes topics such as the form and examples of your data, data quality, including checking for missing data and errors, conditions and correlations of variables, outliers, and missing values. We hope you'll utilize this report to gain deeper insights and make more data-driven, strategic decisions.",
+          department = 'Part of Data',
+          affiliation = 'Statgarten',
+          location = 'Seoul, Korea',
+          email = 'JohnDoe@mail.com'
           #vec.len= 4
           #positive= NA
           #negative= NA
-          #email: NA
         )
       )
       file.rename(out, file)

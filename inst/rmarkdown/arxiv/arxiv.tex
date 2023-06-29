@@ -13,386 +13,534 @@
 \usepackage{microtype}      % microtypography
 \usepackage{graphicx}
 
-\title{A template for the \emph{arxiv} style}
+\title{Statgarten Data Profile Report}
 
 \author{
-    David S. Hippocampus
-    \thanks{Use footnote for providing further information about author
-(webpage, alternative address)---\emph{not} for acknowledging funding
-agencies. Optional.}
+    John Doe
    \\
-    Department of Computer Science \\
-    Cranberry-Lemon University \\
-  Pittsburgh, PA 15213 \\
-  \texttt{\href{mailto:hippo@cs.cranberry-lemon.edu}{\nolinkurl{hippo@cs.cranberry-lemon.edu}}} \\
-   \And
-    Elias D. Striatum
-   \\
-    Department of Electrical Engineering \\
-    Mount-Sheikh University \\
-  Santa Narimana, Levand \\
-  \texttt{\href{mailto:stariate@ee.mount-sheikh.edu}{\nolinkurl{stariate@ee.mount-sheikh.edu}}} \\
+    Part of Data \\
+    Statgarten \\
+  Seoul, Korea \\
+  \texttt{\href{mailto:JohnDoe@mail.com}{\nolinkurl{JohnDoe@mail.com}}} \\
   }
 
-% Pandoc syntax highlighting
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 
 % tightlist command for lists without linebreak
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
-% From pandoc table feature
-\usepackage{longtable,booktabs,array}
-\usepackage{calc} % for calculating minipage widths
-% Correct order of tables after \paragraph or \subparagraph
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
-\makeatother
-% Allow footnotes in longtable head/foot
-\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
-\makesavenoteenv{longtable}
 
-% Pandoc citation processing
-\newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
-\newlength{\csllabelwidth}
-\setlength{\csllabelwidth}{3em}
-\newlength{\cslentryspacingunit} % times entry-spacing
-\setlength{\cslentryspacingunit}{\parskip}
-% for Pandoc 2.8 to 2.10.1
-\newenvironment{cslreferences}%
-  {}%
-  {\par}
-% For Pandoc 2.11+
-\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
- {% don't indent paragraphs
-  \setlength{\parindent}{0pt}
-  % turn on hanging indent if param 1 is 1
-  \ifodd #1
-  \let\oldpar\par
-  \def\par{\hangindent=\cslhangindent\oldpar}
-  \fi
-  % set entry spacing
-  \setlength{\parskip}{#2\cslentryspacingunit}
- }%
- {}
-\usepackage{calc}
-\newcommand{\CSLBlock}[1]{#1\hfill\break}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
-\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
+\usepackage{longtable}
 \begin{document}
 \maketitle
 
 
 \begin{abstract}
-Enter the text of your abstract here.
+This data profiling report provides a high-level summary and analysis of
+your data. The report includes topics such as the form and examples of
+your data, data quality, including checking for missing data and errors,
+conditions and correlations of variables, outliers, and missing values.
+We hope you'll utilize this report to gain deeper insights and make more
+data-driven, strategic decisions.
 \end{abstract}
 
 \keywords{
-    blah
+    data profiling
    \and
-    blee
+    data quality
    \and
-    bloo
+    data analysis
    \and
-    these are optional and can be removed
+    descriptive statistics
+   \and
+    data preprocessing
+   \and
+    data-driven decision-making.
   }
 
-\hypertarget{introduction}{%
-\section{Introduction}\label{introduction}}
+\newpage
 
-Here goes an introduction text
-
-\hypertarget{headings-first-level}{%
-\section{Headings: first level}\label{headings-first-level}}
-
-\label{sec:headings}
-
-You can use directly LaTeX command or Markdown text.
-
-LaTeX command can be used to reference other section. See Section
-\ref{sec:headings}. However, you can also use \textbf{bookdown}
-extensions mechanism for this.
-
-\hypertarget{headings-second-level}{%
-\subsection{Headings: second level}\label{headings-second-level}}
-
-You can use equation in blocks
-
-\[
-\xi _{ij}(t)=P(x_{t}=i,x_{t+1}=j|y,v,w;\theta)= {\frac {\alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}{\sum _{i=1}^{N} \sum _{j=1}^{N} \alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}}
-\]
-
-But also inline i.e \(z=x+y\)
-
-\hypertarget{headings-third-level}{%
-\subsubsection{Headings: third level}\label{headings-third-level}}
-
-Another paragraph.
-
-\hypertarget{examples-of-citations-figures-tables-references}{%
-\section{Examples of citations, figures, tables,
-references}\label{examples-of-citations-figures-tables-references}}
-
-\label{sec:others}
-
-You can insert references. Here is some text (Kour and Saabne 2014b,
-2014a) and see Hadash et al. (2018).
-
-The documentation for \verb+natbib+ may be found at
-
-You can use custom blocks with LaTeX support from \textbf{rmarkdown} to
-create environment.
-
-\begin{center}
-\url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf\%7D}
-
-\end{center}
-
-Of note is the command \verb+\citet+, which produces citations
-appropriate for use in inline text.
-
-You can insert LaTeX environment directly too.
-
-\begin{verbatim}
-   \citet{hasselmo} investigated\dots
-\end{verbatim}
-
-produces
+\hypertarget{data-description}{%
+\section{Data description}\label{data-description}}
 
 \begin{quote}
-  Hasselmo, et al.\ (1995) investigated\dots
+Preview of data - First 5 Rows
 \end{quote}
 
-\begin{center}
-  \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
+If the data has more than 7 columns, the rows and columns will be
+swapped.
 
-\hypertarget{figures}{%
-\subsection{Figures}\label{figures}}
-
-You can insert figure using LaTeX directly.
-
-See Figure \ref{fig:fig1}. Here is how you add footnotes. {[}\^{}Sample
-of the first footnote.{]}
-
-\begin{figure}
-  \centering
-  \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
-  \label{fig:fig1}
-\end{figure}
-
-But you can also do that using R.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{plot}\NormalTok{(mtcars}\SpecialCharTok{$}\NormalTok{mpg)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}
-\centering
-\includegraphics{arxiv_files/figure-latex/fig2-1.pdf}
-\caption{Another sample figure}
-\end{figure}
-
-You can use \textbf{bookdown} to allow references for Tables and
-Figures.
-
-\hypertarget{tables}{%
-\subsection{Tables}\label{tables}}
-
-Below we can see how to use tables.
-
-See awesome Table\textasciitilde{}\ref{tab:table} which is written
-directly in LaTeX in source Rmd file.
-
-\begin{table}
- \caption{Sample table title}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule(r){1-2}
-    Name     & Description     & Size ($\mu$m) \\
-    \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
-    \bottomrule
-  \end{tabular}
-  \label{tab:table}
-\end{table}
-
-You can also use R code for that.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\FunctionTok{head}\NormalTok{(mtcars), }\AttributeTok{caption =} \StringTok{"Head of mtcars table"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.2609}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.0725}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.0580}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.0725}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.0580}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.0725}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.0870}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.0870}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.0435}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.0435}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.0725}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 22\tabcolsep) * \real{0.0725}}@{}}
-\caption{Head of mtcars table}\tabularnewline
-\toprule()
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-mpg
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-cyl
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-disp
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-hp
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-drat
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-wt
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-qsec
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-vs
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-am
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-gear
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-carb
-\end{minipage} \\
-\midrule()
+\begin{longtable}{l|r|r|r|r|r}
+\hline
+  & 1 & 2 & 3 & 4 & 5\\
+\hline
 \endfirsthead
-\toprule()
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-mpg
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-cyl
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-disp
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-hp
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-drat
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-wt
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-qsec
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-vs
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-am
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-gear
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-carb
-\end{minipage} \\
-\midrule()
+\multicolumn{6}{@{}l}{\textit{(continued)}}\\
+\hline
+  & 1 & 2 & 3 & 4 & 5\\
+\hline
 \endhead
-Mazda RX4 & 21.0 & 6 & 160 & 110 & 3.90 & 2.620 & 16.46 & 0 & 1 & 4 &
-4 \\
-Mazda RX4 Wag & 21.0 & 6 & 160 & 110 & 3.90 & 2.875 & 17.02 & 0 & 1 & 4
-& 4 \\
-Datsun 710 & 22.8 & 4 & 108 & 93 & 3.85 & 2.320 & 18.61 & 1 & 1 & 4 &
-1 \\
-Hornet 4 Drive & 21.4 & 6 & 258 & 110 & 3.08 & 3.215 & 19.44 & 1 & 0 & 3
-& 1 \\
-Hornet Sportabout & 18.7 & 8 & 360 & 175 & 3.15 & 3.440 & 17.02 & 0 & 0
-& 3 & 2 \\
-Valiant & 18.1 & 6 & 225 & 105 & 2.76 & 3.460 & 20.22 & 1 & 0 & 3 & 1 \\
-\bottomrule()
+EXMD\_BZ\_YYYY & 2009.0 & 2009.0 & 2009.0 & 2009.0 & 2009.0\\
+\hline
+RN\_INDI & 562083.0 & 334536.0 & 911867.0 & 183321.0 & 942671.0\\
+\hline
+HME\_YYYYMM & 200909.0 & 200911.0 & 200903.0 & 200908.0 & 200909.0\\
+\hline
+Q\_PHX\_DX\_STK & 0.0 & 0.0 & 0.0 &  & \\
+\hline
+Q\_PHX\_DX\_HTDZ & 0.0 & 0.0 & 0.0 &  & \\
+\hline
+Q\_PHX\_DX\_HTN & 1.0 & 0.0 & 0.0 &  & \\
+\hline
+Q\_PHX\_DX\_DM & 0.0 & 0.0 & 0.0 &  & \\
+\hline
+Q\_PHX\_DX\_DLD & 0.0 & 0.0 & 0.0 &  & \\
+\hline
+Q\_PHX\_DX\_PTB &  &  &  &  & \\
+\hline
+Q\_HBV\_AG & 3.0 & 2.0 & 3.0 & 3.0 & 3.0\\
+\hline
+Q\_SMK\_YN & 1.0 & 1.0 & 1.0 & 1.0 & 1.0\\
+\hline
+Q\_DRK\_FRQ\_V09N & 0.0 & 0.0 & 0.0 & 0.0 & 0.0\\
+\hline
+HGHT & 144.0 & 162.0 & 163.0 & 152.0 & 159.0\\
+\hline
+WGHT & 61.0 & 51.0 & 65.0 & 51.0 & 50.0\\
+\hline
+WSTC & 90.0 & 63.0 & 82.0 & 70.0 & 73.0\\
+\hline
+BMI & 29.4 & 19.4 & 24.5 & 22.1 & 19.8\\
+\hline
+VA\_LT & 0.7 & 0.8 & 0.7 & 0.8 & 0.7\\
+\hline
+VA\_RT & 0.8 & 1.0 & 0.6 & 0.9 & 0.8\\
+\hline
+BP\_SYS & 120.0 & 120.0 & 130.0 & 101.0 & 132.0\\
+\hline
+BP\_DIA & 80.0 & 80.0 & 80.0 & 62.0 & 78.0\\
+\hline
+URN\_PROT & 1.0 & 1.0 & 1.0 & 1.0 & 1.0\\
+\hline
+HGB & 12.6 & 13.8 & 15.0 & 13.1 & 13.0\\
+\hline
+FBS & 117.0 & 96.0 & 118.0 & 90.0 & 92.0\\
+\hline
+TOT\_CHOL & 264.0 & 169.0 & 216.0 & 199.0 & 162.0\\
+\hline
+TG & 128.0 & 92.0 & 132.0 & 100.0 & 58.0\\
+\hline
+HDL & 60.0 & 70.0 & 55.0 & 65.0 & 40.0\\
+\hline
+LDL & 179.0 & 80.0 & 134.0 & 114.0 & 111.0\\
+\hline
+CRTN & 0.9 & 0.9 & 0.8 & 0.9 & 0.9\\
+\hline
+SGOT & 25.0 & 18.0 & 26.0 & 18.0 & 24.0\\
+\hline
+SGPT & 20.0 & 15.0 & 30.0 & 14.0 & 23.0\\
+\hline
+GGT & 25.0 & 28.0 & 30.0 & 11.0 & 15.0\\
+\hline
+GFR & 59.0 & 74.0 & 79.0 & 61.0 & 49.0\\
+\hline
 \end{longtable}
 
-\hypertarget{lists}{%
-\subsection{Lists}\label{lists}}
+\begin{quote}
+Preview of data - Last 5 Rows
+\end{quote}
+
+If the data has more than 7 columns, the rows and columns will be
+swapped.
+
+\begin{longtable}{l|r|r|r|r|r}
+\hline
+  & 1640 & 1641 & 1642 & 1643 & 1644\\
+\hline
+\endfirsthead
+\multicolumn{6}{@{}l}{\textit{(continued)}}\\
+\hline
+  & 1640 & 1641 & 1642 & 1643 & 1644\\
+\hline
+\endhead
+EXMD\_BZ\_YYYY & 2015.0 & 2015.0 & 2015.0 & 2015.0 & 2015.0\\
+\hline
+RN\_INDI & 266734.0 & 343874.0 & 798472.0 & 720080.0 & 127519.0\\
+\hline
+HME\_YYYYMM & 201504.0 & 201511.0 & 201507.0 & 201505.0 & 201511.0\\
+\hline
+Q\_PHX\_DX\_STK &  & 0.0 &  &  & 0.0\\
+\hline
+Q\_PHX\_DX\_HTDZ &  & 0.0 &  &  & 0.0\\
+\hline
+Q\_PHX\_DX\_HTN &  & 0.0 &  &  & 1.0\\
+\hline
+Q\_PHX\_DX\_DM &  & 1.0 &  &  & 0.0\\
+\hline
+Q\_PHX\_DX\_DLD &  & 0.0 &  & 1.0 & 0.0\\
+\hline
+Q\_PHX\_DX\_PTB &  & 0.0 &  &  & 0.0\\
+\hline
+Q\_HBV\_AG & 1.0 & 2.0 & 3.0 & 2.0 & 3.0\\
+\hline
+Q\_SMK\_YN & 2.0 & 2.0 & 2.0 & 2.0 & 2.0\\
+\hline
+Q\_DRK\_FRQ\_V09N & 2.0 & 0.0 & 0.0 & 1.0 & 4.0\\
+\hline
+HGHT & 171.0 & 179.0 & 163.0 & 165.0 & 168.0\\
+\hline
+WGHT & 76.0 & 80.0 & 63.0 & 70.0 & 84.0\\
+\hline
+WSTC & 88.0 & 88.0 & 80.0 & 92.0 & 103.0\\
+\hline
+BMI & 26.0 & 25.0 & 23.7 & 25.7 & 29.8\\
+\hline
+VA\_LT & 1.2 & 1.0 & 1.5 & 0.6 & 0.9\\
+\hline
+VA\_RT & 1.2 & 0.7 & 1.5 & 0.8 & 0.8\\
+\hline
+BP\_SYS & 125.0 & 126.0 & 118.0 & 120.0 & 140.0\\
+\hline
+BP\_DIA & 89.0 & 83.0 & 77.0 & 80.0 & 85.0\\
+\hline
+URN\_PROT & 1.0 & 1.0 & 1.0 & 1.0 & 1.0\\
+\hline
+HGB & 14.1 & 14.9 & 16.1 & 13.6 & 15.2\\
+\hline
+FBS & 77.0 & 119.0 & 160.0 & 81.0 & 134.0\\
+\hline
+TOT\_CHOL & 363.0 & 106.0 & 271.0 & 289.0 & 210.0\\
+\hline
+TG & 280.0 & 247.0 & 514.0 & 810.0 & 298.0\\
+\hline
+HDL & 63.0 & 29.0 & 51.0 & 52.0 & 56.0\\
+\hline
+LDL & 244.0 & 50.0 & 151.0 &  & 94.0\\
+\hline
+CRTN & 0.9 & 0.9 & 1.0 & 1.0 & 1.1\\
+\hline
+SGOT & 19.0 & 101.0 & 40.0 & 37.0 & 55.0\\
+\hline
+SGPT & 32.0 & 157.0 & 66.0 & 33.0 & 49.0\\
+\hline
+GGT & 95.0 & 62.0 & 104.0 & 76.0 & 66.0\\
+\hline
+GFR & 96.0 & 79.0 & 85.0 & 86.0 & 66.0\\
+\hline
+\end{longtable}
+
+\newpage
+
+\hypertarget{structure-of-data}{%
+\section{Structure of data}\label{structure-of-data}}
 
 \begin{itemize}
 \tightlist
 \item
-  Item 1
-\item
-  Item 2
-\item
-  Item 3
+  Data dimension and structure (with first 5 values)
 \end{itemize}
 
-\hypertarget{refs}{}
-\begin{CSLReferences}{1}{0}
-\leavevmode\vadjust pre{\hypertarget{ref-hadash2018estimate}{}}%
-Hadash, Guy, Einat Kermany, Boaz Carmeli, Ofer Lavi, George Kour, and
-Alon Jacovi. 2018. {``Estimate and Replace: A Novel Approach to
-Integrating Deep Neural Networks with Existing Applications.''}
-\emph{arXiv Preprint arXiv:1804.09028}.
+\begin{verbatim}
+## 'data.frame':    1644 obs. of  32 variables:
+##  $ EXMD_BZ_YYYY  : num  2009 2009 2009 2009 2009 ...
+##  $ RN_INDI       : num  562083 334536 911867 183321 942671 ...
+##  $ HME_YYYYMM    : num  200909 200911 200903 200908 200909 ...
+##  $ Q_PHX_DX_STK  : num  0 0 0 NA NA NA NA NA NA 0 ...
+##  $ Q_PHX_DX_HTDZ : num  0 0 0 NA NA NA NA NA NA 0 ...
+##  $ Q_PHX_DX_HTN  : num  1 0 0 NA NA NA NA NA NA 1 ...
+##  $ Q_PHX_DX_DM   : num  0 0 0 NA NA NA NA NA NA 0 ...
+##  $ Q_PHX_DX_DLD  : num  0 0 0 NA NA NA NA NA NA 0 ...
+##  $ Q_PHX_DX_PTB  : num  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Q_HBV_AG      : num  3 2 3 3 3 2 2 3 3 3 ...
+##  $ Q_SMK_YN      : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ Q_DRK_FRQ_V09N: num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ HGHT          : num  144 162 163 152 159 157 160 159 156 146 ...
+##  $ WGHT          : num  61 51 65 51 50 55 56 54 53 48 ...
+##  $ WSTC          : num  90 63 82 70 73 73 67 66 67 78 ...
+##  $ BMI           : num  29.4 19.4 24.5 22.1 19.8 22.3 21.9 21.4 21.8 22.5 ...
+##  $ VA_LT         : num  0.7 0.8 0.7 0.8 0.7 1.5 1.5 1.2 1.2 1.5 ...
+##  $ VA_RT         : num  0.8 1 0.6 0.9 0.8 1.5 1.5 1.5 1 1.5 ...
+##  $ BP_SYS        : num  120 120 130 101 132 110 119 111 138 138 ...
+##  $ BP_DIA        : num  80 80 80 62 78 70 78 60 72 84 ...
+##  $ URN_PROT      : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ HGB           : num  12.6 13.8 15 13.1 13 11.9 11.2 12.2 11 12.8 ...
+##  $ FBS           : num  117 96 118 90 92 100 84 88 74 107 ...
+##  $ TOT_CHOL      : num  264 169 216 199 162 192 152 166 155 178 ...
+##  $ TG            : num  128 92 132 100 58 109 38 42 86 87 ...
+##  $ HDL           : num  60 70 55 65 40 53 43 58 52 35 ...
+##  $ LDL           : num  179 80 134 114 111 117 101 99 85 125 ...
+##  $ CRTN          : num  0.9 0.9 0.8 0.9 0.9 0.7 0.8 1 0.6 0.7 ...
+##  $ SGOT          : num  25 18 26 18 24 15 8 16 15 21 ...
+##  $ SGPT          : num  20 15 30 14 23 12 6 11 13 21 ...
+##  $ GGT           : num  25 28 30 11 15 14 10 12 13 23 ...
+##  $ GFR           : num  59 74 79 61 49 83 97 65 96 70 ...
+\end{verbatim}
 
-\leavevmode\vadjust pre{\hypertarget{ref-kour2014fast}{}}%
-Kour, George, and Raid Saabne. 2014a. {``Fast Classification of
-Handwritten on-Line Arabic Characters.''} In \emph{Soft Computing and
-Pattern Recognition (SoCPaR), 2014 6th International Conference of},
-312--18. IEEE.
+\newpage
 
-\leavevmode\vadjust pre{\hypertarget{ref-kour2014real}{}}%
----------. 2014b. {``Real-Time Segmentation of on-Line Handwritten
-Arabic Script.''} In \emph{Frontiers in Handwriting Recognition (ICFHR),
-2014 14th International Conference on}, 417--22. IEEE.
+\hypertarget{missing-data-infomation}{%
+\section{Missing Data Infomation}\label{missing-data-infomation}}
 
-\end{CSLReferences}
+Percentage of missing Data for each column
+
+\includegraphics{arxiv_files/figure-latex/missing-1.pdf}
+
+Detailed information for column, that has at least one missing data
+
+\begin{table}
+\centering
+\begin{tabular}{l|r|r}
+\hline
+Name & Count & Percent\\
+\hline
+Q\_PHX\_DX\_PTB & 703 & 42.762\\
+\hline
+Q\_PHX\_DX\_STK & 573 & 34.854\\
+\hline
+Q\_PHX\_DX\_HTDZ & 566 & 34.428\\
+\hline
+Q\_PHX\_DX\_DLD & 566 & 34.428\\
+\hline
+Q\_PHX\_DX\_DM & 547 & 33.273\\
+\hline
+Q\_PHX\_DX\_HTN & 492 & 29.927\\
+\hline
+GFR & 467 & 28.406\\
+\hline
+LDL & 16 & 0.973\\
+\hline
+Q\_DRK\_FRQ\_V09N & 6 & 0.365\\
+\hline
+URN\_PROT & 4 & 0.243\\
+\hline
+Q\_HBV\_AG & 2 & 0.122\\
+\hline
+Q\_SMK\_YN & 2 & 0.122\\
+\hline
+\end{tabular}
+\end{table}
+
+\newpage
+
+\hypertarget{removed-data}{%
+\subsection{Removed Data}\label{removed-data}}
+
+\begin{verbatim}
+## Columns with Every row consisted with NA will be removed.
+\end{verbatim}
+
+\begin{verbatim}
+## There is not any removed columns
+\end{verbatim}
+
+\newpage
+
+\hypertarget{statistics-of-data}{%
+\subsection{Statistics of data}\label{statistics-of-data}}
+
+\begin{longtable}{l|l|r|r|r|r|r|r|r}
+\hline
+Type & Name & Mean & SD & Min & 1Q & Median & 3Q & Max\\
+\hline
+numeric & EXMD\_BZ\_YYYY & 2.01e+03 & 1.99e+00 & 2009.0 & 2010.0 & 2012.0 & 2.01e+03 & 2.02e+03\\
+\hline
+numeric & RN\_INDI & 4.91e+05 & 2.90e+05 & 2270.0 & 230725.5 & 487160.0 & 7.26e+05 & 1.01e+06\\
+\hline
+numeric & HME\_YYYYMM & 2.01e+05 & 1.99e+02 & 200901.0 & 201011.0 & 201210.0 & 2.01e+05 & 2.02e+05\\
+\hline
+numeric & Q\_PHX\_DX\_STK & 1.10e-02 & 1.05e-01 & 0.0 & 0.0 & 0.0 & 0.00e+00 & 1.00e+00\\
+\hline
+numeric & Q\_PHX\_DX\_HTDZ & 2.40e-02 & 1.53e-01 & 0.0 & 0.0 & 0.0 & 0.00e+00 & 1.00e+00\\
+\hline
+numeric & Q\_PHX\_DX\_HTN & 2.50e-01 & 4.33e-01 & 0.0 & 0.0 & 0.0 & 2.50e-01 & 1.00e+00\\
+\hline
+numeric & Q\_PHX\_DX\_DM & 6.90e-02 & 2.54e-01 & 0.0 & 0.0 & 0.0 & 0.00e+00 & 1.00e+00\\
+\hline
+numeric & Q\_PHX\_DX\_DLD & 4.00e-02 & 1.96e-01 & 0.0 & 0.0 & 0.0 & 0.00e+00 & 1.00e+00\\
+\hline
+numeric & Q\_PHX\_DX\_PTB & 2.80e-02 & 1.64e-01 & 0.0 & 0.0 & 0.0 & 0.00e+00 & 1.00e+00\\
+\hline
+numeric & Q\_HBV\_AG & 2.23e+00 & 5.23e-01 & 1.0 & 2.0 & 2.0 & 3.00e+00 & 3.00e+00\\
+\hline
+numeric & Q\_SMK\_YN & 1.63e+00 & 8.42e-01 & 1.0 & 1.0 & 1.0 & 2.00e+00 & 3.00e+00\\
+\hline
+numeric & Q\_DRK\_FRQ\_V09N & 1.03e+00 & 1.39e+00 & 0.0 & 0.0 & 1.0 & 2.00e+00 & 7.00e+00\\
+\hline
+numeric & HGHT & 1.65e+02 & 9.19e+00 & 134.0 & 158.0 & 165.0 & 1.71e+02 & 1.88e+02\\
+\hline
+numeric & WGHT & 6.51e+01 & 1.25e+01 & 31.0 & 56.0 & 64.0 & 7.30e+01 & 1.18e+02\\
+\hline
+numeric & WSTC & 8.07e+01 & 9.55e+00 & 57.0 & 74.0 & 81.0 & 8.70e+01 & 1.14e+02\\
+\hline
+numeric & BMI & 2.39e+01 & 3.38e+00 & 12.3 & 21.5 & 23.7 & 2.62e+01 & 3.72e+01\\
+\hline
+numeric & VA\_LT & 9.84e-01 & 5.56e-01 & 0.1 & 0.8 & 1.0 & 1.20e+00 & 9.90e+00\\
+\hline
+numeric & VA\_RT & 9.79e-01 & 5.61e-01 & 0.1 & 0.7 & 1.0 & 1.20e+00 & 9.90e+00\\
+\hline
+numeric & BP\_SYS & 1.22e+02 & 1.46e+01 & 81.0 & 110.0 & 120.0 & 1.30e+02 & 1.80e+02\\
+\hline
+numeric & BP\_DIA & 7.66e+01 & 1.01e+01 & 49.0 & 70.0 & 78.0 & 8.20e+01 & 1.20e+02\\
+\hline
+numeric & URN\_PROT & 1.08e+00 & 3.98e-01 & 1.0 & 1.0 & 1.0 & 1.00e+00 & 5.00e+00\\
+\hline
+numeric & HGB & 1.41e+01 & 1.69e+00 & 5.9 & 12.9 & 14.1 & 1.54e+01 & 1.83e+01\\
+\hline
+numeric & FBS & 9.72e+01 & 2.01e+01 & 61.0 & 86.0 & 94.0 & 1.03e+02 & 2.90e+02\\
+\hline
+numeric & TOT\_CHOL & 1.95e+02 & 3.66e+01 & 68.0 & 170.0 & 193.0 & 2.18e+02 & 3.63e+02\\
+\hline
+numeric & TG & 1.35e+02 & 1.05e+02 & 13.0 & 72.0 & 106.0 & 1.63e+02 & 1.21e+03\\
+\hline
+numeric & HDL & 5.59e+01 & 1.95e+01 & 23.0 & 46.0 & 54.0 & 6.40e+01 & 5.93e+02\\
+\hline
+numeric & LDL & 1.19e+02 & 2.02e+02 & 19.0 & 90.0 & 112.0 & 1.34e+02 & 8.10e+03\\
+\hline
+numeric & CRTN & 9.89e-01 & 1.02e+00 & 0.4 & 0.8 & 0.9 & 1.00e+00 & 1.65e+01\\
+\hline
+numeric & SGOT & 2.56e+01 & 1.62e+01 & 6.0 & 19.0 & 23.0 & 2.80e+01 & 4.59e+02\\
+\hline
+numeric & SGPT & 2.60e+01 & 2.72e+01 & 3.0 & 15.0 & 20.0 & 3.00e+01 & 7.79e+02\\
+\hline
+numeric & GGT & 3.63e+01 & 3.64e+01 & 6.0 & 16.0 & 24.5 & 4.10e+01 & 4.08e+02\\
+\hline
+numeric & GFR & 8.97e+01 & 2.17e+01 & 3.0 & 76.0 & 87.0 & 1.01e+02 & 1.96e+02\\
+\hline
+\end{longtable}
+
+\newpage
+
+\hypertarget{validity}{%
+\subsection{Validity}\label{validity}}
+
+\begin{itemize}
+\tightlist
+\item
+  positive: check column has positive value (expected all negatives)
+\end{itemize}
+
+\begin{verbatim}
+## There is no input for check Positive value
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  negative: check column has negative value (expected all positives)
+\end{itemize}
+
+\begin{verbatim}
+## There is no input for check Negative value
+\end{verbatim}
+
+\newpage
+
+\hypertarget{distribution}{%
+\subsection{Distribution}\label{distribution}}
+
+\begin{itemize}
+\tightlist
+\item
+  unique
+\end{itemize}
+
+\begin{verbatim}
+## There is not column without duplicated values
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  uniform
+\end{itemize}
+
+\begin{verbatim}
+## There is not column without uniformly distributed
+\end{verbatim}
+
+\newpage
+
+\hypertarget{correlation}{%
+\subsection{Correlation}\label{correlation}}
+
+\begin{itemize}
+\tightlist
+\item
+  Considered only \textbf{Numeric} values.
+\end{itemize}
+
+\includegraphics{arxiv_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+\newpage
+
+\hypertarget{pairplot}{%
+\subsection{Pairplot}\label{pairplot}}
+
+\begin{itemize}
+\tightlist
+\item
+  see distribution and correlation along values.
+\end{itemize}
+
+\begin{verbatim}
+## Data has more than 10 colums, so most various 10 column selected to plot
+\end{verbatim}
+
+\begin{verbatim}
+## Number of Row Reduced to 1000
+\end{verbatim}
+
+\includegraphics{arxiv_files/figure-latex/pair-1.pdf}
+
+\newpage
+
+\hypertarget{suggestion}{%
+\subsection{suggestion}\label{suggestion}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Check value types:
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Some \textbf{Numeric} value should be change into \textbf{Factor}
+  type.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Remove unusable values.
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Identifying values (ID, Name\ldots)
+\item
+  Outlier / Missing values
+\item
+  Duplicated values.
+\item
+  Too various values. (that doesn't show any trend)
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Define new features with feature engineering.
+\end{enumerate}
 
 \bibliographystyle{unsrt}
-\bibliography{references.bib}
+\bibliography{}
 
 
 \end{document}
