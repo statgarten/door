@@ -253,6 +253,54 @@ app_ui <- function(request) {
                             style = "margin-top:25px; width: 100%"
                           )
                         )
+                      ),
+                      conditionalPanel(
+                        "input.format == 'Paper'",
+                        fluidRow(
+                          style = "margin-top: 1em;",
+                          column(
+                            width = 4,
+                            textInput(
+                              inputId = 'report.name',
+                              label = 'name',
+                              placeholder = "John Doe"
+                            )
+                          ),
+                          column(
+                            width = 4,
+                            textInput(
+                              inputId = 'report.org',
+                              label = 'organization',
+                              placeholder = 'Statgarten'
+                            )
+                          ),
+                          column(
+                            width = 4,
+                            textInput(
+                              inputId = 'report.location',
+                              label = 'location',
+                              placeholder = 'Seoul, Korea'
+                            )
+                          )
+                        ),
+                        fluidRow(
+                          style = 'margin-top: 1em',
+                          column(
+                            width = 6,
+                            textInput(
+                              inputId = 'report.email',
+                              label = 'email',
+                              placeholder = 'JohnDoe@mail.com'
+                            )
+                          ),
+                          column(
+                            width = 6,
+                            textInput(
+                              inputId = 'report.team',
+                              label = 'team',
+                              placeholder = 'Part of Data')
+                          )
+                        )
                       )
                     )
                   ),
