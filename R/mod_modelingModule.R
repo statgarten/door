@@ -275,7 +275,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
               )
             )
           ),
-          actionButton(inputId = ns('setHyper'), label = icon('check'))
+          actionButton(inputId = ns("setHyper"), label = icon("check"))
         )
       )
     })
@@ -311,7 +311,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
       }
       # build model
       if (input$algo == "linearRegression") {
-
         modelObj <- reactive({
           Obj <- stove::linearRegression(
             algo = input$algo,
@@ -343,29 +342,28 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
       }
 
       if (input$algo == "KNN") {
-
-        print('algo: ')
+        print("algo: ")
         print(input$algo)
 
-        print('engine: ')
+        print("engine: ")
         print(input$engine)
 
         print("mode:")
         print(input$mode)
 
-        print('fold: ')
+        print("fold: ")
         print(input$fold)
 
-        print('gridNum: ')
+        print("gridNum: ")
         print(input$gridNum)
 
-        print('iter: ')
+        print("iter: ")
         print(input$iter)
 
-        print('metric: ')
+        print("metric: ")
         print(input$metric)
 
-        print('seed: ')
+        print("seed: ")
         print(input$seed)
 
         modelObj <- reactive({
@@ -397,7 +395,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
         tuned_results_list(
           append(tuned_results_list(), list("KNN_kknn" = tls))
         )
-
       }
 
       if (input$algo == "naiveBayes") {
@@ -457,7 +454,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
         tuned_results_list(
           append(tuned_results_list(), list("MLP_nnet" = tls))
         )
-
       }
 
       if (input$algo == "decisionTree") {
@@ -490,7 +486,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
         tuned_results_list(
           append(tuned_results_list(), list("decisionTree_rpart" = tls))
         )
-
       }
 
       if (input$algo == "randomForest") {
@@ -523,7 +518,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
         tuned_results_list(
           append(tuned_results_list(), list("randomForest_ranger" = tls))
         )
-
       }
 
       if (input$algo == "XGBoost") {
@@ -556,7 +550,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
         tuned_results_list(
           append(tuned_results_list(), list("XGBoost_xgboost" = tls))
         )
-
       }
 
       if (input$algo == "lightGBM") {
@@ -589,7 +582,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
         tuned_results_list(
           append(tuned_results_list(), list("lightGBM_lightgbm" = tls))
         )
-
       }
 
       if (input$algo == "KMC") {
@@ -647,10 +639,9 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
 
       # Regression
       if (input$mode == "regression") {
-
-        print('models list: ')
+        print("models list: ")
         print(models_list())
-        print('tuned results list: ')
+        print("tuned results list: ")
         print(tuned_results_list())
 
         vis_result <- stove::regressionPlot(
@@ -661,7 +652,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
 
         output$RegressionPlot <- renderPlot(vis_result)
 
-        print('vis results')
+        print("vis results")
 
         rmse_plot <- stove::plotRmseComparison(
           tunedResultsList = tuned_results_list(),
@@ -671,7 +662,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
 
         output$RMSEPlot <- renderPlot(rmse_plot)
 
-        print('rmse plot')
+        print("rmse plot")
         output$EvalMatrix <- renderPrint({
           stove::evalMetricsR(
             modelsList = models_list(),

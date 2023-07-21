@@ -501,17 +501,17 @@ app_server <- function(input, output, session) {
   mod_groupStatModule_server("groupStatModule_1", inputData)
 
   # XML handler
-  xml_to_dataframe <- function(path){
+  xml_to_dataframe <- function(path) {
     xml <- xml2::read_xml(path)
     nodeset <- xml2::xml_children(xml)
-    lst <- lapply(nodeset, function(x){
+    lst <- lapply(nodeset, function(x) {
       tmp <- xml2::xml_text(xml2::xml_children(x))
       names(tmp) <- xml2::xml_name(xml2::xml_children(x))
       return(as.list(tmp))
     })
     result <- as.data.frame(do.call(rbind, lst))
 
-    #result <- do.call(rbind, lapply(lst, function(x) as.data.frame(x, stringsAsFactors = F)))
+    # result <- do.call(rbind, lapply(lst, function(x) as.data.frame(x, stringsAsFactors = F)))
 
     print(summary(result))
 
@@ -539,10 +539,10 @@ app_server <- function(input, output, session) {
       rdata = function(file) {
         load(file$datapath)
       },
-      xml = function(file){
+      xml = function(file) {
         xml_to_dataframe(file$datapath)
       },
-      json = function(file){
+      json = function(file) {
         jsonlite::fromJSON(file$datapath)
       }
     )
@@ -780,7 +780,7 @@ app_server <- function(input, output, session) {
     }
 
     # XML Handler
-    if(!is.null(rownames(data))) rownames(data) <- NULL
+    if (!is.null(rownames(data))) rownames(data) <- NULL
 
     reactable::reactable(
       data,
@@ -1013,11 +1013,11 @@ app_server <- function(input, output, session) {
 
       out <- rmarkdown::render(
         input = switch(input$format,
-                       PDF = paste0(app_sys(), "/report-pdf.rmd"), # rmd
-                       HTML = paste0(app_sys(), "/report2.rmd"), # rmd
-                       Word = "report.Rmd",
-                       Dashboard = "report-dashboard.Rmd",
-                       Paper = paste0(app_sys(), "/rmarkdown/arxiv/arxiv.rmd")
+          PDF = paste0(app_sys(), "/report-pdf.rmd"), # rmd
+          HTML = paste0(app_sys(), "/report2.rmd"), # rmd
+          Word = "report.Rmd",
+          Dashboard = "report-dashboard.Rmd",
+          Paper = paste0(app_sys(), "/rmarkdown/arxiv/arxiv.rmd")
         ),
         output_format = switch(input$format,
           PDF = pdf_document(
@@ -1030,17 +1030,17 @@ app_server <- function(input, output, session) {
             includes = includes(
               # in_header = paste0(app_sys(), "/header.html"),
               after_body = paste0(app_sys(), "/footer.html")
-              ),
-              toc = TRUE,
-              toc_depth = 3,
-              toc_float = list(
-                collapsed = FALSE,
-                smooth_scroll = FALSE
-              ),
-              number_sections = TRUE,
-              theme = "sandstone",
-              highlight = "zenburn"
             ),
+            toc = TRUE,
+            toc_depth = 3,
+            toc_float = list(
+              collapsed = FALSE,
+              smooth_scroll = FALSE
+            ),
+            number_sections = TRUE,
+            theme = "sandstone",
+            highlight = "zenburn"
+          ),
           Word = word_document(),
           Dashboard = flexdashboard::flex_dashboard(orientation = "rows", vertical_layout = "scroll"),
           Paper = rticles::arxiv_article()
@@ -1054,9 +1054,9 @@ app_server <- function(input, output, session) {
           affiliation = input$report.org,
           location = input$report.location,
           email = input$report.email
-          #vec.len= 4
-          #positive= NA
-          #negative= NA
+          # vec.len= 4
+          # positive= NA
+          # negative= NA
         )
       )
       file.rename(out, file)
