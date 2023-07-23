@@ -1000,6 +1000,7 @@ app_server <- function(input, output, session) {
           HTML = "html",
           Word = "docx",
           Dashboard = "html",
+          PPT = "pptx",
           Paper = "pdf"
         )
       )
@@ -1013,10 +1014,11 @@ app_server <- function(input, output, session) {
 
       out <- rmarkdown::render(
         input = switch(input$format,
-          PDF = paste0(app_sys(), "/report-pdf.rmd"), # rmd
-          HTML = paste0(app_sys(), "/report2.rmd"), # rmd
-          Word = "report.Rmd",
-          Dashboard = "report-dashboard.Rmd",
+          PDF = paste0(app_sys(), "/rmarkdown/report-pdf.rmd"), # rmd
+          HTML = paste0(app_sys(), "/rmarkdown/report2.rmd"), # rmd
+          Word = paste0(app_sys(), "/rmarkdown/report.rmd"),
+          Dashboard = paste0(app_sys(), "/rmarkdown/report-dashboard.rmd"),
+          PPT = paste0(app_sys(), "/rmarkdown/report-ppt.rmd"),
           Paper = paste0(app_sys(), "/rmarkdown/arxiv/arxiv.rmd")
         ),
         output_format = switch(input$format,
@@ -1043,6 +1045,7 @@ app_server <- function(input, output, session) {
           ),
           Word = word_document(),
           Dashboard = flexdashboard::flex_dashboard(orientation = "rows", vertical_layout = "scroll"),
+          PPT = powerpoint_presentation(),
           Paper = rticles::arxiv_article()
         ),
         params = list(

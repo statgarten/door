@@ -242,7 +242,7 @@ app_ui <- function(request) {
                           selectInput( # Options
                             inputId = "format",
                             label = i18n_shiny$t("Document format"),
-                            choices = c("PDF", "HTML", "Word", "Dashboard", "Paper"),
+                            choices = c("PDF", "HTML", "Word", "Dashboard", "PPT", "Paper"),
                             selected = "PDF"
                           )
                         ),
@@ -254,8 +254,8 @@ app_ui <- function(request) {
                           )
                         )
                       ),
-                      conditionalPanel(
-                        "input.format == 'Paper'",
+                      #conditionalPanel(
+                      #  "input.format == 'Paper' ",
                         fluidRow(
                           style = "margin-top: 1em;",
                           column(
@@ -302,7 +302,7 @@ app_ui <- function(request) {
                             )
                           )
                         )
-                      )
+                      # )
                     )
                   ),
                   tabPanel(
