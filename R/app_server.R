@@ -629,9 +629,9 @@ app_server <- function(input, output, session) {
   # datatoy load data
   observeEvent(input$loadExample, {
     githubURL <- paste0("https://github.com/statgarten/datatoys/raw/main/data/", input$datatoy, ".rda")
-    download.file(githubURL, "temp.Rda")
-    load("temp.Rda")
-    file.remove("temp.Rda")
+    download.file(githubURL, "/tmp/temp.Rda")
+    load("/tmp/temp.Rda")
+    file.remove("/tmp/temp.Rda")
 
     eval(parse(text = paste0("data_rv$data <- ", input$datatoy)))
     eval(parse(text = paste0("data_rv$name <- '", input$datatoy, "'")))
