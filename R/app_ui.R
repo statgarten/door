@@ -279,6 +279,7 @@ app_ui <- function(request) {
                           width = 12,
                           h4("Note"),
                           h5("⚠️ If information is empty, will not used in report"),
+                          h5("However, name is required with Paper format"),
                           hr()
                         )
                       ),

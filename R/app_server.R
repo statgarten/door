@@ -12,7 +12,7 @@
 #' @importFrom GGally ggcorr
 #' @importFrom dplyr select
 #' @importFrom plotly renderPlotly
-#' @importFrom shinyjs hide show
+#' @importFrom shinyjs hide show disable enable
 #' @importFrom tibble as_tibble
 #' @importFrom shinyglide glide screen
 #' @importFrom board mod_distributionModule_server
@@ -1032,6 +1032,30 @@ app_server <- function(input, output, session) {
   tuned_results_list <- mms$tuned_results_list
 
   ## Report
+
+  observeEvent(input$format, {
+    if(input$format == 'Paper'){
+      if(nzchar(input$report.name) && !grepl("^\\s*$", input$report.name)){
+        shinyjs::enable(id = 'downloadReport')
+      }
+      else{
+        shinyjs::disable(id = 'downloadReport')
+      }
+    } else{
+      shinyjs::enable(id = 'downloadReport')
+    }
+  })
+
+  observeEvent(input$report.name,{
+    if(input$format == 'Paper'){
+      if(nzchar(input$report.name) && !grepl("^\\s*$", input$report.name)){
+        shinyjs::enable(id = 'downloadReport')
+      } else{
+        shinyjs::disable(id = 'downloadReport')
+      }
+    }
+
+  })
 
   output$downloadReport <- downloadHandler(
     filename = function() {

@@ -4,7 +4,10 @@ title: "`r params$title`"
 author: "`r params$authorName`"
 abstract: "`r params$abstract`"
 date: "Report built : `r format(Sys.Date())`"
-output: pdf_document
+output: 
+  pdf_document:
+    latex_engine: default
+header-includes: \usepackage{kotex} \usepackage[doublespacing]{setspace} \usepackage{multirow} 
 tables: true
 params:
   inputData: NA

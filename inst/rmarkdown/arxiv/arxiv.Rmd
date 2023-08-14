@@ -7,15 +7,16 @@ authors:
     affiliation: "`r params$affiliation`"
     location: "`r params$location`"
     email: "`r params$email`"
-abstract: "`r params$abstract`"
-output: rticles::arxiv_article
-latex_engine: pdflatex
+abstract: |
+  "`r params$abstract`"
+output:
+  rticles::arxiv_article:
+    latex_engine: pdflatex
 classoption: landscape
-
 header-includes:
   - \usepackage{longtable}
 
-params: 
+params:
   inputData: NA
   vec.len: 4
   positive: NA
@@ -27,16 +28,13 @@ params:
   affiliation: NA
   location: NA
   email: NA
-  
-
-  
 keywords:
   - data profiling
   - data quality
   - data analysis
-  - descriptive statistics 
-  - data preprocessing 
-  - data-driven decision-making.
+  - descriptive statistics
+  - data preprocessing
+  - data-driven decision-making
 ---
 
 <!--  ADDITIONAL YAML
