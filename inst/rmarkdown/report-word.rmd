@@ -1,4 +1,8 @@
 ---
+title: "`r params$title`"
+author: "`r params$authorName`"
+abstract: "`r params$abstract`"
+date: "Report built : `r format(Sys.Date())`"
 params:
   inputData: NA
   MLResult: NA
@@ -12,10 +16,7 @@ params:
   affiliation: NA
   location: NA
   email: NA
-
 ---
-
-<!-- load_all will recognize change -->
 
 <!-- params = list(obj = ~~~) -->
 <!-- obj <- params$obj -->
@@ -29,6 +30,18 @@ library(naniar)
 library(dplyr)
 library(knitr)
 ```
+
+## Author information
+
+Department: "`r params$department`"
+
+Affiliation: "`r params$affiliation`"
+
+Location: "`r params$location`"
+
+E-mail: "`r params$email`"
+
+\newpage
 
 ## Data information
 
