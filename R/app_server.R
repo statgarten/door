@@ -18,6 +18,7 @@
 #' @importFrom board mod_distributionModule_server
 #' @importFrom colorpen mod_mapVisModule_server
 #' @importFrom colorpen mod_pairModule_server mod_mosaicModule_server
+#' @importFrom shinyalert shinyalert
 #'
 #' @importFrom scissor mod_roundModule_server mod_roundModule_ui
 #' @importFrom scissor mod_etcModule_server mod_etcModule_ui
@@ -1054,11 +1055,16 @@ app_server <- function(input, output, session) {
       # on.exit(setwd(owd))
       # file.copy(src, 'report.Rmd', overwrite = TRUE)
 
+
+      if(is.null(input$report.name)){
+        shinyalert(title = 'Value required', text = 'Set report.name')
+      }
+
       out <- rmarkdown::render(
         input = switch(input$format,
           PDF = paste0(app_sys(), "/rmarkdown/report-pdf.rmd"), # rmd
-          HTML = paste0(app_sys(), "/rmarkdown/report2.rmd"), # rmd
-          Word = paste0(app_sys(), "/rmarkdown/report.rmd"),
+          HTML = paste0(app_sys(), "/rmarkdown/report-html.rmd"), # rmd
+          Word = paste0(app_sys(), "/rmarkdown/report-word.rmd"),
           Dashboard = paste0(app_sys(), "/rmarkdown/report-dashboard.rmd"),
           PPT = paste0(app_sys(), "/rmarkdown/report-ppt.rmd"),
           Paper = paste0(app_sys(), "/rmarkdown/arxiv/arxiv.rmd")
@@ -1108,6 +1114,8 @@ app_server <- function(input, output, session) {
     }
   )
 }
+
+
 
 genId <- function(bytes = 12) {
   paste(format(as.hexmode(sample(256, bytes, replace = TRUE) - 1), width = 2), collapse = "")

@@ -7,6 +7,16 @@ output:
 params:
   inputData: NA
   MLResult: NA
+  vec.len: 4
+  positive: NA
+  negative: NA
+  title: NA
+  authorName: NA
+  abstract: NA
+  department: NA
+  affiliation: NA
+  location: NA
+  email: NA
 ---
 
 ```{r setup, include=FALSE}
@@ -23,6 +33,15 @@ missplot <- naniar::gg_miss_var(inputData) %>% plotly::ggplotly()
 ## Row
 
 -----------------------------------
+### Author information
+
+Department: "`r params$department`"
+
+Affiliation: "`r params$affiliation`"
+
+Location: "`r params$location`"
+
+E-mail: "`r params$email`"
 
 ### Dataset Information
 

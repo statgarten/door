@@ -1,16 +1,34 @@
 ---
 layout: page
-title: 'Statgarten Data Profile Report'
+title: "`r params$title`"
+author: "`r params$authorName`"
+abstract: "`r params$abstract`"
 date: "Report built : `r format(Sys.Date())`"
 output: pdf_document
 tables: true
 params:
   inputData: NA
+  title: NA
+  authorName: NA
+  abstract: NA
+  department: NA
+  affiliation: NA
+  location: NA
+  email: NA
   vec.len: 4
   positive: NA
   negative: NA
-  email: NA
 ---
+
+## Author information
+
+Department: "`r params$department`"
+
+Affiliation: "`r params$affiliation`"
+
+Location: "`r params$location`"
+
+E-mail: "`r params$email`"
 
 \newpage
 
@@ -28,6 +46,7 @@ library(knitr)
 library(kableExtra)
 library(dplyr)
 library(shiny)
+library(reactable)
 
 # environment 
 options(digits = 3)
@@ -54,6 +73,8 @@ isUnique <- function(i) {
   return(length(which(duplicated(i))) == 0)
 }
 ```
+
+
 
 # Data description
 
