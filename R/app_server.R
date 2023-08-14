@@ -337,15 +337,28 @@ app_server <- function(input, output, session) {
       output$exampleDataset <- renderUI({
         # 22 version
         Choices <- c(
+          "Kcalendar",
           "accident",
           "airport",
+          "artmuseum",
+          "bike",
+          "birthRate",
           "bloodTest",
+          "budget2023",
           "busStation",
+          "busyMetro",
           "carInspection",
+          "cheerUp",
           "childAbuse",
+          "cinema",
+          "coolCenter",
           "crime",
           "crimePlace",
+          "drunkdrive",
+          "earthShelter",
+          "election2020",
           "elevator",
+          "farmGIS",
           "fire",
           "fireStation",
           "foodBank",
@@ -357,6 +370,7 @@ app_server <- function(input, output, session) {
           "housingPrice",
           "karaoke",
           "legalDong",
+          "liquor",
           "medicalCheckup",
           "medicine",
           "nationalPension",
@@ -368,11 +382,18 @@ app_server <- function(input, output, session) {
           "petNames",
           "pharmacyInfo",
           "pollution",
+          "population",
           "postOffice",
           "restaurant",
           "scholarship",
+          "seoulCivic",
+          "seoulCulture",
           "seoulER",
-          "tuition"
+          "seoulLibrary",
+          "socialCenter",
+          "tuition",
+          "warmingCenter",
+          "weather2020"
         )
 
         tagList(
@@ -394,15 +415,28 @@ app_server <- function(input, output, session) {
     if (input$lang == "ko") {
       output$exampleDataset <- renderUI({
         Choices <- c(
+          "한국천문연구원 특일 정보" = "Kcalendar",
           "사망교통사고 정보" = "accident",
           "전세계 공항정보" = "airport",
+          "서울시립미술관 소장품 정보" = "artmuseum",
+          "자전거편의시설" = "bike",
+          "통계청 시도/인구동태건수 및 동태율" = "birthRate",
           "2014-15 혈액검사 데이터" = "bloodTest",
+          "기획재정부 연도별 세출 및 지출 예산현황" = "budget2023",
           "전국 버스 정류장 위치정보" = "busStation",
+          "지하철혼잡도정보" = "busyMetro",
           "자동차검사소 정보" = "carInspection",
+          "사회적 약자를 위한 위로의 글" = "cheerUp",
           "아동학대 신고정보" = "childAbuse",
+          "영화관상영관인허가정보" = "cinema",
+          "무더위쉼터 현황" = "coolCenter",
           "범죄 발생 지역별 통계" = "crime",
           "범죄 발생 장소별 통계" = "crimePlace",
+          "음주운전 적발 기록 현황" = "drunkdrive",
+          "지진실내구호소 현황" = "earthShelter",
+          "국회의원선거 개표결과 정보" = "election2020",
           "국내 승강기 보유 현황" = "elevator",
+          "가축사육업 로컬데이터" = "farmGIS",
           "화재통계" = "fire",
           "전국 소방서 정보" = "fireStation",
           "2021 전국푸드뱅크 기부자 통계" = "foodBank",
@@ -414,6 +448,7 @@ app_server <- function(input, output, session) {
           "2021 공동주택 공시가격 정보" = "housingPrice",
           "단란주점 영업 정보" = "karaoke",
           "법정동 정보" = "legalDong",
+          "주류관련 통계" = "liquor",
           "일반건강검진결과" = "medicalCheckup",
           "의약품 주성분 정보" = "medicine",
           "국민연금사업장 정보" = "nationalPension",
@@ -425,11 +460,18 @@ app_server <- function(input, output, session) {
           "반려동물 이름 통계" = "petNames",
           "약국 기본정보" = "pharmacyInfo",
           "축산오염원조사정보" = "pollution",
+          "인구총조사" = "population",
           "우체국 정보" = "postOffice",
           "맛집 정보" = "restaurant",
           "2020년도 장학금 수혜현황" = "scholarship",
+          "2022년 서울 시민생활 데이터" = "seoulCivic",
+          "문화공간정보" = "seoulCulture",
           "응급실 위치 정보" = "seoulER",
-          "장학금 정보" = "tuition"
+          "공공도서관 현황정보" = "seoulLibrary",
+          "사회복지시설 정보" = "socialCenter",
+          "장학금 정보" = "tuition",
+          "한파쉼터현황" = "warmingCenter",
+          "농업 종관기상 데이터" = "weather2020"
         )
 
         tagList(
