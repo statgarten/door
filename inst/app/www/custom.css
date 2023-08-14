@@ -1,5 +1,15 @@
 /* color theme; Used https://www.cleancss.com/css-beautify/ */
 
+/* dropdown button*/
+#external{
+  background: #FFF;
+}
+
+.dropdown-menu{
+  left: auto !important;
+  right: 0 !important;
+}
+
 /* fonts*/
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css");
 
