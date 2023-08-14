@@ -47,21 +47,21 @@ app_ui <- function(request) {
           uiOutput("guideButton") # Guide Button
         ),
         dropdownBlock(
-          id = 'external',icon = icon('arrow-up-right-from-square'),
-          title = 'More Application',
+          id = "external", icon = icon("arrow-up-right-from-square"),
+          title = "More Application",
           badgeStatus = NULL,
           actionButton(
-            inputId = 'jsmodule',
-            label = 'jsmodule',
-            icon = icon('stethoscope'),
-            width = '100%',
-            style = '
+            inputId = "jsmodule",
+            label = "jsmodule",
+            icon = icon("stethoscope"),
+            width = "100%",
+            style = "
             background: #F59B38;
             color: #fff;
             border: 0;
             border-radius: 0;
-            width : 100%;',
-            onclick ="window.open('https://openstat.ai/app/basic/', '_blank')"
+            width : 100%;",
+            onclick = "window.open('https://openstat.ai/app/basic/', '_blank')"
           )
         )
       ),
