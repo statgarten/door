@@ -76,7 +76,6 @@ app_server <- function(input, output, session) {
   # Reports
   rmarkdownParams <- reactiveVal(NULL)
 
-
   # guideButton render
   observeEvent(input$module, {
     output$guideButton <- renderUI({
@@ -1054,11 +1053,6 @@ app_server <- function(input, output, session) {
 
       # on.exit(setwd(owd))
       # file.copy(src, 'report.Rmd', overwrite = TRUE)
-
-
-      if(is.null(input$report.name)){
-        shinyalert(title = 'Value required', text = 'Set report.name')
-      }
 
       out <- rmarkdown::render(
         input = switch(input$format,

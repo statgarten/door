@@ -275,6 +275,14 @@ app_ui <- function(request) {
                       # conditionalPanel(
                       #  "input.format == 'Paper' ",
                       fluidRow(
+                        column(
+                          width = 12,
+                          h4("Note"),
+                          h5("⚠️ If information is empty, will not used in report"),
+                          hr()
+                        )
+                      ),
+                      fluidRow(
                         style = "margin-top: 1em;",
                         column(
                           width = 4,
