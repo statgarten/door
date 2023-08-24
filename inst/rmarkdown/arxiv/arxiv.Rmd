@@ -15,6 +15,7 @@ output:
 classoption: landscape
 header-includes:
   - \usepackage{longtable}
+  - \usepackage{kotex}
 
 params:
   inputData: NA
