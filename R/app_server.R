@@ -1034,27 +1034,25 @@ app_server <- function(input, output, session) {
   ## Report
 
   observeEvent(input$format, {
-    if(input$format == 'Paper'){
-      if(nzchar(input$report.name) && !grepl("^\\s*$", input$report.name)){
-        shinyjs::enable(id = 'downloadReport')
+    if (input$format == "Paper") {
+      if (nzchar(input$report.name) && !grepl("^\\s*$", input$report.name)) {
+        shinyjs::enable(id = "downloadReport")
+      } else {
+        shinyjs::disable(id = "downloadReport")
       }
-      else{
-        shinyjs::disable(id = 'downloadReport')
-      }
-    } else{
-      shinyjs::enable(id = 'downloadReport')
+    } else {
+      shinyjs::enable(id = "downloadReport")
     }
   })
 
-  observeEvent(input$report.name,{
-    if(input$format == 'Paper'){
-      if(nzchar(input$report.name) && !grepl("^\\s*$", input$report.name)){
-        shinyjs::enable(id = 'downloadReport')
-      } else{
-        shinyjs::disable(id = 'downloadReport')
+  observeEvent(input$report.name, {
+    if (input$format == "Paper") {
+      if (nzchar(input$report.name) && !grepl("^\\s*$", input$report.name)) {
+        shinyjs::enable(id = "downloadReport")
+      } else {
+        shinyjs::disable(id = "downloadReport")
       }
     }
-
   })
 
   output$downloadReport <- downloadHandler(
