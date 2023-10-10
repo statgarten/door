@@ -300,7 +300,8 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             seed = input$seed
           )
 
-          Obj <- Obj$finalFittedModel
+          # Obj <- Obj$finalFittedModel
+          Obj <- Obj$finalized$finalFittedModel
 
           Obj
         })
@@ -414,7 +415,8 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             seed = input$seed
           )
 
-          Obj <- Obj$finalFittedModel
+          # Obj <- Obj$finalFittedModel
+          Obj <- Obj$finalized$finalFittedModel
 
           Obj
         })
@@ -596,7 +598,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             nBoot = ifelse(is.null(input$nBoot), 100, input$nBoot),
             algorithm = ifelse(is.null(input$algorithm), "Hartigan-Wong", input$algorithm),
             selectOptimal = ifelse(is.null(input$selectOptimal), "silhouette", input$selectOptimal),
-            seedNum = ifelse(is.null(input$seed), 6471, input$seed),
+            seedNum = ifelse(is.null(input$seed), 6471, input$seed)
           )
 
           Obj
