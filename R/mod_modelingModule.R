@@ -312,7 +312,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
       }
       # build model
       if (input$algo == "linearRegression") {
-
         modelObj <- reactive({
           Obj <- stove::linearRegression(
             algo = input$algo,
@@ -322,10 +321,10 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula,
             rec = splitresult()$rec,
-            v = ifelse(is.null(input$fold),2, input$fold),
-            gridNum = ifelse(is.null(input$gridNum), 4, input$gridNum),#
+            v = ifelse(is.null(input$fold), 2, input$fold),
+            gridNum = ifelse(is.null(input$gridNum), 4, input$gridNum), #
             iter = ifelse(is.null(input$iter), 2, input$iter), #
-            metric = ifelse(is.null(input$metric), 'rmse' ,input$metric),
+            metric = ifelse(is.null(input$metric), "rmse", input$metric),
             seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
@@ -344,8 +343,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
       }
 
       if (input$algo == "KNN") {
-
-
         modelObj <- reactive({
           Obj <- stove::KNN(
             algo = input$algo,
@@ -355,10 +352,10 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula,
             rec = splitresult()$rec,
-            v = ifelse(is.null(input$fold),2, input$fold),
-            gridNum = ifelse(is.null(input$gridNum), 4, input$gridNum),#
+            v = ifelse(is.null(input$fold), 2, input$fold),
+            gridNum = ifelse(is.null(input$gridNum), 4, input$gridNum), #
             iter = ifelse(is.null(input$iter), 2, input$iter), #
-            metric = ifelse(is.null(input$metric), 'rmse' ,input$metric),
+            metric = ifelse(is.null(input$metric), "rmse", input$metric),
             seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
@@ -637,7 +634,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
 
         rmse_plot <- stove::plotRmseComparison(
           tunedResultsList = tuned_results_list(),
-          v = ifelse(is.null(input$fold),2, input$fold),
+          v = ifelse(is.null(input$fold), 2, input$fold),
           iter = ifelse(is.null(input$iter), 2, input$iter) #
         )
 
