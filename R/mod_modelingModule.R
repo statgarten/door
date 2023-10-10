@@ -293,7 +293,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula, ## Confirmed
             rec = splitresult()$rec,
-            v = input$fold,
+            v = ifelse(is.null(input$fold), 2, input$fold),
             gridNum = input$gridNum,
             iter = input$iter,
             metric = input$metric,
@@ -312,6 +312,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
       }
       # build model
       if (input$algo == "linearRegression") {
+
         modelObj <- reactive({
           Obj <- stove::linearRegression(
             algo = input$algo,
@@ -321,11 +322,11 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula,
             rec = splitresult()$rec,
-            v = input$fold,
-            gridNum = input$gridNum, #
-            iter = input$iter, #
-            metric = input$metric,
-            seed = input$seed #
+            v = ifelse(is.null(input$fold),2, input$fold),
+            gridNum = ifelse(is.null(input$gridNum), 4, input$gridNum),#
+            iter = ifelse(is.null(input$iter), 2, input$iter), #
+            metric = ifelse(is.null(input$metric), 'rmse' ,input$metric),
+            seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
           Obj
@@ -343,29 +344,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
       }
 
       if (input$algo == "KNN") {
-        print("algo: ")
-        print(input$algo)
 
-        print("engine: ")
-        print(input$engine)
-
-        print("mode:")
-        print(input$mode)
-
-        print("fold: ")
-        print(input$fold)
-
-        print("gridNum: ")
-        print(input$gridNum)
-
-        print("iter: ")
-        print(input$iter)
-
-        print("metric: ")
-        print(input$metric)
-
-        print("seed: ")
-        print(input$seed)
 
         modelObj <- reactive({
           Obj <- stove::KNN(
@@ -376,11 +355,11 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula,
             rec = splitresult()$rec,
-            v = input$fold,
-            gridNum = input$gridNum, #
-            iter = input$iter, #
-            metric = input$metric,
-            seed = input$seed #
+            v = ifelse(is.null(input$fold),2, input$fold),
+            gridNum = ifelse(is.null(input$gridNum), 4, input$gridNum),#
+            iter = ifelse(is.null(input$iter), 2, input$iter), #
+            metric = ifelse(is.null(input$metric), 'rmse' ,input$metric),
+            seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
           Obj
@@ -658,8 +637,8 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
 
         rmse_plot <- stove::plotRmseComparison(
           tunedResultsList = tuned_results_list(),
-          v = input$fold,
-          iter = input$iter
+          v = ifelse(is.null(input$fold),2, input$fold),
+          iter = ifelse(is.null(input$iter), 2, input$iter) #
         )
 
         output$RMSEPlot <- renderPlot(rmse_plot)
