@@ -294,10 +294,10 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             formula = splitresult()$formula, ## Confirmed
             rec = splitresult()$rec,
             v = ifelse(is.null(input$fold), 2, input$fold),
-            gridNum = input$gridNum,
-            iter = input$iter,
-            metric = input$metric,
-            seed = input$seed
+            gridNum = ifelse(is.null(input$gridNum), 5, input$gridNum), #
+            iter = ifelse(is.null(input$iter), 10, input$iter), #
+            metric = ifelse(is.null(input$metric), "roc_auc", input$metric),
+            seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
           # Obj <- Obj$finalFittedModel
@@ -322,8 +322,8 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = ifelse(is.null(input$fold), 2, input$fold),
-            gridNum = ifelse(is.null(input$gridNum), 4, input$gridNum), #
-            iter = ifelse(is.null(input$iter), 2, input$iter), #
+            gridNum = ifelse(is.null(input$gridNum), 5, input$gridNum), #
+            iter = ifelse(is.null(input$iter), 10, input$iter), #
             metric = ifelse(is.null(input$metric), "rmse", input$metric),
             seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
@@ -353,9 +353,9 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             formula = splitresult()$formula,
             rec = splitresult()$rec,
             v = ifelse(is.null(input$fold), 2, input$fold),
-            gridNum = ifelse(is.null(input$gridNum), 4, input$gridNum), #
-            iter = ifelse(is.null(input$iter), 2, input$iter), #
-            metric = ifelse(is.null(input$metric), "rmse", input$metric),
+            gridNum = ifelse(is.null(input$gridNum), 5, input$gridNum), #
+            iter = ifelse(is.null(input$iter), 10, input$iter), #
+            metric = ifelse(is.null(input$metric), ifelse(input$mode == "classification", "roc_auc", "rmse"), input$metric),
             seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
@@ -384,11 +384,11 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula,
             rec = splitresult()$rec,
-            v = input$fold,
-            gridNum = input$gridNum,
-            iter = input$iter,
-            metric = input$metric,
-            seed = input$seed
+            v = ifelse(is.null(input$fold), 2, input$fold),
+            gridNum = ifelse(is.null(input$gridNum), 5, input$gridNum), #
+            iter = ifelse(is.null(input$iter), 10, input$iter), #
+            metric = ifelse(is.null(input$metric), "roc_auc", input$metric),
+            seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
           # Obj <- Obj$finalFittedModel
@@ -412,11 +412,11 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula,
             rec = splitresult()$rec,
-            v = input$fold,
-            gridNum = input$gridNum,
-            iter = input$iter,
-            metric = input$metric,
-            seed = input$seed
+            v = ifelse(is.null(input$fold), 2, input$fold),
+            gridNum = ifelse(is.null(input$gridNum), 5, input$gridNum), #
+            iter = ifelse(is.null(input$iter), 10, input$iter), #
+            metric = ifelse(is.null(input$metric), ifelse(input$mode == "classification", "roc_auc", "rmse"), input$metric),
+            seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
           Obj
@@ -444,11 +444,11 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula,
             rec = splitresult()$rec,
-            v = input$fold,
-            gridNum = input$gridNum, #
-            iter = input$iter, #
-            metric = input$metric,
-            seed = input$seed
+            v = ifelse(is.null(input$fold), 2, input$fold),
+            gridNum = ifelse(is.null(input$gridNum), 5, input$gridNum), #
+            iter = ifelse(is.null(input$iter), 10, input$iter), #
+            metric = ifelse(is.null(input$metric), ifelse(input$mode == "classification", "roc_auc", "rmse"), input$metric),
+            seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
           Obj
@@ -476,11 +476,11 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula,
             rec = splitresult()$rec,
-            v = input$fold,
-            gridNum = input$gridNum,
-            iter = input$iter,
-            metric = input$metric,
-            seed = input$seed
+            v = ifelse(is.null(input$fold), 2, input$fold),
+            gridNum = ifelse(is.null(input$gridNum), 5, input$gridNum), #
+            iter = ifelse(is.null(input$iter), 10, input$iter), #
+            metric = ifelse(is.null(input$metric), ifelse(input$mode == "classification", "roc_auc", "rmse"), input$metric),
+            seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
           Obj
@@ -508,11 +508,11 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula,
             rec = splitresult()$rec,
-            v = input$fold,
-            gridNum = input$gridNum, #
-            iter = input$iter, #
-            metric = input$metric,
-            seed = input$seed #
+            v = ifelse(is.null(input$fold), 2, input$fold),
+            gridNum = ifelse(is.null(input$gridNum), 5, input$gridNum), #
+            iter = ifelse(is.null(input$iter), 10, input$iter), #
+            metric = ifelse(is.null(input$metric), ifelse(input$mode == "classification", "roc_auc", "rmse"), input$metric),
+            seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
           Obj
@@ -540,11 +540,11 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             splitedData = splitresult()$dataSplit,
             formula = splitresult()$formula,
             rec = splitresult()$rec,
-            v = input$fold,
-            gridNum = input$gridNum,
-            iter = input$iter,
-            metric = input$metric,
-            seed = input$seed
+            v = ifelse(is.null(input$fold), 2, input$fold),
+            gridNum = ifelse(is.null(input$gridNum), 5, input$gridNum), #
+            iter = ifelse(is.null(input$iter), 10, input$iter), #
+            metric = ifelse(is.null(input$metric), ifelse(input$mode == "classification", "roc_auc", "rmse"), input$metric),
+            seed = ifelse(is.null(input$seed), 1234, input$seed) #
           )
 
           Obj
@@ -559,6 +559,31 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
 
         tuned_results_list(
           append(tuned_results_list(), list("lightGBM_lightgbm" = tls))
+        )
+      }
+
+      if (input$algo == "SVM_linear") {
+        modelObj <- reactive({
+          Obj <- stove::SVMLinear(
+            algo = input$algo,
+            engine = input$engine,
+            mode = input$mode,
+            trainingData = splitresult()$train,
+            splitedData = splitresult()$dataSplit,
+            formula = splitresult()$formula,
+            rec = splitresult()$rec,
+            v = ifelse(is.null(input$fold), 2, input$fold),
+            gridNum = ifelse(is.null(input$gridNum), 5, input$gridNum), #
+            iter = ifelse(is.null(input$iter), 10, input$iter), #
+            metric = ifelse(is.null(input$metric), "roc_auc", input$metric),
+            seed = ifelse(is.null(input$seed), 1234, input$seed) #
+          )
+
+          Obj$finalized$finalFittedModel
+        })
+
+        models_list(
+          append(models_list(), list("svmLinear_kernlab" = modelObj()))
         )
       }
 
@@ -694,7 +719,8 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
             "Decision Tree" = "decisionTree",
             "Random Forest" = "randomForest",
             "XGBoost",
-            "lightGBM"
+            "lightGBM",
+            "SVM - linear" = "SVM_linear"
           ),
           selected = NULL
         )
@@ -818,6 +844,13 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
           inputId = "engine",
           label = "engine 지정",
           choices = "-" # KMC
+        )
+      }
+      if (input$algo == "SVM_linear") {
+        updateSelectInput(
+          inputId = "engine",
+          label = "engine 지정",
+          choices = "kernlab" # svm-linear
         )
       }
     })
