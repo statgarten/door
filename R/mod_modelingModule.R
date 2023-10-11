@@ -149,7 +149,19 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
       showModal(
         modalDialog(
           easyClose = TRUE,
-          footer = NULL,
+          footer = tags$button( # custom modal button
+            type = "button",
+            class = "btn btn-default",
+            `data-dismiss` = "modal",
+            `data-bs-dismiss` = "modal",
+            icon("xmark"),
+            style = "background: #004B4D;
+                        border-radius: 0;
+                        color: white;
+                        border: 0;
+                        font-weight: bold;",
+            "Save & Exit"
+          ),
           title = "HyperParameter Options",
           fluidRow(
             column(
@@ -274,8 +286,7 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
                 )
               )
             )
-          ),
-          actionButton(inputId = ns("setHyper"), label = icon("check"))
+          )
         )
       )
     })
@@ -609,7 +620,6 @@ mod_modelingModule_server <- function(id, splitresult, models_list, tuned_result
           append(models_list(), list("KmeansClustering" = modelObj()))
         )
       }
-      # name <- isolate(paste0(input$algo, "_", input$engine))
 
       output$obj <- renderPrint({
         setdiff(names(models_list()), "")
