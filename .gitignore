@@ -33,7 +33,7 @@ vignettes/*.pdf
 
 # quarto files
 /inst/report_files
-/inst/*.html
+
 
 # Temporary files created by R markdown
 *.utf8.md
