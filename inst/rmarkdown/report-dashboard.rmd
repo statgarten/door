@@ -1,0 +1,189 @@
+---
+title: "Report"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+params:
+  inputData: NA
+  MLResult: NA
+  vec.len: 4
+  positive: NA
+  negative: NA
+  title: NA
+  authorName: NA
+  abstract: NA
+  department: NA
+  affiliation: NA
+  location: NA
+  email: NA
+---
+
+```{r setup, include=FALSE}
+data <- inputData <- params$inputData
+library(ggplot2)
+library(ggpie)
+library(GGally)
+library(naniar)
+library(dplyr)
+library(knitr)
+missplot <- naniar::gg_miss_var(inputData) %>% plotly::ggplotly()
+```
+
+## Row
+
+-----------------------------------
+### Author information
+
+Department: "`r params$department`"
+
+Affiliation: "`r params$affiliation`"
+
+Location: "`r params$location`"
+
+E-mail: "`r params$email`"
+
+### Dataset Information
+
+Number of Row with given data is `r nrow(inputData)` 
+
+Number of Column with given data is `r ncol(inputData)` 
+
+Total Count of missing data is `r length(which(is.na(inputData)))`
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+ignoreNA <- names(which(colSums(is.na(inputData)) == nrow(inputData)))
+if (length(ignoreNA) > 0) {
+  print("Columns Below is removed because every rows are NA")
+  print(ignoreNA)
+  inputData <- inputData[, !(names(inputData) %in% ignoreNA)]
+}
+```
+
+## Row
+
+-----------------------------------
+
+### Preview of data set
+
+top 5 data is below
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+head(inputData, 5)
+```
+
+last 5 data is below
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+tail(inputData, 5)
+```
+
+## Row
+
+-----------------------------------
+
+### Missing Data
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+missplot
+
+#naniar::gg_miss_var(inputData) %>% plot
+#htmltools::css(absolute = "sticky")
+#plot(test)
+missingData <- naniar::miss_var_summary(inputData) %>% filter(n_miss > 0)
+knitr::kable(missingData)
+```
+
+### Correlation
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+if (inputData %>% select(where(is.numeric)) %>% length() < 2) {
+  print("Correlation plot is ignored because less than 2 column is numeric")
+} else {
+  ggcorr(inputData)
+}
+```
+
+## Row
+
+-----------------------------------
+
+### Scatterplot
+```{r, results='asis', echo = FALSE, warning = FALSE, message = FALSE, out.width="60%", fig.align = 'center'}
+if (!(inputData %>% select(where(is.numeric)) %>% length() > 0)) {
+  print("Non-numeric Variable ignored in Scatterplot below.")
+}
+scatterData <- inputData %>% select(where(is.numeric))
+if (nrow(inputData) > 1000) {
+  print("Number of Row Reduced to 1000")
+  scatterData <- scatterData %>% sample_n(1000)
+}
+for (i in 1:(ncol(scatterData) %/% 5 + 1)) {
+  start <- i * 5 - 4
+  if (i == (ncol(scatterData) %/% 5) + 1) {
+    end <- ncol(scatterData)
+  } else {
+    end <- i * 5
+  }
+
+  if (start <= end) {
+    plot(scatterData[, c(start:end)])
+    htmltools::br()
+  }
+}
+```
+
+## Row
+
+-----------------------------------
+
+### Column Attributes
+
+```{r, results='asis', echo = FALSE, warning = FALSE, message = FALSE}
+
+for (i in 1:length(inputData)) {
+  count <- inputData %>%
+    group_by(inputData[, i]) %>%
+    summarise(n = n()) %>%
+    mutate(com_freq = cumsum(n)) %>%
+    mutate(percent = (n / sum(n)) * 100)
+
+  names(count)[1] <- c("cat")
+
+  colName <- names(inputData)[i]
+  uniqcnt <- c("Unique non-mission value count:", length(count[, 1][!is.na(count[, 1])]))
+  misscnt <- c("Missing value count:", sum(is.na(count[, 1])))
+  table <- data.frame()
+  table <- rbind(table, uniqcnt)
+  table <- rbind(table, misscnt)
+  names(table) <- c(paste(i, "Column name:"), colName)
+  print(kable(table, align = "ll"))
+
+  if (length(count[, 1][!is.na(count[, 1])]) <= 10) {
+    print(kable(count, align = "cccc"))
+  } else {
+    data <- data.frame()
+    summ <- c(
+      min(inputData[, i][!is.na(inputData[, i])], na.rm = TRUE),
+      mean(inputData[, i][!is.na(inputData[, i])], na.rm = TRUE),
+      median(inputData[, i][!is.na(inputData[, i])], na.rm = TRUE),
+      max(inputData[, i][!is.na(inputData[, i])], na.rm = TRUE),
+      sd(inputData[, i][!is.na(inputData[, i])], na.rm = TRUE) %>% as.Date(origin = .Date(0))
+    )
+    data <- rbind(data, summ)
+    names(data) <- c("Min", "Mean", "Median", "Max", "SD")
+    print(kable(data, align = "ccccc"))
+  }
+  # cat('---')
+  # cat('\n\n\n\n')
+  # cat('\n\n<!-- -->\n\n')
+}
+```
+
+## Row
+
+-----------------------------------
+
+### Report information
+
+this report is generated with [Statgarten](https://github.com/statgarten) @ `r Sys.time()`
