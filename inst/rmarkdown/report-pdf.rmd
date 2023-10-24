@@ -148,8 +148,17 @@ if(ncol(inputData) > 7){
 
 data.frame(
   variable = names(inputData),
-  class = sapply(inputData, typeof),
-  levels = sapply(inputData, class),
+  class = sapply(inputData, function(i){
+    v <- typeof(i)
+    if(length(v)>1) return(v[1])
+    return(v)
+  }
+                 ),
+  levels = sapply(inputData, function(i){
+    v <- class(i)
+    if(length(v)>1) return(v[1])
+    return(v)
+  }),
   first_values = sapply(inputData, function(x) paste0(head(x, 10), collapse = ", ")),
   row.names = NULL
 ) |>
