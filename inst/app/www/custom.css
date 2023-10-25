@@ -5,8 +5,9 @@
   background: #FFF;
 }
 
+/* menu will hide in left when use left option*/
 .dropdown-menu{
-  left: auto !important;
+  /* left: auto !important; */
   right: 0 !important;
 }
 
