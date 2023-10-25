@@ -44,6 +44,13 @@ app_server <- function(input, output, session) {
   options(shiny.maxRequestSize = 30 * 1024^2) # file upload size 30mb
   # calling the translator sent as a golem option
 
+  # bookmark
+  observe({
+    reactiveValuesToList(input)
+    session$doBookmark()
+  })
+  onBookmarked(updateQueryString)
+
   ## Directory (Translation / Img file)
   app_dir <- system.file(package = "door")
 
@@ -542,6 +549,14 @@ app_server <- function(input, output, session) {
   mod_mlrModule_server("mlrModule_1", inputData)
   mod_groupStatModule_server("groupStatModule_1", inputData)
 
+  # not use add to main data feature
+  # res_inserted <- mod_groupStatModule_server("groupStatModule_1", inputData)
+  # observeEvent(input$add, {
+  #   data_rv$data <- res_inserted() # reactive
+  #   inputData(data_rv$data) # then use isolated
+  # })
+
+
   # XML handler
   xml_to_dataframe <- function(path) {
     xml <- xml2::read_xml(path)
@@ -928,6 +943,8 @@ app_server <- function(input, output, session) {
     id = "createModule_1",
     inputData = reactive(data_rv$data)
   )
+
+
 
   ## transform apply
 
