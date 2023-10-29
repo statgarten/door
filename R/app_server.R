@@ -3,7 +3,7 @@
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
 #' @import shiny
-#' @importFrom haven read_sas read_sav read_dta
+#' @importFrom haven read_sas read_sav read_dta read_xpt
 #' @importFrom readxl read_xls read_xlsx
 #' @importFrom readr read_rds
 #' @importFrom reactable renderReactable colDef
@@ -582,25 +582,25 @@ app_server <- function(input, output, session) {
     id = "importModule_1",
     read_fns = list(
       tsv = function(file) {
-        read.csv(file$datapath, sep = "\t")
+        read.csv(file, sep = "\t")
       },
       sas7bcat = function(file) {
-        haven::read_sas(file$datapath)
+        haven::read_xpt(file) # not use file$datapath
       },
       dta = function(file) {
-        haven::read_dta(file$datapath)
+        haven::read_dta(file)
       },
       rda = function(file) {
-        load(file$datapath)
+        load(file)
       },
       rdata = function(file) {
-        load(file$datapath)
+        load(file)
       },
       xml = function(file) {
-        xml_to_dataframe(file$datapath)
+        xml_to_dataframe(file)
       },
       json = function(file) {
-        jsonlite::fromJSON(file$datapath)
+        jsonlite::fromJSON(file)
       }
     )
   )
