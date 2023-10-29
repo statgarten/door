@@ -24,17 +24,17 @@ knitr::opts_chunk$set(
 
 ```{r, eval=FALSE}
 xml_to_dataframe <- function(path) {
-    xml <- xml2::read_xml(path)
-    nodeset <- xml2::xml_children(xml)
-    lst <- lapply(nodeset, function(x) {
-      tmp <- xml2::xml_text(xml2::xml_children(x))
-      names(tmp) <- xml2::xml_name(xml2::xml_children(x))
-      return(as.list(tmp))
-    })
-    result <- as.data.frame(do.call(rbind, lst))
+  xml <- xml2::read_xml(path)
+  nodeset <- xml2::xml_children(xml)
+  lst <- lapply(nodeset, function(x) {
+    tmp <- xml2::xml_text(xml2::xml_children(x))
+    names(tmp) <- xml2::xml_name(xml2::xml_children(x))
+    return(as.list(tmp))
+  })
+  result <- as.data.frame(do.call(rbind, lst))
 
-    return(tibble::as_tibble(result))
-  }
+  return(tibble::as_tibble(result))
+}
 ```
 
 - json: will use `jsonlite::fromJSON`. **File must consisted with 1 layer**

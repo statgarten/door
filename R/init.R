@@ -5,7 +5,7 @@
 #'
 #' @examples
 #' \dontrun{
-#'   init()
+#' init()
 #' }
 #' @importFrom remotes install_github
 #' @export
