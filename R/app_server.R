@@ -568,10 +568,6 @@ app_server <- function(input, output, session) {
     })
     result <- as.data.frame(do.call(rbind, lst))
 
-    # result <- do.call(rbind, lapply(lst, function(x) as.data.frame(x, stringsAsFactors = F)))
-
-    print(summary(result))
-
     return(tibble::as_tibble(result))
   }
 

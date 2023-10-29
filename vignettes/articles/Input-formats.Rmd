@@ -1,0 +1,42 @@
+---
+title: "Supported file formats and Notes"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Supported file formats and Notes
+
+### File extensions and function to read
+
+- csv, txt, xls, xlsx, rds, fst, sas7bdat: will utilize `datamods` function. See [link](https://rdrr.io/cran/datamods/man/import-file.html)
+
+- dta: will use `haven::read_dta`
+- rda, rdata: will use `load`.
+- sas7bcat: will use `haven::read_xpt`
+- sav: will use `haven::read_sav`
+- tsv: will use `read.csv(sep='\t')`
+- xml: will use `custom function based xml2 library`(check below). **File must consisted with 1 layer**
+
+```{r, eval=FALSE}
+xml_to_dataframe <- function(path) {
+    xml <- xml2::read_xml(path)
+    nodeset <- xml2::xml_children(xml)
+    lst <- lapply(nodeset, function(x) {
+      tmp <- xml2::xml_text(xml2::xml_children(x))
+      names(tmp) <- xml2::xml_name(xml2::xml_children(x))
+      return(as.list(tmp))
+    })
+    result <- as.data.frame(do.call(rbind, lst))
+
+    return(tibble::as_tibble(result))
+  }
+```
+
+- json: will use `jsonlite::fromJSON`. **File must consisted with 1 layer**
+
+**To try example files, see [`examples`](https://github.com/statgarten/door/tree/main/examples) in repository**

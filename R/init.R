@@ -4,7 +4,9 @@
 #' @return an HTML list
 #'
 #' @examples
-#' init()
+#' \dontrun{
+#'   init()
+#' }
 #' @importFrom remotes install_github
 #' @export
 

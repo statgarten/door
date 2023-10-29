@@ -1,10 +1,12 @@
-pandoc: '2.18'
-pkgdown: 2.0.6
+pandoc: 3.1.6.1
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   Data-Import: Data-Import.html
+  Input-formats: Input-formats.html
+  Report: Report.html
   door: door.html
-last_built: 2022-09-23T02:53Z
+last_built: 2023-10-29T03:38Z
 urls:
   reference: https://www.statgarten.com/door/reference
   article: https://www.statgarten.com/door/articles

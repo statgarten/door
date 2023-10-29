@@ -13,5 +13,7 @@ an HTML list
 Install statgarten dependencies, datatoys, board, scissor, colorpen, soroban, stove
 }
 \examples{
-init()
+\dontrun{
+  init()
+}
 }

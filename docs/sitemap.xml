@@ -13,7 +13,19 @@
     <loc>https://www.statgarten.com/door/articles/Data-Import.html</loc>
   </url>
   <url>
+    <loc>https://www.statgarten.com/door/articles/Input-formats.html</loc>
+  </url>
+  <url>
+    <loc>https://www.statgarten.com/door/articles/Report.html</loc>
+  </url>
+  <url>
     <loc>https://www.statgarten.com/door/articles/articles/Data-Import.html</loc>
+  </url>
+  <url>
+    <loc>https://www.statgarten.com/door/articles/articles/Input-formats.html</loc>
+  </url>
+  <url>
+    <loc>https://www.statgarten.com/door/articles/articles/Report.html</loc>
   </url>
   <url>
     <loc>https://www.statgarten.com/door/articles/door.html</loc>
@@ -29,6 +41,9 @@
   </url>
   <url>
     <loc>https://www.statgarten.com/door/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://www.statgarten.com/door/reference/init.html</loc>
   </url>
   <url>
     <loc>https://www.statgarten.com/door/reference/run_app.html</loc>
