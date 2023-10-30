@@ -19,9 +19,9 @@ params:
   negative: NA
 ---
 
-<span>
+<!--<span>
   <img src='logo.png' style="width: 10em;">
-</span>
+</span>-->
 
 ```{r}
 #| echo: false
