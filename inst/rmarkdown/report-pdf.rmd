@@ -371,7 +371,7 @@ if(ncol(scatterData)> 10){
 if (!(scatterData |> length() > 0)) {
   markdown("> Data is not appropriate for Pairplot")
 } else {
-  if (nrow(inputData) > 100) {
+  if (nrow(inputData) > 1000) {
     markdown("> Number of Row Reduced to 1000")
     scatterData <- scatterData |>
       sample_n(1000)
