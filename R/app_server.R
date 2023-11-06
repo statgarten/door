@@ -574,8 +574,8 @@ app_server <- function(input, output, session) {
   ## after data uploaded
 
   # Rdata load function
-  loadRData <- function(fileName){
-    #loads an RData file, and returns it
+  loadRData <- function(fileName) {
+    # loads an RData file, and returns it
     load(fileName)
     get(ls()[ls() != "fileName"])
   }
