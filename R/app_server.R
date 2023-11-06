@@ -573,6 +573,13 @@ app_server <- function(input, output, session) {
 
   ## after data uploaded
 
+  # Rdata load function
+  loadRData <- function(fileName){
+    #loads an RData file, and returns it
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+  }
+
   # from file
   from_file <- import_file_server(
     id = "importModule_1",
@@ -587,10 +594,10 @@ app_server <- function(input, output, session) {
         haven::read_dta(file)
       },
       rda = function(file) {
-        load(file)
+        loadRData(file)
       },
       rdata = function(file) {
-        load(file)
+        loadRData(file)
       },
       xml = function(file) {
         xml_to_dataframe(file)
