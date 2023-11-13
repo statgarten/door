@@ -607,7 +607,7 @@ app_server <- function(input, output, session) {
       json = function(file) {
         jsonlite::fromJSON(file)
       },
-      sqlite = function(file){
+      sqlite = function(file) {
         con <- dbConnect(SQLite(), file)
         tableName <- dbListTables(con)
         res <- dbGetQuery(con, paste0("SELECT * FROM ", tableName))
