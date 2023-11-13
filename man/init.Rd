@@ -14,6 +14,6 @@ Install statgarten dependencies, datatoys, board, scissor, colorpen, soroban, st
 }
 \examples{
 \dontrun{
-  init()
+init()
 }
 }

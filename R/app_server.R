@@ -38,6 +38,8 @@
 #'
 #' @import datamods
 #' @import rmarkdown
+#' @importFrom DBI dbConnect dbWriteTable dbListTables dbGetQuery dbDisconnect
+#' @importFrom RSQLite SQLite
 
 #' @noRd
 app_server <- function(input, output, session) {
@@ -506,7 +508,7 @@ app_server <- function(input, output, session) {
           ".csv", ".dta", ".fst", ".rda", ".rds",
           ".rdata", ".sas7bcat", ".sas7bdat",
           ".sav", ".tsv", ".txt", ".xls", ".xlsx",
-          ".xml", ".json"
+          ".xml", ".json", ".sqlite"
         )
       )
     })
@@ -604,6 +606,13 @@ app_server <- function(input, output, session) {
       },
       json = function(file) {
         jsonlite::fromJSON(file)
+      },
+      sqlite = function(file){
+        con <- dbConnect(SQLite(), file)
+        tableName <- dbListTables(con)
+        res <- dbGetQuery(con, paste0("SELECT * FROM ", tableName))
+        dbDisconnect(con)
+        return(res)
       }
     )
   )
