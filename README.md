@@ -2,6 +2,7 @@
 # :yellow_heart: door <img src="logo.png" width="120" align="right"/>
 
 Shiny application to data analysis.
+Data Analysis를 도와주는 Shiny 애플리케이션입니다.
 
 ## :clipboard: Dependency
 
