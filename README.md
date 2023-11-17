@@ -42,7 +42,7 @@ Data Analysis를 도와주는 Shiny 애플리케이션입니다.
 -   [tibble](https://github.com/tidyverse/tibble) - 3.1.8
 -   [tidyr](https://github.com/tidyverse/tidyr) - 1.2.1
 
-## :wrench: Install
+## :wrench: Install/설치
 
 ``` r
 remotes::install_github('statgarten/door')
