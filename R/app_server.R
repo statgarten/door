@@ -596,10 +596,13 @@ app_server <- function(input, output, session) {
         haven::read_dta(file)
       },
       rda = function(file) {
-        loadRData(file)
+        # loadRData(file)
+
+        readRDS(file)
       },
       rdata = function(file) {
-        loadRData(file)
+        # loadRData(file)
+        readRDS(file)
       },
       xml = function(file) {
         xml_to_dataframe(file)

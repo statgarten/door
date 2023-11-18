@@ -62,6 +62,32 @@ app_ui <- function(request) {
             border-radius: 0;
             width : 100%;",
             onclick = "window.open('https://openstat.ai/app/basic/', '_blank')"
+          ),
+          actionButton(
+            inputId = "shiny.likert",
+            label = "shiny.likert",
+            icon = icon("chart-bar"),
+            width = "100%",
+            style = "
+            background: #F59B38;
+            color: #fff;
+            border: 0;
+            border-radius: 0;
+            width : 100%;",
+            onclick = "window.open('https://jhkim.shinyapps.io/shiny-likert/', '_blank')"
+          ),
+          actionButton( # playdoh
+            inputId = 'playdoh',
+            label = 'playdoh',
+            icon = icon('desktop'),
+            width = "100%",
+            style = "
+            background: #F59B38;
+            color: #fff;
+            border: 0;
+            border-radius: 0;
+            width : 100%;",
+            onclick = "window.open('https://github.com/statgarten/playdoh', '_blank')"
           )
         )
       ),

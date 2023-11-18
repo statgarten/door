@@ -313,3 +313,8 @@ pre{
   border-color: #92BA92;;
 }
 
+/* External Link Button */
+#external > ul > li > ul {
+  padding-inline-start: 0;
+}
+}
