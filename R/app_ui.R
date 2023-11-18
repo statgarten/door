@@ -77,9 +77,9 @@ app_ui <- function(request) {
             onclick = "window.open('https://jhkim.shinyapps.io/shiny-likert/', '_blank')"
           ),
           actionButton( # playdoh
-            inputId = 'playdoh',
-            label = 'playdoh',
-            icon = icon('desktop'),
+            inputId = "playdoh",
+            label = "playdoh",
+            icon = icon("desktop"),
             width = "100%",
             style = "
             background: #F59B38;
