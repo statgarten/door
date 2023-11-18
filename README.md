@@ -2,9 +2,9 @@
 # :yellow_heart: door <img src="logo.png" width="120" align="right"/>
 
 Shiny application to data analysis.
-Data Analysis를 도와주는 Shiny 애플리케이션입니다.
+Data Analysis를 도와주는 Shiny 애플리케이션 입니다.
 
-## :clipboard: Dependency
+## :clipboard: Dependency/의존 관계
 
 -   [board](https://github.com/statgarten/board)
 -   [colorpen](https://github.com/statgarten/colorpen)
@@ -42,7 +42,7 @@ Data Analysis를 도와주는 Shiny 애플리케이션입니다.
 -   [tibble](https://github.com/tidyverse/tibble) - 3.1.8
 -   [tidyr](https://github.com/tidyverse/tidyr) - 1.2.1
 
-## :wrench: Install
+## :wrench: Install/설치
 
 ``` r
 remotes::install_github('statgarten/door')
