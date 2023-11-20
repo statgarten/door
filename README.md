@@ -51,7 +51,7 @@ library(door)
 run_app() # from door
 ```
 
-## :blush: Authors
+## :blush: Authors/만든 사람들
 
 -   :octocat: Jinhwan Kim [@jhk0530](https://github.com/jhk0530)
 -   :octocat: Changwoo Lim
