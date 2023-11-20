@@ -57,10 +57,12 @@ run_app() # from door
 -   :octocat: Changwoo Lim
     [@ChangwooLim](https://github.com/ChangwooLim)
 
-## :memo: License
+## :memo: License/라이센스
 
 Copyright :copyright: 2022 Jinhwan Kim, Changwoo Lim. This project is
 [MIT](https://opensource.org/licenses/MIT) licensed
+Copyright :copyright: 2022 Jinhwan Kim, Changwoo Lim. 이 프로젝트는
+[MIT](https://opensource.org/licenses/MIT) 라이센스를 따릅니다.
 
 *This README was generated with :two_hearts: by
 [shinyReadme](http://github.com/jhk0530/shinyReadme)*
