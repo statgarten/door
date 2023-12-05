@@ -104,20 +104,24 @@ If the data has more than 7 columns, the rows and columns will be swapped.
 #| message: false
 #| label: top
 
+pp <- head(inputData, 5)
+
 if(ncol(inputData) > 7){
-  kable(
-    t(head(inputData, 5)),
-    format = 'latex', 
-    longtable = TRUE
-  ) |> 
+ pp <- t(head(inputData, 5))
+}
+
+pp %>%
+  knitr::kable(
+    format = "latex",
+    align = "l",
+    # booktabs = TRUE,
+    longtable = TRUE,
+    ) %>%
   kableExtra::kable_styling(
-    latex_options = c("repeat_header"),
+    latex_options = c("scale_down", "repeat_header"),
     repeat_header_continued = "\\textit{(Continued on Next Page...)}"
   )
-} else{
-  head(inputData, 5) |>
-  kable()
-}
+
 ```
 
 > Preview of data - Last 5 Rows
@@ -131,19 +135,21 @@ If the data has more than 7 columns, the rows and columns will be swapped.
 #| label: tail
 
 if(ncol(inputData) > 7){
-  kable(
+  knitr::kable(
     t(tail(inputData, 5)),
     format = 'latex', 
-    longtable = TRUE
-  ) |> 
+    longtable = TRUE 
+  ) %>% 
   kableExtra::kable_styling(
-    latex_options = c("repeat_header"),
+    latex_options = c("scale_down", "repeat_header"),
     repeat_header_continued = "\\textit{(Continued on Next Page...)}"
   )
+    
 } else{
-  tail(inputData, 5) |>
-  kable()
+  tail(inputData, 5) %>%
+  knitr::kable()
 }
+
 ```
 
 \newpage
@@ -156,7 +162,26 @@ if(ncol(inputData) > 7){
 #| echo: false
 #| label: structure of data using str
 
-str(inputData, vec.len = params$vec.len)
+
+df <- data.frame(
+  variable = names(inputData),
+  class = sapply(inputData, function(i){
+      v <- typeof(i) %>% substr(start = 1, stop = 2)
+      if(length(v)>1) return(v[1])
+      return(v)
+    }),
+  levels = sapply(inputData, function(i){
+    v <- class(i) %>% substr(start = 1, stop = 2)
+    if(length(v)>1) return(v[1]) # multiple class
+    return(v)
+  }),
+  first_values = sapply(inputData, function(x) paste0(head(x, 5), collapse = ", ")),
+  row.names = NULL
+) 
+
+knitr::kable(df)
+
+# str(inputData, vec.len = params$vec.len)
 
 # data.frame(
 #   variable = names(inputData),
@@ -238,25 +263,40 @@ if (length(ignoreNA) > 0) {
 #| echo: false
 #| label: type for each column
 
-ss <- inputData |>
-  skimr::skim() |>
-  select(-"n_missing", -"complete_rate", -"numeric.hist") |>
-  rename(Type = skim_type) |>
-  rename(Name = skim_variable) |>
-  rename(Mean = numeric.mean) |>
-  rename(SD = numeric.sd) |>
-  rename(Min = numeric.p0) |>
-  rename("1Q" = numeric.p25) |>
-  rename(Median = numeric.p50) |>
-  rename("3Q" = numeric.p75) |>
-  rename(Max = numeric.p100)
-#  rename(Max = numeric.p100) |>
-
-knitr::kable(ss, format = 'latex', longtable = TRUE) |>
-  kableExtra::kable_styling(
-    position = "center"
-  )
+# ss <- inputData |>
+#   skimr::skim() |>
+#   select(-"n_missing", -"complete_rate", -"numeric.hist") |>
+#   rename(Type = skim_type) |>
+#   rename(Name = skim_variable) |>
+#   rename(Mean = numeric.mean) |>
+#   rename(SD = numeric.sd) |>
+#   rename(Min = numeric.p0) |>
+#   rename("1Q" = numeric.p25) |>
+#   rename(Median = numeric.p50) |>
+#   rename("3Q" = numeric.p75) |>
+#   rename(Max = numeric.p100)
+# #  rename(Max = numeric.p100) |>
+# 
+# knitr::kable(ss, format = 'latex', longtable = TRUE) |>
+#   kableExtra::kable_styling(
+#     position = "center"
+#   )
   
+ss <- inputData %>%
+  skimr::skim() %>%
+  select(-"n_missing", -"complete_rate", -"skim_type")
+
+# rename columns
+colnames(ss) <- colnames(ss) %>%
+  # gsub(pattern = "skim_type", replacement = "Variable Type") %>%
+  gsub(pattern = "skim_variable", replacement = "Variable Name")
+
+knitr::kable(ss) %>%
+  kableExtra::kable_styling(
+    latex_options = c("scale_down", "repeat_header"),
+    repeat_header_continued = "\\textit{(Continued on Next Page...)}"
+  )
+
 ```
 
 \newpage
@@ -318,26 +358,43 @@ if(params$negative != "NA"){
 ```{r}
 #| label: isUnique
 #| echo: false
-  ss <- inputData |>
-  select(everything()) |>
+
+# ss <- inputData |>
+#   select(everything()) |>
+#   sapply(isUnique) 
+# 
+# if(length(which(ss))){
+#   data.frame(
+#     Variable = names(ss),
+#     Unique = unname(ss)
+#   ) |>
+#   kable()
+# } else{
+#   cat("There is not column without duplicated values")
+# }
+
+ss <- inputData %>%
+  select(everything()) %>%
   sapply(isUnique) 
 
 if(length(which(ss))){
   data.frame(
-    Variable = names(ss),
-    Unique = unname(ss)
-  ) |>
-  kable()
+  Variable = names(ss),
+  Unique = unname(ss)
+  ) %>%
+  knitr::kable()
 } else{
-  cat("There is not column without duplicated values")
+  print("> There is not column without duplicated values")
 }
+
 ```
 
 - uniform
 
 ```{r}
 #| echo: false
-  ss <- inputData |>
+
+ss <- inputData |>
   select(everything()) |>
   sapply(isUniform) 
 
@@ -346,7 +403,7 @@ if(length(which(ss))){
     Variable = names(ss),
     Uniform = unname(ss)
   ) |>
-  kable()
+  knitr::kable()
 } else{
   cat("There is not column without uniformly distributed")
 }
@@ -401,7 +458,7 @@ if(ncol(scatterData)> 10){
 if (!(scatterData |> length() > 0)) {
   cat("Data is not appropriate for Pairplot")
 } else {
-  if (nrow(inputData) > 100) {
+  if (nrow(scatterData) > 1000) {
     cat("Number of Row Reduced to 1000")
     scatterData <- scatterData |>
       sample_n(1000)

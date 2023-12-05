@@ -187,19 +187,19 @@ app_server <- function(input, output, session) {
     )
   })
 
-  observeEvent(input$exampleR, {
+  observeEvent(input$exampleReg, {
     updateTextInputIcon(
       session = session,
       inputId = "importModule_2-link",
-      value = "https://github.com/statgarten/goophi/raw/main/data/boston_r.csv"
+      value = "https://github.com/statgarten/stove/raw/main/data/boston_r.csv"
     )
   })
 
-  observeEvent(input$exampleC, {
+  observeEvent(input$exampleCla, {
     updateTextInputIcon(
       session = session,
       inputId = "importModule_2-link",
-      value = "https://github.com/statgarten/goophi/raw/main/data/boston_c.csv"
+      value = "https://github.com/statgarten/stove/raw/main/data/boston_c.csv"
     )
   })
 
@@ -1091,7 +1091,15 @@ app_server <- function(input, output, session) {
 
   output$downloadReport <- downloadHandler(
     filename = function() {
-      paste("my-report",
+      paste(
+        switch(input$format,
+          PDF = "my-report",
+          HTML = "my-report",
+          Word = "my-report",
+          Dashboard = "my-dashboard",
+          PPT = "my-report",
+          Paper = "my-paper"
+        ),
         sep = ".",
         switch(input$format,
           PDF = "pdf",

@@ -391,6 +391,18 @@ if (!(scatterData %>% length() > 0)) {
 
 # suggestion
 
--   check
--   change
--   remove...
+1. Check value types: 
+
+- Some **Numeric** value should be change into **Factor** type.
+
+2. Remove unusable values. 
+
+- Identifying values (ID, Name...)
+
+- Outlier / Missing values
+
+- Duplicated values.
+
+- Too various values. (that doesn't show any trend)
+
+3. Define new features with feature engineering.

@@ -186,14 +186,14 @@ app_ui <- function(request) {
                       label = i18n_shiny$t("Healthcare (NHIS Korea)")
                     ),
                     actionButton(
-                      inputId = "exampleR",
+                      inputId = "exampleReg",
                       class = "exampleButton",
                       label = i18n_shiny$t("Boston House Price: Regression")
                     ),
                     actionButton(
-                      inputId = "exampleC",
+                      inputId = "exampleCla",
                       class = "exampleButton",
-                      label = i18n_shiny$t("Boston House Price: Classification"),
+                      label = i18n_shiny$t("Boston House Price: Classification / Clustering"),
                     )
                   )
                 )
