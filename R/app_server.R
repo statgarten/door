@@ -558,17 +558,19 @@ app_server <- function(input, output, session) {
   #   inputData(data_rv$data) # then use isolated
   # })
 
-
   # XML handler
   xml_to_dataframe <- function(path) {
     xml <- xml2::read_xml(path)
     nodeset <- xml2::xml_children(xml)
-    lst <- lapply(nodeset, function(x) {
+    result <- c()
+    for (i in 1:length(nodeset)) {
+      x <- nodeset[i]
       tmp <- xml2::xml_text(xml2::xml_children(x))
       names(tmp) <- xml2::xml_name(xml2::xml_children(x))
-      return(as.list(tmp))
-    })
-    result <- as.data.frame(do.call(rbind, lst))
+      result <- rbind(result, tmp)
+    }
+
+    rownames(result) <- NULL
 
     return(tibble::as_tibble(result))
   }
