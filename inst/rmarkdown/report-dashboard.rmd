@@ -27,21 +27,34 @@ library(GGally)
 library(naniar)
 library(dplyr)
 library(knitr)
+library(flexdashboard)
 missplot <- naniar::gg_miss_var(inputData) %>% plotly::ggplotly()
 ```
 
 ## Row
 
 -----------------------------------
+
 ### Author information
 
-Department: "`r params$department`"
+<!-- Department: "`r params$department`" -->
+<!-- Affiliation: "`r params$affiliation`" -->
+<!-- Location: "`r params$location`" -->
+<!-- E-mail: "`r params$email`" -->
 
-Affiliation: "`r params$affiliation`"
+```{r}
+nam <- ifelse(params$authorName=='','.', params$authorName)
+dep <- ifelse(params$department=='','.', params$department)
+aff <- ifelse(params$affiliation=='','.', params$affiliation)
+loc <- ifelse(params$location=='','.', params$location)
+ema <- ifelse(params$email=='','.', params$email)
 
-Location: "`r params$location`"
-
-E-mail: "`r params$email`"
+flexdashboard::valueBox(
+  value = paste(nam, dep, aff, loc, ema),
+  caption = 'Author', 
+  icon = 'fa-user'
+)
+```
 
 ### Dataset Information
 
