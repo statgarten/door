@@ -51,7 +51,8 @@ Imports:
     tibble (>= 3.1.8),
     tidyr (>= 1.2.0),
     tinytex (>= 0.45),
-    utils
+    utils,
+    fst (>= 0.9.8)
 Suggests:
     knitr
 VignetteBuilder: 
